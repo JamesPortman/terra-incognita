@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Architecture &#8212; Terra Incognita</title>
+<style>
+  :root {
+    --ink: #0c1220;
+    --ink-soft: #101828;
+    --raised: #182338;
+    --line: #263352;
+    --sea: #101a2c;
+    --brass: #d9a441;
+    --teal: #57c4ad;
+    --blue: #7fa8d0;
+    --red: #e2574c;
+    --parchment: #ece5d3;
+    --muted: #8f99ad;
+    --serif: "Iowan Old Style", Palatino, "Palatino Linotype", Georgia, serif;
+    --mono: ui-monospace, "SF Mono", Menlo, monospace;
+    --sans: -apple-system, "Segoe UI", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--ink);
+    color: var(--parchment);
+    font-family: var(--sans);
+    line-height: 1.55;
+  }
+  header.top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 22px 12px;
+    border-bottom: 1px solid var(--line);
+  }
+  header.top .brand { font-family: var(--serif); font-size: 1.35rem; }
+  header.top a { color: var(--brass); text-decoration: none; font-size: 0.9rem; }
+  header.top a:hover { text-decoration: underline; }
+  main { max-width: 1020px; margin: 0 auto; padding: 32px 20px 80px; }
+  h1 { font-family: var(--serif); font-size: 2.2rem; font-weight: 600; margin: 0 0 8px; }
+  h2 { font-family: var(--serif); font-size: 1.35rem; font-weight: 600; margin: 0 0 12px; }
+  h3 { font-size: 1rem; margin: 0 0 8px; }
+  section { margin-bottom: 52px; }
+  p.lede { color: var(--muted); max-width: 720px; margin: 0 0 20px; }
+  .summary {
+    border: 1px solid #d9a44155;
+    background: #d9a4410d;
+    border-radius: 10px;
+    padding: 16px 20px;
+    max-width: 760px;
+    margin-bottom: 20px;
+  }
+  .summary .kicker {
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--brass);
+    margin-bottom: 6px;
+  }
+  .summary p { margin: 0; font-size: 0.95rem; }
+  .chips { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+  .chip-card { border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; background: var(--ink-soft); }
+  .chip-card dt { font-size: 0.66rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+  .chip-card dd { margin: 3px 0 0; font-weight: 600; font-size: 0.92rem; }
+  .cards { display: grid; gap: 14px; }
+  .cards.cols2 { grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
+  .cards.cols3 { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+  .card { border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; background: var(--ink-soft); }
+  .card .title { font-weight: 600; margin-bottom: 6px; }
+  .card p, .card li { font-size: 0.9rem; color: #c9c2b2; }
+  .card p { margin: 0; }
+  .card ol, .card ul { margin: 0; padding-left: 20px; }
+  .card li { margin-bottom: 5px; }
+  code {
+    font-family: var(--mono);
+    font-size: 0.84em;
+    background: var(--raised);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 1px 5px;
+  }
+  .diagram {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 16px;
+    background: var(--sea);
+    overflow-x: auto;
+  }
+  .diagram svg { width: 100%; height: auto; min-width: 640px; display: block; color: var(--parchment); }
+  table.plain { width: 100%; border-collapse: collapse; font-size: 0.9rem; font-variant-numeric: tabular-nums; }
+  table.plain th {
+    text-align: left;
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 1px solid var(--line);
+    padding: 8px 10px;
+  }
+  table.plain td { padding: 8px 10px; border-bottom: 1px solid #1b2740; }
+  table.plain td.num { text-align: right; font-family: var(--mono); color: var(--brass); }
+  .keys td:first-child { font-family: var(--mono); font-size: 0.82rem; white-space: nowrap; }
+  pre.repomap {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    line-height: 1.6;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 18px;
+    background: var(--sea);
+    overflow-x: auto;
+    color: #c9c2b2;
+  }
+  .formula {
+    font-family: var(--mono);
+    font-size: 1.05rem;
+    color: var(--brass);
+    background: var(--sea);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 12px 18px;
+    display: inline-block;
+    margin-bottom: 14px;
+  }
+  ul.notes { padding-left: 20px; margin: 0; }
+  ul.notes li { font-size: 0.9rem; color: #c9c2b2; margin-bottom: 7px; }
+</style>
+</head>
+<body>
+<header class="top">
+  <span class="brand">Terra Incognita</span>
+  <a href="/">&larr; Back to the game</a>
+</header>
+<main>
+  <h1>Architecture</h1>
+  <p class="lede">
+    How Terra Incognita is built — the runtime path from a phone tapping a map
+    to Redis and Postgres, the live-room state machine, the build pipeline that
+    embeds a world atlas into one HTML file, and the CI gate in front of every
+    deploy. Written for engineers extending or operating the system.
+  </p>
+
+  <div class="summary">
+    <div class="kicker">Executive summary</div>
+    <p>
+      Terra Incognita is a GeoGuessr-style geography game: look at a place —
+      a Street View panorama or a photo — and drop a pin on a world map;
+      points scale with distance. It ships as a single self-contained HTML
+      file served by Vercel, with a thin set of serverless functions adding
+      Kahoot-style live rooms for up to 14 players (room state in Upstash
+      Redis, expiring automatically) and a persistent all-time leaderboard
+      (Neon Postgres). Unit and end-to-end suites run in GitHub Actions on
+      every push; production deploys only when they pass.
+    </p>
+  </div>
+
+  <dl class="chips">
+    <div class="chip-card"><dt>Client</dt><dd>Single-file HTML · SVG atlas · no framework</dd></div>
+    <div class="chip-card"><dt>Compute</dt><dd>Vercel Functions (Node, CommonJS)</dd></div>
+    <div class="chip-card"><dt>State</dt><dd>Upstash Redis (rooms) · Neon Postgres (leaderboard)</dd></div>
+    <div class="chip-card"><dt>Imagery</dt><dd>Google Street View · Wikimedia photos</dd></div>
+  </dl>
+
+  <section style="margin-top:40px">
+    <h2>Operations</h2>
+    <div class="cards cols3">
+      <div class="card">
+        <div class="title">Tests gate every deploy</div>
+        <p>Vercel's git auto-deploy is off. GitHub Actions runs 30 unit tests
+        and an 11-test Playwright suite (including a two-browser live room) on
+        every push; <code>main</code> deploys via <code>vercel deploy --prebuilt --prod</code>
+        only when both are green.</p>
+      </div>
+      <div class="card">
+        <div class="title">Rooms clean themselves up</div>
+        <p>Every room key carries a 4-hour Redis TTL, refreshed on writes.
+        There is no cleanup job and no orphaned state — finished or abandoned
+        games simply evaporate.</p>
+      </div>
+      <div class="card">
+        <div class="title">Locked-down Maps key</div>
+        <p>The Street View key is HTTP-referrer-restricted to the production
+        domain and localhost, limited to the Maps JavaScript API, and served at
+        runtime from <code>GOOGLE_MAPS_KEY</code> via <code>/api/config</code> —
+        rotatable without a rebuild, never committed.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>1 · Runtime request path</h2>
+    <p class="lede">
+      The client is one HTML file with everything embedded — country polygons,
+      photos, gazetteer. Solo games never touch the network; live rooms poll a
+      small JSON API every 1.5&nbsp;s.
+    </p>
+    <div class="diagram">
+      <svg viewBox="0 0 760 470" role="img" aria-label="Runtime layers: browser client, Vercel functions, Redis, Neon, and Google Maps">
+        <defs>
+          <marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+          </marker>
+        </defs>
+        <!-- Browser layer -->
+        <rect x="20" y="10" width="720" height="108" rx="10" fill="#7fa8d0" fill-opacity="0.10" stroke="#7fa8d0" stroke-width="1.5"/>
+        <text x="40" y="36" font-size="15" font-weight="700" fill="#7fa8d0">Browser — index.html (3&#8201;MB, self-contained)</text>
+        <text x="40" y="58" font-size="12" fill="currentColor" fill-opacity="0.85">SVG world map (179 countries) · 20 embedded photos · offline gazetteer (3,057 cities)</text>
+        <text x="40" y="76" font-size="12" fill="currentColor" fill-opacity="0.85">Street View panorama (loaded on demand) · solo engine · party polling loop (1.5&#8201;s)</text>
+        <text x="40" y="94" font-size="12" fill="currentColor" fill-opacity="0.85">sessionStorage per tab: role, room code, player token</text>
+        <!-- arrows down -->
+        <line x1="250" y1="118" x2="250" y2="168" stroke="currentColor" stroke-width="1.5" marker-end="url(#ar)"/>
+        <text x="262" y="148" font-size="11" fill="currentColor" fill-opacity="0.7">fetch /api/* (JSON)</text>
+        <line x1="600" y1="118" x2="600" y2="358" stroke="#57c4ad" stroke-width="1.5" marker-end="url(#ar)"/>
+        <text x="612" y="240" font-size="11" fill="#57c4ad">Maps JS API</text>
+        <text x="612" y="256" font-size="11" fill="#57c4ad">(street mode only)</text>
+        <!-- Functions layer -->
+        <rect x="20" y="168" width="500" height="118" rx="10" fill="#d9a441" fill-opacity="0.10" stroke="#d9a441" stroke-width="1.5"/>
+        <text x="40" y="194" font-size="15" font-weight="700" fill="#d9a441">Vercel Functions — api/</text>
+        <text x="40" y="216" font-size="12" fill="currentColor" fill-opacity="0.85">create · join · guess · next · state · leaderboard · config</text>
+        <text x="40" y="234" font-size="12" fill="currentColor" fill-opacity="0.85">All scoring server-side (haversine + exponential decay)</text>
+        <text x="40" y="252" font-size="12" fill="currentColor" fill-opacity="0.85">Lazy transitions: any state read can flip question &#8594; reveal</text>
+        <text x="40" y="270" font-size="12" fill="currentColor" fill-opacity="0.85">Host token / player tokens checked on every call</text>
+        <!-- arrows to stores -->
+        <line x1="150" y1="286" x2="150" y2="338" stroke="currentColor" stroke-width="1.5" marker-end="url(#ar)"/>
+        <text x="162" y="316" font-size="11" fill="currentColor" fill-opacity="0.7">room state</text>
+        <line x1="400" y1="286" x2="400" y2="338" stroke="currentColor" stroke-width="1.5" marker-end="url(#ar)"/>
+        <text x="412" y="316" font-size="11" fill="currentColor" fill-opacity="0.7">final scores · top 20</text>
+        <!-- Redis -->
+        <rect x="20" y="338" width="240" height="112" rx="10" fill="#e2574c" fill-opacity="0.10" stroke="#e2574c" stroke-width="1.5"/>
+        <text x="40" y="364" font-size="15" font-weight="700" fill="#e2574c">Upstash Redis</text>
+        <text x="40" y="386" font-size="12" fill="currentColor" fill-opacity="0.85">room:CODE (meta JSON)</text>
+        <text x="40" y="404" font-size="12" fill="currentColor" fill-opacity="0.85">room:CODE:players (hash)</text>
+        <text x="40" y="422" font-size="12" fill="currentColor" fill-opacity="0.85">room:CODE:g:N (hash / round)</text>
+        <text x="40" y="440" font-size="12" fill="currentColor" fill-opacity="0.85">4&#8201;h TTL on everything</text>
+        <!-- Neon -->
+        <rect x="290" y="338" width="230" height="112" rx="10" fill="#57c4ad" fill-opacity="0.10" stroke="#57c4ad" stroke-width="1.5"/>
+        <text x="310" y="364" font-size="15" font-weight="700" fill="#57c4ad">Neon Postgres</text>
+        <text x="310" y="386" font-size="12" fill="currentColor" fill-opacity="0.85">leaderboard table</text>
+        <text x="310" y="404" font-size="12" fill="currentColor" fill-opacity="0.85">one row / player / game</text>
+        <text x="310" y="422" font-size="12" fill="currentColor" fill-opacity="0.85">written once, on final</text>
+        <text x="310" y="440" font-size="12" fill="currentColor" fill-opacity="0.85">HTTP driver, no pool mgmt</text>
+        <!-- Google -->
+        <rect x="550" y="358" width="190" height="92" rx="10" fill="#57c4ad" fill-opacity="0.06" stroke="#8f99ad" stroke-width="1.2" stroke-dasharray="5 4"/>
+        <text x="570" y="384" font-size="14" font-weight="700" fill="#8f99ad">Google Maps</text>
+        <text x="570" y="404" font-size="12" fill="currentColor" fill-opacity="0.85">Street View panoramas</text>
+        <text x="570" y="422" font-size="12" fill="currentColor" fill-opacity="0.85">metadata lookups (free)</text>
+        <text x="570" y="440" font-size="12" fill="currentColor" fill-opacity="0.85">referrer-locked key</text>
+      </svg>
+    </div>
+  </section>
+
+  <section>
+    <h2>2 · Live-room state machine</h2>
+    <p class="lede">
+      One host, up to 14 players, five rounds. The server holds a single small
+      state machine per room; clients poll <code>/api/state</code> and render
+      whatever phase comes back — a refresh rejoins mid-game losslessly.
+    </p>
+    <div class="diagram">
+      <svg viewBox="0 0 760 210" role="img" aria-label="State machine: lobby to question to reveal, looping five times, then final">
+        <defs>
+          <marker id="ar2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+          </marker>
+        </defs>
+        <rect x="16" y="70" width="150" height="64" rx="10" fill="#7fa8d0" fill-opacity="0.12" stroke="#7fa8d0" stroke-width="1.5"/>
+        <text x="91" y="97" font-size="15" font-weight="700" fill="#7fa8d0" text-anchor="middle">lobby</text>
+        <text x="91" y="117" font-size="11" fill="currentColor" fill-opacity="0.8" text-anchor="middle">players join by code</text>
+        <rect x="256" y="70" width="150" height="64" rx="10" fill="#d9a441" fill-opacity="0.12" stroke="#d9a441" stroke-width="1.5"/>
+        <text x="331" y="97" font-size="15" font-weight="700" fill="#d9a441" text-anchor="middle">question</text>
+        <text x="331" y="117" font-size="11" fill="currentColor" fill-opacity="0.8" text-anchor="middle">timer runs · pins drop</text>
+        <rect x="496" y="70" width="150" height="64" rx="10" fill="#57c4ad" fill-opacity="0.12" stroke="#57c4ad" stroke-width="1.5"/>
+        <text x="571" y="97" font-size="15" font-weight="700" fill="#57c4ad" text-anchor="middle">reveal</text>
+        <text x="571" y="117" font-size="11" fill="currentColor" fill-opacity="0.8" text-anchor="middle">all pins + distances</text>
+        <rect x="606" y="160" width="140" height="42" rx="10" fill="#e2574c" fill-opacity="0.12" stroke="#e2574c" stroke-width="1.5"/>
+        <text x="676" y="186" font-size="14" font-weight="700" fill="#e2574c" text-anchor="middle">final</text>
+        <line x1="166" y1="102" x2="252" y2="102" stroke="currentColor" stroke-width="1.5" marker-end="url(#ar2)"/>
+        <text x="209" y="92" font-size="10.5" fill="currentColor" fill-opacity="0.7" text-anchor="middle">host starts</text>
+        <line x1="406" y1="102" x2="492" y2="102" stroke="currentColor" stroke-width="1.5" marker-end="url(#ar2)"/>
+        <text x="449" y="82" font-size="10.5" fill="currentColor" fill-opacity="0.7" text-anchor="middle">all answered ·</text>
+        <text x="449" y="95" font-size="10.5" fill="currentColor" fill-opacity="0.7" text-anchor="middle">time up · host ends</text>
+        <path d="M 496 60 C 460 20, 400 20, 340 60" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#ar2)"/>
+        <text x="418" y="30" font-size="10.5" fill="currentColor" fill-opacity="0.7" text-anchor="middle">host: next round (&#215;4)</text>
+        <line x1="620" y1="134" x2="660" y2="160" stroke="currentColor" stroke-width="1.5" marker-end="url(#ar2)"/>
+        <text x="590" y="156" font-size="10.5" fill="currentColor" fill-opacity="0.7" text-anchor="end">after round 5 —</text>
+        <text x="590" y="169" font-size="10.5" fill="currentColor" fill-opacity="0.7" text-anchor="end">writes leaderboard once</text>
+      </svg>
+    </div>
+  </section>
+
+  <section>
+    <h2>3 · Data model</h2>
+    <div class="cards cols2">
+      <div class="card">
+        <h3 style="color:var(--red)">Redis — ephemeral room state</h3>
+        <table class="plain keys">
+          <tr><td>room:CODE</td><td>meta JSON: state, mode, roundIdx, roundStartAt, roundMs, deck[5], hostToken, savedToLb</td></tr>
+          <tr><td>room:CODE:players</td><td>hash <code>playerId &#8594; {name, token, score}</code> — per-field writes, no races</td></tr>
+          <tr><td>room:CODE:g:N</td><td>hash <code>playerId &#8594; {lat, lon, km, pts, ms}</code> — written once via <code>HSETNX</code></td></tr>
+        </table>
+        <p style="margin-top:10px">The SDK serializes JSON itself — values are stored as plain
+        objects (<code>api/_lib/store.js</code>). A file-based store with the same interface
+        stands in locally when Redis env vars are absent.</p>
+      </div>
+      <div class="card">
+        <h3 style="color:var(--teal)">Neon — durable leaderboard</h3>
+        <table class="plain keys">
+          <tr><td>id</td><td>serial PK</td></tr>
+          <tr><td>room_code</td><td>text — 4-letter room</td></tr>
+          <tr><td>player_name</td><td>text</td></tr>
+          <tr><td>score</td><td>int — out of 25,000</td></tr>
+          <tr><td>rounds</td><td>int</td></tr>
+          <tr><td>played_at</td><td>timestamptz, default now()</td></tr>
+        </table>
+        <p style="margin-top:10px">Auto-created with <code>CREATE TABLE IF NOT EXISTS</code>;
+        written exactly once per game, guarded by the <code>savedToLb</code> flag in room meta.
+        <code>/api/leaderboard</code> serves the top 20 by score.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>4 · Key flows</h2>
+    <div class="cards cols2">
+      <div class="card">
+        <h3>Host creates a room</h3>
+        <ol>
+          <li><code>POST /api/create</code> with mode (street/photo) and round seconds (clamped 10–300).</li>
+          <li>Server shuffles a 5-location deck, mints a 4-letter code (no 0/O/1/I/L) and a host token.</li>
+          <li>Host screen shows the code; players join at the site or via <code>/?join=CODE</code>.</li>
+        </ol>
+      </div>
+      <div class="card">
+        <h3>Player guesses</h3>
+        <ol>
+          <li>Pin click is bounds-checked against the map, then <code>POST /api/guess</code> sends only lat/lon.</li>
+          <li>Server validates token, phase, and clock; scores with haversine; <code>HSETNX</code> blocks double guesses.</li>
+          <li>Points are added to the player's score but hidden from state responses until reveal.</li>
+        </ol>
+      </div>
+      <div class="card">
+        <h3>Rounds advance lazily</h3>
+        <ol>
+          <li>No timers run server-side; every <code>/api/state</code> poll checks the clock.</li>
+          <li>question &#8594; reveal fires when all players answered or time (+2&#8201;s grace) expired.</li>
+          <li>Concurrent polls racing the transition are benign — both write the same state.</li>
+        </ol>
+      </div>
+      <div class="card">
+        <h3>Street View resolution</h3>
+        <ol>
+          <li><code>/api/config</code> supplies the referrer-locked Maps key; the Maps script loads once, on demand.</li>
+          <li>Each round asks <code>StreetViewService</code> for the nearest outdoor panorama within 1.5&nbsp;km.</li>
+          <li>No coverage → the round silently falls back to the embedded photo. Labels, addresses, and dates are hidden.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>5 · Scoring</h2>
+    <div class="formula">points = round( 5000 &#183; e<sup>&#8722;km / 2000</sup> )</div>
+    <table class="plain" style="max-width:460px">
+      <tr><th>Distance</th><th style="text-align:right">Points</th><th>Feels like</th></tr>
+      <tr><td>0 km</td><td class="num">5,000</td><td>Perfect pin</td></tr>
+      <tr><td>125 km</td><td class="num">4,698</td><td>Right region</td></tr>
+      <tr><td>1,000 km</td><td class="num">3,033</td><td>Right country, roughly</td></tr>
+      <tr><td>3,000 km</td><td class="num">1,116</td><td>Right continent</td></tr>
+      <tr><td>10,000 km</td><td class="num">34</td><td>Wrong hemisphere</td></tr>
+    </table>
+    <p class="lede" style="margin-top:12px">
+      Identical for solo and multiplayer; in rooms the formula runs server-side
+      so a modified client cannot inflate scores. Five rounds, 25,000 max.
+    </p>
+  </section>
+
+  <section class="cards cols2" style="display:grid">
+    <div>
+      <h2>6 · Security &amp; sessions</h2>
+      <ul class="notes">
+        <li>No accounts. A room is a capability: the 4-letter code admits you in the lobby window; a per-player UUID token authorizes every later call.</li>
+        <li>The host token is a separate secret — only its holder can start rounds, end them early, or advance the game.</li>
+        <li>Guess coordinates are validated and scored server-side; state responses omit scores and answers during open questions.</li>
+        <li>Player names are length-capped and stripped of markup; duplicates get numbered.</li>
+        <li>Session tokens live in per-tab <code>sessionStorage</code> — refresh rejoins, but tabs are independent participants.</li>
+        <li>The Maps key is public by design, defended by referrer + API restrictions and a monthly quota cap.</li>
+      </ul>
+    </div>
+    <div>
+      <h2>7 · Build pipeline (assets)</h2>
+      <ul class="notes">
+        <li><code>build/game-template.html</code> is the source of truth; <code>build/assemble.js</code> injects data and writes <code>index.html</code>.</li>
+        <li>World map: Natural-Earth-derived GeoJSON &#8594; simplified SVG paths (~110&#8201;KB, 179 countries) by <code>build/build-map.js</code>.</li>
+        <li>Photos: Wikipedia lead images, downscaled and inlined as data URIs by <code>build/build-photos.sh</code>.</li>
+        <li>Search gazetteer: GeoNames cities &#8805;200k + country bounding boxes (~160&#8201;KB) by <code>build/build-search.js</code>.</li>
+        <li>Locations live once in <code>shared/locations.js</code> — embedded into the client <em>and</em> imported by the scoring API; order is the contract.</li>
+        <li>Rebuild = <code>node build/assemble.js</code>, prepend doctype, commit.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2>8 · CI/CD &amp; deployment</h2>
+    <p class="lede">
+      Vercel's git integration is connected but its auto-deploy is disabled
+      (<code>vercel.json</code>). GitHub Actions is the only path to production,
+      and it runs both suites first — a red test means the deploy never starts.
+    </p>
+    <div class="diagram">
+      <svg viewBox="0 0 760 150" role="img" aria-label="Pipeline: push to GitHub, Actions run unit and E2E tests, then deploy to Vercel production">
+        <defs>
+          <marker id="ar3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+          </marker>
+        </defs>
+        <rect x="8" y="24" width="150" height="92" rx="10" fill="#7fa8d0" fill-opacity="0.12" stroke="#7fa8d0" stroke-width="1.5"/>
+        <text x="24" y="50" font-size="14" font-weight="700" fill="#7fa8d0">Push</text>
+        <text x="24" y="70" font-size="11" fill="currentColor" fill-opacity="0.85">any branch</text>
+        <text x="24" y="86" font-size="11" fill="currentColor" fill-opacity="0.85">github.com</text>
+        <rect x="200" y="24" width="180" height="92" rx="10" fill="#d9a441" fill-opacity="0.12" stroke="#d9a441" stroke-width="1.5"/>
+        <text x="216" y="50" font-size="14" font-weight="700" fill="#d9a441">Actions · test</text>
+        <text x="216" y="70" font-size="11" fill="currentColor" fill-opacity="0.85">vitest (30 unit tests)</text>
+        <text x="216" y="86" font-size="11" fill="currentColor" fill-opacity="0.85">playwright vs vercel dev</text>
+        <text x="216" y="102" font-size="11" fill="currentColor" fill-opacity="0.85">(11 E2E, real Redis)</text>
+        <rect x="422" y="24" width="160" height="92" rx="10" fill="#e2574c" fill-opacity="0.12" stroke="#e2574c" stroke-width="1.5"/>
+        <text x="438" y="50" font-size="14" font-weight="700" fill="#e2574c">Actions · deploy</text>
+        <text x="438" y="70" font-size="11" fill="currentColor" fill-opacity="0.85">main only, needs: test</text>
+        <text x="438" y="86" font-size="11" fill="currentColor" fill-opacity="0.85">vercel build</text>
+        <text x="438" y="102" font-size="11" fill="currentColor" fill-opacity="0.85">deploy --prebuilt --prod</text>
+        <rect x="624" y="24" width="128" height="92" rx="10" fill="#57c4ad" fill-opacity="0.12" stroke="#57c4ad" stroke-width="1.5"/>
+        <text x="640" y="50" font-size="14" font-weight="700" fill="#57c4ad">Production</text>
+        <text x="640" y="70" font-size="11" fill="currentColor" fill-opacity="0.85">static + functions</text>
+        <text x="640" y="86" font-size="11" fill="currentColor" fill-opacity="0.85">terra-incognita-</text>
+        <text x="640" y="102" font-size="11" fill="currentColor" fill-opacity="0.85">amber.vercel.app</text>
+        <line x1="158" y1="70" x2="196" y2="70" stroke="currentColor" stroke-width="1.5" marker-end="url(#ar3)"/>
+        <line x1="380" y1="70" x2="418" y2="70" stroke="currentColor" stroke-width="1.5" marker-end="url(#ar3)"/>
+        <text x="399" y="60" font-size="10" fill="currentColor" fill-opacity="0.7" text-anchor="middle">green</text>
+        <line x1="582" y1="70" x2="620" y2="70" stroke="currentColor" stroke-width="1.5" marker-end="url(#ar3)"/>
+      </svg>
+    </div>
+  </section>
+
+  <section>
+    <h2>9 · Repository map</h2>
+    <pre class="repomap">index.html                  the game — built artifact, fully self-contained
+architecture.html           this page
+vercel.json                 git auto-deploy off · /architecture rewrite
+api/
+  _lib/store.js             Upstash Redis wrapper + file-store dev fallback
+  _lib/rooms.js             codes · decks · scoring · lazy transitions
+  _lib/db.js                Neon client + leaderboard DDL
+  create.js · join.js       room lifecycle
+  guess.js · next.js        server-side scoring · host transitions
+  state.js · leaderboard.js polling endpoint · all-time top 20
+  config.js                 serves the referrer-locked Maps key
+shared/locations.js         the 20 locations — client deck + server answer key
+build/
+  game-template.html        client source (edit this, not index.html)
+  assemble.js               embeds map + photos + gazetteer -> index.html
+  build-map.js              GeoJSON -> compact SVG paths
+  build-photos.sh           Wikipedia photos -> data URIs
+  build-search.js           GeoNames -> offline search index
+__tests__/                  vitest: scoring, store contract, API handlers
+e2e/                        playwright: menu · solo · search · live room
+.github/workflows/ci.yml    test gate + production deploy</pre>
+  </section>
+</main>
+</body>
+</html>

@@ -355,7 +355,8 @@
   .joinrow input:focus { border-color: var(--brass); }
   #joinCode { width: 86px; text-transform: uppercase; font-family: var(--mono); letter-spacing: 0.15em; }
   #joinName { flex: 1; }
-  button.ghost {
+  button.ghost, a.ghost {
+    display: inline-block;
     background: none;
     border: none;
     color: var(--muted);
@@ -366,7 +367,7 @@
     text-decoration: underline;
     text-underline-offset: 3px;
   }
-  button.ghost:hover { color: var(--parchment); }
+  button.ghost:hover, a.ghost:hover { color: var(--parchment); }
   .menuerr { color: var(--red); font-size: 0.85rem; min-height: 1.2em; margin-top: 10px; }
   .roomcode {
     font-family: var(--mono);
@@ -541,6 +542,7 @@
           <button class="primary" id="menuJoin">Join</button>
         </div>
         <button class="ghost" id="menuLb">All-time leaderboard</button>
+        <a class="ghost" href="/architecture">Architecture &mdash; how this is built</a>
       </div>
       <div class="menuerr" id="menuErr"></div>
     </div>
