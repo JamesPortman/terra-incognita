@@ -7,6 +7,7 @@ test.describe('menu', () => {
     await expect(page.locator('#menuSolo')).toBeVisible();
     await expect(page.locator('#menuHost')).toBeVisible();
     await expect(page.locator('#roundSecInput')).toHaveValue('60');
+    await expect(page.locator('#roundsInput')).toHaveValue('5');
     await expect(page.locator('#timerLabel')).toHaveText('1:00');
   });
 

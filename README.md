@@ -46,9 +46,14 @@ npm run test:e2e  # Playwright E2E (starts `vercel dev` on :3300 automatically)
   no Redis or network needed; the final-transition test uses zero players so
   nothing is written to Neon.
 - E2E covers the menu, a full solo game (including the round timeout), map
-  search, and a two-browser live room. The live-room test writes a real
-  leaderboard row via `vercel dev` (names prefixed `E2E-`) and deletes it in
-  teardown. Street View is kept off in E2E so tests don't consume Google quota.
+  search, and a two-browser live room. Player names prefixed `E2E-` are
+  filtered out of the persistent leaderboard server-side, so test games leave
+  nothing behind. Most specs run with `?plainmap=1` (SVG guess map) for
+  determinism; one spec exercises the real Google map. Street View stays off
+  in E2E so tests don't consume Google quota.
+
+Admin: the leaderboard screen has an Admin section (token in `ADMIN_TOKEN`,
+see `.env.local`) that can clear the all-time leaderboard via `/api/admin`.
 
 ## Deploy
 

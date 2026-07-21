@@ -79,6 +79,11 @@ describe('newDeck', () => {
     for (let i = 0; i < 20; i++) decks.add(newDeck().join(','));
     expect(decks.size).toBeGreaterThan(1);
   });
+
+  it('honors a custom round count', () => {
+    expect(newDeck(3)).toHaveLength(3);
+    expect(new Set(newDeck(10)).size).toBe(10);
+  });
 });
 
 describe('locations data', () => {

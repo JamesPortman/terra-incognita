@@ -12,7 +12,8 @@ module.exports = async (req, res) => {
   if (!meta) return sendJSON(res, 404, { error: 'room not found' });
   if (req.body?.hostToken !== meta.hostToken) return sendJSON(res, 403, { error: 'host only' });
 
-  if (meta.state === 'lobby' || (meta.state === 'reveal' && meta.roundIdx + 1 < ROUNDS)) {
+  const rounds = meta.rounds || ROUNDS;
+  if (meta.state === 'lobby' || (meta.state === 'reveal' && meta.roundIdx + 1 < rounds)) {
     meta.roundIdx += 1;
     meta.state = 'question';
     meta.roundStartAt = Date.now();
@@ -22,13 +23,15 @@ module.exports = async (req, res) => {
     meta.state = 'final';
     if (!meta.savedToLb) {
       meta.savedToLb = true;
-      const players = Object.values(await getStore().hgetallJSON(playersKey(code)));
+      // test agents (E2E-* names) never reach the persistent leaderboard
+      const players = Object.values(await getStore().hgetallJSON(playersKey(code)))
+        .filter((p) => !/^E2E-/i.test(p.name));
       if (players.length) {
         await ensureTable();
         const sql = getSql();
         for (const p of players) {
           await sql`INSERT INTO leaderboard (room_code, player_name, score, rounds)
-                    VALUES (${code}, ${p.name}, ${p.score}, ${ROUNDS})`;
+                    VALUES (${code}, ${p.name}, ${p.score}, ${rounds})`;
         }
       }
     }

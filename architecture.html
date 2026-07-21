@@ -388,6 +388,7 @@
         <li>Player names are length-capped and stripped of markup; duplicates get numbered.</li>
         <li>Session tokens live in per-tab <code>sessionStorage</code> — refresh rejoins, but tabs are independent participants.</li>
         <li>The Maps key is public by design, defended by referrer + API restrictions and a monthly quota cap.</li>
+        <li>An <code>ADMIN_TOKEN</code>-gated endpoint (<code>/api/admin</code>, UI under the leaderboard) can clear the all-time leaderboard; E2E test players (<code>E2E-*</code> names) are filtered out server-side and never reach it.</li>
       </ul>
     </div>
     <div>

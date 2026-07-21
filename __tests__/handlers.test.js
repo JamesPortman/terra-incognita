@@ -53,6 +53,13 @@ describe('create', () => {
     expect((await newRoom({ mode: 'nonsense' })).mode).toBe('photo');
   });
 
+  it('honors and clamps the round count', async () => {
+    expect((await newRoom({ rounds: 3 })).rounds).toBe(3);
+    expect((await newRoom({ rounds: 99 })).rounds).toBe(10);
+    expect((await newRoom({ rounds: 0 })).rounds).toBe(5); // falsy -> default
+    expect((await newRoom({})).rounds).toBe(5);
+  });
+
   it('rejects GET', async () => {
     expect((await call(create, { method: 'GET' })).code).toBe(405);
   });
@@ -144,6 +151,14 @@ describe('next / state machine', () => {
     }
     expect(await step()).toEqual({ state: 'final', roundIdx: 4 });
     expect((await call(next, { body: { code, hostToken } })).code).toBe(409);
+  });
+
+  it('a 2-round game reaches final after round 2', async () => {
+    const { code, hostToken } = await newRoom({ rounds: 2 });
+    const step = async () => (await call(next, { body: { code, hostToken } })).body;
+    await step(); await step(); // q0, reveal0
+    await step(); await step(); // q1, reveal1
+    expect(await step()).toEqual({ state: 'final', roundIdx: 1 });
   });
 
   it('hides scores and answers during a question', async () => {

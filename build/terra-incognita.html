@@ -494,7 +494,7 @@
       <div class="sheet">
         <div class="kicker">Expedition complete</div>
         <div class="total" id="finalTotal">0</div>
-        <div class="outof">out of 25,000</div>
+        <div class="outof" id="finalOutOf">out of 25,000</div>
         <div class="verdict" id="finalVerdict"></div>
         <svg id="finalMap" xmlns="http://www.w3.org/2000/svg" role="img"
              aria-label="Map of all your guesses versus the actual locations"></svg>
@@ -535,6 +535,11 @@
           <span>Time per round</span>
           <input type="number" id="roundSecInput" value="60" min="10" max="300" step="5" inputmode="numeric" aria-label="Seconds per round" />
           <span>seconds</span>
+        </label>
+        <label class="timerow">
+          <span>Rounds per game</span>
+          <input type="number" id="roundsInput" value="5" min="1" max="10" step="1" inputmode="numeric" aria-label="Rounds per game" />
+          <span>rounds</span>
         </label>
         <button class="primary" id="menuSolo">Play solo</button>
         <button class="primary" id="menuHost">Host a live room</button>
@@ -580,7 +585,15 @@
       <div class="kicker">All-time leaderboard</div>
       <h2>Hall of Navigators</h2>
       <table class="lbtable" id="lbTable"></table>
-      <div class="stack"><button class="primary" id="lbBack">Back</button></div>
+      <div class="stack">
+        <button class="primary" id="lbBack">Back</button>
+        <button class="ghost" id="lbAdminToggle">Admin</button>
+        <div class="joinrow" id="lbAdminRow" style="display:none">
+          <input id="adminToken" type="password" placeholder="Admin token" autocomplete="off" aria-label="Admin token" style="flex:1" />
+          <button class="primary" id="adminClear">Clear leaderboard</button>
+        </div>
+        <div class="menuerr" id="adminMsg"></div>
+      </div>
     </div>
   </div>
 </main>
@@ -592,7 +605,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
 
 (() => {
   const NS = "http://www.w3.org/2000/svg";
-  const ROUNDS = 5;
+  let ROUNDS = 5; // solo rounds; set from the menu input when a game starts
   const svg = document.getElementById("map");
   svg.setAttribute("viewBox", `0 0 ${MAP_W} ${MAP_H}`);
   svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
@@ -1063,10 +1076,11 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
   }
 
   function verdictFor(t) {
-    if (t >= 22500) return "A master navigator. The map is barely necessary.";
-    if (t >= 17500) return "A seasoned traveller — your compass rarely lies.";
-    if (t >= 12000) return "A promising explorer with a few detours.";
-    if (t >= 6000) return "The journey matters more than the destination. Apparently.";
+    const max = ROUNDS * 5000;
+    if (t >= max * 0.9) return "A master navigator. The map is barely necessary.";
+    if (t >= max * 0.7) return "A seasoned traveller — your compass rarely lies.";
+    if (t >= max * 0.48) return "A promising explorer with a few detours.";
+    if (t >= max * 0.24) return "The journey matters more than the destination. Apparently.";
     return "You have discovered several places that were not there.";
   }
 
@@ -1098,6 +1112,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
   function showFinal() {
     renderFinalMap();
     finalTotal.textContent = total.toLocaleString();
+    $("finalOutOf").textContent = `out of ${(ROUNDS * 5000).toLocaleString()}`;
     finalVerdict.textContent = verdictFor(total);
     finalTable.innerHTML = results.map((r) =>
       `<tr><td>${r.name}</td><td class="dist">${fmtKm(r.km)}</td><td>+${r.pts.toLocaleString()}</td></tr>`
@@ -1372,11 +1387,19 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
     return v;
   }
 
+  function readRounds() {
+    const el = $("roundsInput");
+    const v = Math.min(10, Math.max(1, parseInt(el.value, 10) || 5));
+    el.value = v;
+    return v;
+  }
+
   function startSolo() {
     stopPolling(); stopTimer(); clearSession();
     mode = "solo"; party = null; partyGuesses = null;
     soloStreet = Boolean(mapsKey && $("svToggle").checked);
     roundSeconds = readRoundSec();
+    ROUNDS = readRounds();
     hideAllModals();
     newGame();
   }
@@ -1395,7 +1418,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
 
   async function hostRoom() {
     const svMode = Boolean(mapsKey && $("svToggle").checked);
-    const d = await api("create", { mode: svMode ? "street" : "photo", roundSec: readRoundSec() });
+    const d = await api("create", { mode: svMode ? "street" : "photo", roundSec: readRoundSec(), rounds: readRounds() });
     mode = "host"; party = { code: d.code, hostToken: d.hostToken };
     saveSession(); enterParty();
   }
@@ -1647,6 +1670,41 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
   });
   $("menuLb").addEventListener("click", showLeaderboard);
   $("lbBack").addEventListener("click", backToMenu);
+  $("lbAdminToggle").addEventListener("click", () => {
+    const row = $("lbAdminRow");
+    row.style.display = row.style.display === "none" ? "" : "none";
+    $("adminMsg").textContent = "";
+  });
+  let adminConfirmTimer = null;
+  $("adminClear").addEventListener("click", async () => {
+    const btn = $("adminClear");
+    const msg = $("adminMsg");
+    if (!$("adminToken").value.trim()) {
+      msg.style.color = "var(--red)";
+      msg.textContent = "enter the admin token";
+      return;
+    }
+    if (!adminConfirmTimer) {
+      btn.textContent = "Really clear it?";
+      adminConfirmTimer = setTimeout(() => {
+        adminConfirmTimer = null;
+        btn.textContent = "Clear leaderboard";
+      }, 4000);
+      return;
+    }
+    clearTimeout(adminConfirmTimer);
+    adminConfirmTimer = null;
+    btn.textContent = "Clear leaderboard";
+    try {
+      await api("admin", { token: $("adminToken").value.trim(), action: "clearLeaderboard" });
+      msg.style.color = "var(--teal)";
+      msg.textContent = "Leaderboard cleared";
+      $("lbTable").innerHTML = '<tr><td style="color:var(--muted)">No games recorded yet — host a live room!</td></tr>';
+    } catch (err) {
+      msg.style.color = "var(--red)";
+      msg.textContent = String(err.message);
+    }
+  });
   $("lobbyStart").addEventListener("click", async () => {
     $("lobbyStart").disabled = true;
     try { await api("next", { code: party.code, hostToken: party.hostToken }); } catch {}

@@ -1,22 +1,21 @@
 const { test, expect } = require('@playwright/test');
-const { deleteE2ELeaderboardRows } = require('./helpers/db.js');
 
 // Full two-browser live room: host screen + one phone player, photo mode,
-// short rounds. Exercises the real Redis room state end to end.
+// short rounds. Exercises the real Redis room state end to end. E2E-* player
+// names are filtered out of the persistent leaderboard server-side, so these
+// games leave nothing behind.
 test.describe('live room', () => {
-  test.afterAll(async () => {
-    await deleteE2ELeaderboardRows();
-  });
-
-  test('host and player play a full game to the standings', async ({ browser }) => {
+  test('host and player play a 2-round game to the standings', async ({ browser }) => {
+    const ROUNDS = 2;
     const host = await (await browser.newContext()).newPage();
     const player = await (await browser.newContext()).newPage();
 
-    // host creates a photo-mode room with 30s rounds
+    // host creates a photo-mode room with 30s rounds and 2 rounds
     await host.goto('/?plainmap=1');
     await expect(host.locator('#modeToggleRow')).toBeVisible();
     await host.locator('#svToggle').uncheck();
     await host.locator('#roundSecInput').fill('30');
+    await host.locator('#roundsInput').fill(String(ROUNDS));
     await host.locator('#menuHost').click();
     await expect(host.locator('#lobbyScreen')).toBeVisible();
     const code = (await host.locator('#lobbyCode').textContent()).trim();
@@ -33,9 +32,9 @@ test.describe('live room', () => {
     await expect(host.locator('#lobbyPlayers .chip')).toHaveText(['E2E-Scout']);
     await host.locator('#lobbyStart').click();
 
-    for (let round = 1; round <= 5; round++) {
+    for (let round = 1; round <= ROUNDS; round++) {
       // both sides land in the question
-      await expect(player.locator('#roundLabel')).toHaveText(`${round} / 5`);
+      await expect(player.locator('#roundLabel')).toHaveText(`${round} / ${ROUNDS}`);
       await expect(host.locator('#distReadout')).toHaveText(/0\/1 answered/);
 
       // player drops a pin and locks in
@@ -48,7 +47,7 @@ test.describe('live room', () => {
       // everyone answered -> auto-reveal on both screens
       await expect(player.locator('#distReadout')).toHaveText(/your pin landed/);
       await expect(host.locator('#distReadout')).toHaveText(/closest: E2E-Scout/);
-      await expect(host.locator('#goBtn')).toHaveText(round < 5 ? /Next round/i : /Final standings/i);
+      await expect(host.locator('#goBtn')).toHaveText(round < ROUNDS ? /Next round/i : /Final standings/i);
 
       // reveal map shows the player's named pin on both screens
       await expect(host.locator('#map text').first()).toHaveText(/E2E-Scout/);
@@ -62,11 +61,11 @@ test.describe('live room', () => {
     await expect(host.locator('#standWinner')).toHaveText(/E2E-Scout takes it/);
     await expect(host.locator('#standList li').first()).toContainText('E2E-Scout');
 
-    // the finished game reached the all-time leaderboard
-    await expect(host.locator('#standLbTable')).toContainText('E2E-Scout');
+    // E2E players must never persist in the all-time leaderboard
+    await expect(host.locator('#standLbTable')).not.toContainText('E2E-Scout');
   });
 
-  test('room is capped and codes are single-use for joining after start', async ({ browser, request }) => {
+  test('room is capped and codes are single-use for joining after start', async ({ request }) => {
     // API-level guard checks driven through the deployed dev server
     const create = await request.post('/api/create', { data: { roundSec: 30 } });
     const { code, hostToken } = await create.json();
@@ -74,5 +73,10 @@ test.describe('live room', () => {
     await request.post('/api/next', { data: { code, hostToken } });
     const late = await request.post('/api/join', { data: { code, name: 'E2E-Late' } });
     expect(late.status()).toBe(409);
+  });
+
+  test('admin endpoint rejects a wrong token', async ({ request }) => {
+    const r = await request.post('/api/admin', { data: { token: 'wrong', action: 'clearLeaderboard' } });
+    expect(r.status()).toBe(403);
   });
 });

@@ -28,7 +28,7 @@ module.exports = async (req, res) => {
     state: meta.state,
     mode: meta.mode || 'photo',
     roundIdx: meta.roundIdx,
-    rounds: ROUNDS,
+    rounds: meta.rounds || ROUNDS,
     roundMs: meta.roundMs || ROUND_MS,
     roundStartAt: meta.roundStartAt,
     serverNow: Date.now(),

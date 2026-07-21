@@ -19,13 +19,13 @@ function newCode() {
   return c;
 }
 
-function newDeck() {
+function newDeck(rounds = ROUNDS) {
   const idx = [...LOCATIONS.keys()];
   for (let i = idx.length - 1; i > 0; i--) {
     const j = crypto.randomInt(i + 1);
     [idx[i], idx[j]] = [idx[j], idx[i]];
   }
-  return idx.slice(0, ROUNDS);
+  return idx.slice(0, rounds);
 }
 
 function haversineKm(lat1, lon1, lat2, lon2) {
