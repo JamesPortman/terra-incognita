@@ -996,10 +996,15 @@ const LOCATIONS = __LOCATIONS__;
 
   // ---- score theatrics ----
   const REDUCED_MOTION = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const countSeq = new WeakMap(); // cancellation: a newer write invalidates a running count-up
+  function stopCount(el) { countSeq.set(el, (countSeq.get(el) || 0) + 1); }
   function animateCount(el, to, fmt) {
+    const seq = (countSeq.get(el) || 0) + 1;
+    countSeq.set(el, seq);
     if (REDUCED_MOTION) { el.textContent = fmt(to); return; }
     const start = performance.now(), dur = 900;
     const step = (now) => {
+      if (countSeq.get(el) !== seq) return; // superseded
       const t = Math.min(1, (now - start) / dur);
       el.textContent = fmt(Math.round(to * (1 - Math.pow(1 - t, 3))));
       if (t < 1) requestAnimationFrame(step);
@@ -1164,6 +1169,7 @@ const LOCATIONS = __LOCATIONS__;
     round = 0; total = 0; results = [];
     if (finalConfirmTimer) { clearTimeout(finalConfirmTimer); finalConfirmTimer = null; }
     finalScreen.classList.remove("show");
+    stopCount(scoreLabel);
     scoreLabel.textContent = "0";
     startRound();
   }
@@ -1176,6 +1182,7 @@ const LOCATIONS = __LOCATIONS__;
     roundLabel.textContent = `${round + 1} / ${ROUNDS}`;
     revealCard.classList.remove("show");
     distReadout.textContent = "";
+    stopCount(ptsReadout);
     ptsReadout.textContent = "";
     scoreFill.style.width = "0%";
     goBtn.disabled = true;
@@ -1703,6 +1710,7 @@ const LOCATIONS = __LOCATIONS__;
     else presentLocation(LOCATIONS[st.locIdx], st.mode === "street");
     revealCard.classList.remove("show");
     distReadout.textContent = "";
+    stopCount(ptsReadout);
     ptsReadout.textContent = "";
     scoreFill.style.width = "0%";
     mapHint.style.display = mode === "player" ? "" : "none";
