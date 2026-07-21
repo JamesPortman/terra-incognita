@@ -25,7 +25,7 @@ module.exports = async (req, res) => {
   const player = players[playerId];
   if (!player || player.token !== token) return sendJSON(res, 403, { error: 'not in this room' });
 
-  const loc = LOCATIONS[meta.deck[meta.roundIdx]];
+  const loc = meta.customDeck ? meta.customDeck[meta.roundIdx] : LOCATIONS[meta.deck[meta.roundIdx]];
   const km = haversineKm(lat, lon, loc.lat, loc.lon);
   const pts = pointsFor(km);
   const ms = Date.now() - meta.roundStartAt;

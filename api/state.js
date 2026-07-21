@@ -32,7 +32,7 @@ module.exports = async (req, res) => {
     roundMs: meta.roundMs || ROUND_MS,
     roundStartAt: meta.roundStartAt,
     serverNow: Date.now(),
-    locIdx: inRound ? meta.deck[meta.roundIdx] : null,
+    locIdx: inRound && !meta.customDeck ? meta.deck[meta.roundIdx] : null,
     players: Object.entries(players).map(([pid, p]) => ({
       id: pid,
       name: p.name,
@@ -40,6 +40,14 @@ module.exports = async (req, res) => {
       answered: meta.state === 'question' ? Boolean(guesses[pid]) : undefined,
     })).sort((a, b) => (b.score ?? 0) - (a.score ?? 0) || a.name.localeCompare(b.name)),
   };
+
+  // random-world rounds: pano id only during the question (coords would leak
+  // the answer); coordinates and label appear only at reveal
+  if (meta.customDeck && inRound) {
+    const d = meta.customDeck[meta.roundIdx];
+    out.pano = { id: d.panoId };
+    if (meta.state === 'reveal') out.loc = { lat: d.lat, lon: d.lon, label: d.label || '' };
+  }
 
   if (meta.state === 'reveal') {
     out.reveal = Object.entries(guesses).map(([pid, g]) => ({

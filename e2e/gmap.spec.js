@@ -21,4 +21,21 @@ test.describe('google guess map', () => {
     await expect(page.locator('#distReadout')).toHaveText(/your pin landed/);
     await expect(page.locator('#ptsReadout')).toHaveText(/\+[\d,]+ pts/);
   });
+
+  test('random world solo round drops into a panorama', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.locator('#modeToggleRow')).toBeVisible();
+    await page.locator('#deckSelect').selectOption('random');
+    await page.locator('#roundsInput').fill('1');
+    await page.locator('#menuSolo').click();
+    // deck resolution can take a few seconds of metadata lookups
+    await expect(page.locator('#roundLabel')).toHaveText('1 / 1', { timeout: 45_000 });
+    await expect(page.locator('#panobox')).toHaveClass(/active/, { timeout: 20_000 });
+    await page.locator('#gmap').click({ position: { x: 220, y: 160 } });
+    await expect(page.locator('#goBtn')).toHaveText(/Make guess/i, { timeout: 10_000 });
+    await page.locator('#goBtn').click();
+    await expect(page.locator('#distReadout')).toHaveText(/your pin landed/);
+    // reveal names the spot (metadata description or gazetteer city)
+    await expect(page.locator('#revealName')).not.toHaveText('');
+  });
 });

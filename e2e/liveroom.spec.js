@@ -52,6 +52,11 @@ test.describe('live room', () => {
       // reveal map shows the player's named pin on both screens
       await expect(host.locator('#map text').first()).toHaveText(/E2E-Scout/);
 
+      // between-round standings appear on both screens with round points
+      await expect(host.locator('#miniStand')).toBeVisible();
+      await expect(host.locator('#miniStand .msrow')).toContainText(['E2E-Scout']);
+      await expect(player.locator('#miniStand .msrow.me')).toContainText('E2E-Scout');
+
       await host.locator('#goBtn').click();
     }
 

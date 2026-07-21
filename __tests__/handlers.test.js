@@ -136,6 +136,64 @@ describe('guess', () => {
   });
 });
 
+describe('random-world custom decks', () => {
+  const deck3 = [
+    { lat: 48.85, lon: 2.35, panoId: 'abc123', label: 'Paris, France' },
+    { lat: 35.68, lon: 139.7, panoId: 'def-456', label: 'Tokyo' },
+    { lat: -33.86, lon: 151.2, panoId: 'ghi_789', label: 'Sydney' },
+  ];
+
+  it('accepts a valid deck and forces street mode', async () => {
+    const room = await newRoom({ deckType: 'random', rounds: 3, deck: deck3 });
+    expect(room.mode).toBe('street');
+    expect(room.rounds).toBe(3);
+  });
+
+  it('rejects wrong lengths and malformed entries', async () => {
+    expect((await call(create, { body: { deckType: 'random', rounds: 3, deck: deck3.slice(0, 2) } })).code).toBe(400);
+    expect((await call(create, { body: {
+      deckType: 'random', rounds: 1, deck: [{ lat: 999, lon: 0, panoId: 'x' }],
+    } })).code).toBe(400);
+    expect((await call(create, { body: {
+      deckType: 'random', rounds: 1, deck: [{ lat: 0, lon: 0, panoId: 'bad pano!' }],
+    } })).code).toBe(400);
+  });
+
+  it('sends pano id during questions, coords only at reveal, and scores server-side', async () => {
+    const { code, hostToken } = await newRoom({ deckType: 'random', rounds: 3, deck: deck3 });
+    const p = (await joinAs(code, 'Alice')).body;
+    await call(next, { body: { code, hostToken } });
+
+    const q = await call(state, { method: 'GET', query: { code, hostToken } });
+    expect(q.body.pano).toEqual({ id: 'abc123' });
+    expect(q.body.locIdx).toBeNull();
+    expect(q.body.loc).toBeUndefined();
+
+    const g = await call(guess, {
+      body: { code, playerId: p.playerId, token: p.token, lat: 48.85, lon: 2.35 },
+    });
+    expect(g.code).toBe(200);
+
+    const r = await call(state, { method: 'GET', query: { code, hostToken } });
+    expect(r.body.state).toBe('reveal');
+    expect(r.body.loc.lat).toBeCloseTo(48.85);
+    expect(r.body.loc.label).toBe('Paris, France');
+    expect(r.body.reveal[0].pts).toBe(5000);
+  });
+
+  it('strips markup from labels', async () => {
+    const { code, hostToken } = await newRoom({
+      deckType: 'random', rounds: 1,
+      deck: [{ lat: 1, lon: 1, panoId: 'ok1', label: '<b>Spot</b>' }],
+    });
+    const p = (await joinAs(code, 'A')).body;
+    await call(next, { body: { code, hostToken } });
+    await call(guess, { body: { code, playerId: p.playerId, token: p.token, lat: 1, lon: 1 } });
+    const r = await call(state, { method: 'GET', query: { code, hostToken } });
+    expect(r.body.loc.label).not.toMatch(/[<>]/);
+  });
+});
+
 describe('next / state machine', () => {
   it('requires the host token', async () => {
     const { code } = await newRoom();

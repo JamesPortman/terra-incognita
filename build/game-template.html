@@ -138,6 +138,58 @@
     outline: none;
   }
   .timerow input:focus { border-color: var(--brass); }
+  .timerow select {
+    font-family: var(--sans);
+    font-size: 0.88rem;
+    color: var(--parchment);
+    background: var(--sea);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 8px 10px;
+    outline: none;
+  }
+  .timerow select:focus { border-color: var(--brass); }
+  .mutebtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.05rem;
+    padding: 0;
+    line-height: 1.2;
+  }
+  .ministand {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 18px;
+    background: #0c1220e6;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 10px 16px;
+    min-width: 300px;
+    max-width: min(480px, 92%);
+    max-height: 42%;
+    overflow-y: auto;
+    display: none;
+    z-index: 6;
+    font-variant-numeric: tabular-nums;
+  }
+  .ministand.show { display: block; }
+  .ministand .msrow {
+    display: grid;
+    grid-template-columns: 1.6em 1fr auto auto 2.4em;
+    gap: 10px;
+    align-items: baseline;
+    padding: 4px 2px;
+    font-size: 0.85rem;
+  }
+  .ministand .msrow.me { color: var(--brass); }
+  .ministand .msrank { color: var(--muted); }
+  .ministand .msgain { font-family: var(--mono); color: var(--brass); font-size: 0.8rem; }
+  .ministand .mstotal { font-family: var(--mono); }
+  .ministand .up { color: var(--teal); font-size: 0.75rem; }
+  .ministand .dn { color: var(--red); font-size: 0.75rem; }
+  .ministand .fl { color: var(--muted); font-size: 0.75rem; }
   .photobox img {
     width: 100%;
     height: 100%;
@@ -476,6 +528,7 @@
     <div><span class="label">Round</span><span class="value" id="roundLabel">1 / 5</span></div>
     <div><span class="label">Time</span><span class="value" id="timerLabel">1:00</span></div>
     <div><span class="label">Score</span><span class="value"><span class="accent" id="scoreLabel">0</span></span></div>
+    <div><span class="label">Sound</span><button id="muteBtn" class="mutebtn" aria-label="Toggle sound">🔊</button></div>
   </div>
 </header>
 
@@ -490,6 +543,7 @@
       <div class="name" id="revealName"></div>
       <div class="place" id="revealPlace"></div>
     </div></div>
+    <div class="ministand" id="miniStand"></div>
     <div class="final" id="finalScreen">
       <div class="sheet">
         <div class="kicker">Expedition complete</div>
@@ -527,6 +581,13 @@
       <div class="kicker">A where-in-the-world game</div>
       <h2>Terra Incognita</h2>
       <div class="stack">
+        <label class="timerow">
+          <span>Locations</span>
+          <select id="deckSelect" aria-label="Location set">
+            <option value="famous">Famous places</option>
+            <option value="random" id="deckRandomOpt" disabled>Random world (Street View)</option>
+          </select>
+        </label>
         <label class="modetoggle" id="modeToggleRow" style="display:none">
           <input type="checkbox" id="svToggle" checked />
           <span>Street View imagery (look around &amp; explore)</span>
@@ -896,6 +957,76 @@ const LOCATIONS = __LOCATIONS__;
   const mapHint = document.getElementById("mapHint");
   const timerLabel = document.getElementById("timerLabel");
 
+  // ---- sound effects (synthesized — no assets, mute persisted) ----
+  const sfx = (() => {
+    let ctx = null;
+    let muted = localStorage.getItem("terra-muted") === "1";
+    const ensure = () => {
+      if (!ctx) { try { ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch {} }
+      if (ctx && ctx.state === "suspended") ctx.resume();
+      return ctx;
+    };
+    document.addEventListener("pointerdown", () => { if (!muted) ensure(); }, { once: true });
+    function tone(freq, delay, dur, type, gain) {
+      const c = ensure();
+      if (!c || muted) return;
+      const t0 = c.currentTime + delay;
+      const o = c.createOscillator(), g = c.createGain();
+      o.type = type || "sine";
+      o.frequency.value = freq;
+      g.gain.setValueAtTime(0.0001, t0);
+      g.gain.exponentialRampToValueAtTime(gain || 0.07, t0 + 0.012);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+      o.connect(g).connect(c.destination);
+      o.start(t0);
+      o.stop(t0 + dur + 0.05);
+    }
+    return {
+      get muted() { return muted; },
+      toggle() { muted = !muted; localStorage.setItem("terra-muted", muted ? "1" : "0"); return muted; },
+      tick() { tone(1150, 0, 0.045, "square", 0.025); },
+      reveal(great) {
+        if (great) { tone(523, 0, 0.14); tone(659, 0.1, 0.14); tone(784, 0.2, 0.26); }
+        else { tone(440, 0, 0.12); tone(554, 0.09, 0.2); }
+      },
+      womp() { tone(220, 0, 0.28, "sawtooth", 0.04); tone(175, 0.16, 0.34, "sawtooth", 0.04); },
+      fanfare() { [523, 659, 784, 1047].forEach((f, i) => tone(f, i * 0.12, 0.24)); tone(1047, 0.55, 0.5); },
+    };
+  })();
+
+  // ---- score theatrics ----
+  const REDUCED_MOTION = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function animateCount(el, to, fmt) {
+    if (REDUCED_MOTION) { el.textContent = fmt(to); return; }
+    const start = performance.now(), dur = 900;
+    const step = (now) => {
+      const t = Math.min(1, (now - start) / dur);
+      el.textContent = fmt(Math.round(to * (1 - Math.pow(1 - t, 3))));
+      if (t < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+  function confetti() {
+    if (REDUCED_MOTION) return;
+    const stage = document.querySelector(".stage");
+    const box = document.createElement("div");
+    box.style.cssText = "position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:30";
+    stage.appendChild(box);
+    const colors = ["#d9a441", "#57c4ad", "#ece5d3", "#7fa8d0"];
+    for (let i = 0; i < 44; i++) {
+      const p = document.createElement("div");
+      const size = 5 + Math.random() * 6;
+      p.style.cssText = `position:absolute;left:50%;top:36%;width:${size}px;height:${size * 0.6}px;background:${colors[i % 4]};border-radius:1px`;
+      box.appendChild(p);
+      const ang = Math.random() * Math.PI * 2, v = 120 + Math.random() * 260;
+      p.animate([
+        { transform: "translate(0,0) rotate(0)", opacity: 1 },
+        { transform: `translate(${Math.cos(ang) * v}px, ${Math.sin(ang) * v * 0.7 + 170}px) rotate(${360 + Math.random() * 400}deg)`, opacity: 0 },
+      ], { duration: 1100 + Math.random() * 500, easing: "cubic-bezier(0.15,0.6,0.4,1)", fill: "forwards" });
+    }
+    setTimeout(() => box.remove(), 1800);
+  }
+
   // ---- round timer ----
   let roundSeconds = 60;
   let timerId = null, deadline = 0;
@@ -903,15 +1034,19 @@ const LOCATIONS = __LOCATIONS__;
     const s = Math.max(0, Math.ceil(ms / 1000));
     return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0");
   };
+  let lastTickSec = null;
   function startTimer() {
     stopTimer();
     deadline = performance.now() + roundSeconds * 1000;
     timerLabel.textContent = fmtTime(roundSeconds * 1000);
     timerLabel.classList.remove("warn");
+    lastTickSec = null;
     timerId = setInterval(() => {
       const left = deadline - performance.now();
       timerLabel.textContent = fmtTime(left);
       timerLabel.classList.toggle("warn", left < 10000);
+      const sec = Math.ceil(left / 1000);
+      if (sec !== lastTickSec && sec >= 1 && sec <= 10) { lastTickSec = sec; sfx.tick(); }
       if (left <= 0) { stopTimer(); timeUp(); }
     }, 200);
   }
@@ -934,6 +1069,7 @@ const LOCATIONS = __LOCATIONS__;
     distReadout.textContent = "time's up — no pin placed";
     ptsReadout.textContent = "+0 pts";
     scoreFill.style.width = "0%";
+    sfx.womp();
     mapHint.style.display = "none";
     goBtn.disabled = false;
     goBtn.textContent = round + 1 < ROUNDS ? "Next round" : "See final score";
@@ -1023,8 +1159,8 @@ const LOCATIONS = __LOCATIONS__;
 
   const fmtKm = (km) => km == null ? "no guess" : km < 10 ? km.toFixed(1) + " km" : Math.round(km).toLocaleString() + " km";
 
-  function newGame() {
-    deck = shuffle([...LOCATIONS]).slice(0, ROUNDS);
+  function newGame(customDeck) {
+    deck = customDeck || shuffle([...LOCATIONS]).slice(0, ROUNDS);
     round = 0; total = 0; results = [];
     if (finalConfirmTimer) { clearTimeout(finalConfirmTimer); finalConfirmTimer = null; }
     finalScreen.classList.remove("show");
@@ -1045,6 +1181,7 @@ const LOCATIONS = __LOCATIONS__;
     goBtn.disabled = true;
     goBtn.textContent = "Place a pin to guess";
     mapHint.style.display = "";
+    document.getElementById("miniStand").classList.remove("show");
     resetGuessMap();
     resetPhotoView();
     startTimer();
@@ -1068,9 +1205,11 @@ const LOCATIONS = __LOCATIONS__;
     revealPlace.textContent = loc.place;
     revealCard.classList.add("show");
     distReadout.textContent = `your pin landed ${fmtKm(km)} away`;
-    ptsReadout.textContent = `+${pts.toLocaleString()} pts`;
+    animateCount(ptsReadout, pts, (v) => `+${v.toLocaleString()} pts`);
     requestAnimationFrame(() => { scoreFill.style.width = (pts / 5000) * 100 + "%"; });
-    scoreLabel.textContent = total.toLocaleString();
+    animateCount(scoreLabel, total, (v) => v.toLocaleString());
+    sfx.reveal(pts >= 4000);
+    if (pts >= 4500) confetti();
     goBtn.disabled = false;
     goBtn.textContent = round + 1 < ROUNDS ? "Next round" : "See final score";
   }
@@ -1120,6 +1259,8 @@ const LOCATIONS = __LOCATIONS__;
     finalScreen.classList.add("show");
     goBtn.disabled = false;
     goBtn.textContent = "Expedition complete";
+    sfx.fanfare();
+    if (total >= ROUNDS * 5000 * 0.7) confetti();
   }
 
   let finalConfirmTimer = null;
@@ -1147,7 +1288,7 @@ const LOCATIONS = __LOCATIONS__;
       else showFinal();
     }
   });
-  document.getElementById("againBtn").addEventListener("click", newGame);
+  document.getElementById("againBtn").addEventListener("click", () => startSolo()); // re-resolves random decks too
   document.addEventListener("keydown", (e) => {
     const tag = document.activeElement.tagName;
     if (e.key === "Enter" && !goBtn.disabled && tag !== "BUTTON" && tag !== "INPUT") goBtn.click();
@@ -1187,7 +1328,10 @@ const LOCATIONS = __LOCATIONS__;
 
   async function loadConfig() {
     try { mapsKey = (await api("config")).mapsKey; } catch {}
-    if (mapsKey) $("modeToggleRow").style.display = "";
+    if (mapsKey) {
+      $("modeToggleRow").style.display = "";
+      $("deckRandomOpt").disabled = false;
+    }
   }
 
   function ensureMaps() {
@@ -1255,6 +1399,14 @@ const LOCATIONS = __LOCATIONS__;
   // seq guards against a slow panorama lookup landing after the next round began.
   async function presentLocation(loc, street) {
     const seq = ++presentSeq;
+    if (loc.panoId && (await ensureMaps())) {
+      if (seq !== presentSeq) return;
+      svPano.setPano(loc.panoId);
+      svPano.setPov({ heading: Math.random() * 360, pitch: 0 });
+      svPano.setZoom(0);
+      showPanoView(true);
+      return;
+    }
     if (street && (await showStreet(loc))) {
       if (seq === presentSeq) showPanoView(true);
       return;
@@ -1262,6 +1414,38 @@ const LOCATIONS = __LOCATIONS__;
     if (seq !== presentSeq) return;
     showPanoView(false);
     photo.src = loc.img;
+  }
+
+  // Random-world decks: jitter around gazetteer cities (guaranteed coverage
+  // bias) and snap to the nearest outdoor panorama. Metadata lookups are free.
+  async function buildRandomDeck(n) {
+    if (!(await ensureMaps())) throw new Error("Street View is unavailable right now");
+    const out = [], used = new Set();
+    let attempts = 0;
+    while (out.length < n && attempts < n * 14) {
+      attempts++;
+      const c = SEARCH_CITIES[Math.floor(Math.random() * SEARCH_CITIES.length)];
+      if (used.has(c.n)) continue;
+      const [clon, clat] = mapToLonLat(c.x, c.y);
+      const lat = clat + (Math.random() - 0.5) * 0.3;
+      const lon = clon + (Math.random() - 0.5) * 0.3;
+      try {
+        const res = await svService.getPanorama({
+          location: { lat, lng: lon }, radius: 5000, preference: "nearest", sources: ["outdoor"],
+        });
+        const ll = res.data.location.latLng;
+        used.add(c.n);
+        out.push({
+          name: res.data.location.description || `${c.n}, ${c.s}`,
+          place: "",
+          lat: typeof ll.lat === "function" ? ll.lat() : ll.lat,
+          lon: typeof ll.lng === "function" ? ll.lng() : ll.lng,
+          panoId: res.data.location.pano,
+        });
+      } catch { /* no coverage near this city — try another */ }
+    }
+    if (out.length < n) throw new Error("couldn't find enough Street View spots — try again");
+    return out;
   }
 
   // ---- Google guess map (dark-styled Dynamic Map; SVG map is the fallback) ----
@@ -1394,14 +1578,30 @@ const LOCATIONS = __LOCATIONS__;
     return v;
   }
 
-  function startSolo() {
+  async function startSolo() {
     stopPolling(); stopTimer(); clearSession();
     mode = "solo"; party = null; partyGuesses = null;
-    soloStreet = Boolean(mapsKey && $("svToggle").checked);
+    const deckType = $("deckSelect").value;
+    soloStreet = deckType === "random" || Boolean(mapsKey && $("svToggle").checked);
     roundSeconds = readRoundSec();
     ROUNDS = readRounds();
+    let customDeck = null;
+    if (deckType === "random") {
+      const btn = $("menuSolo");
+      btn.disabled = true;
+      btn.textContent = "Charting a course…";
+      try {
+        customDeck = await buildRandomDeck(ROUNDS);
+      } catch (err) {
+        menuErr.textContent = String(err.message || err);
+        return;
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Play solo";
+      }
+    }
     hideAllModals();
-    newGame();
+    newGame(customDeck);
   }
 
   function backToMenu() {
@@ -1417,8 +1617,26 @@ const LOCATIONS = __LOCATIONS__;
   }
 
   async function hostRoom() {
-    const svMode = Boolean(mapsKey && $("svToggle").checked);
-    const d = await api("create", { mode: svMode ? "street" : "photo", roundSec: readRoundSec(), rounds: readRounds() });
+    const deckType = $("deckSelect").value;
+    const rounds = readRounds();
+    const body = { roundSec: readRoundSec(), rounds };
+    if (deckType === "random") {
+      const btn = $("menuHost");
+      btn.disabled = true;
+      btn.textContent = "Charting a course…";
+      try {
+        body.deckType = "random";
+        body.deck = (await buildRandomDeck(rounds)).map((d) => ({
+          lat: d.lat, lon: d.lon, panoId: d.panoId, label: d.name,
+        }));
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Host a live room";
+      }
+    } else {
+      body.mode = Boolean(mapsKey && $("svToggle").checked) ? "street" : "photo";
+    }
+    const d = await api("create", body);
     mode = "host"; party = { code: d.code, hostToken: d.hostToken };
     saveSession(); enterParty();
   }
@@ -1459,11 +1677,14 @@ const LOCATIONS = __LOCATIONS__;
     };
     tick();
     pollTimer = setInterval(tick, 1500);
+    let partyLastTickSec = null;
     partyTick = setInterval(() => {
-      if (!lastState || lastState.state !== "question") return;
+      if (!lastState || lastState.state !== "question") { partyLastTickSec = null; return; }
       const left = lastState.roundStartAt + lastState.roundMs - (Date.now() - party.clockOffset);
       timerLabel.textContent = fmtTime(left);
       timerLabel.classList.toggle("warn", left < 10000);
+      const sec = Math.ceil(left / 1000);
+      if (sec !== partyLastTickSec && sec >= 1 && sec <= 10) { partyLastTickSec = sec; sfx.tick(); }
     }, 250);
   }
   function stopPolling() {
@@ -1477,7 +1698,9 @@ const LOCATIONS = __LOCATIONS__;
     lastRoundShown = st.roundIdx;
     myGuessSubmitted = false;
     guessPt = null; actualPt = null; showLine = false; partyGuesses = null;
-    presentLocation(LOCATIONS[st.locIdx], st.mode === "street");
+    $("miniStand").classList.remove("show");
+    if (st.pano) presentLocation({ panoId: st.pano.id }, true);
+    else presentLocation(LOCATIONS[st.locIdx], st.mode === "street");
     revealCard.classList.remove("show");
     distReadout.textContent = "";
     ptsReadout.textContent = "";
@@ -1523,10 +1746,33 @@ const LOCATIONS = __LOCATIONS__;
     }
   }
 
+  function renderMiniStand(st) {
+    const ptsBy = {};
+    for (const g of st.reveal) ptsBy[g.id] = g.pts;
+    const rows = st.players.map((p) => ({
+      id: p.id, name: p.name, score: p.score ?? 0, gained: ptsBy[p.id] ?? 0,
+    }));
+    const prevOrder = [...rows]
+      .sort((a, b) => (b.score - b.gained) - (a.score - a.gained) || a.name.localeCompare(b.name))
+      .map((r) => r.id);
+    rows.sort((a, b) => b.score - a.score || a.name.localeCompare(b.name));
+    $("miniStand").innerHTML = rows.map((r, i) => {
+      const delta = prevOrder.indexOf(r.id) - i;
+      const arrow = delta > 0 ? `<span class="up">▲${delta}</span>`
+        : delta < 0 ? `<span class="dn">▼${-delta}</span>` : `<span class="fl">–</span>`;
+      const me = mode === "player" && r.id === party.playerId ? " me" : "";
+      return `<div class="msrow${me}"><span class="msrank">${i + 1}</span><span class="msname">${r.name}</span>` +
+        `<span class="msgain">+${r.gained.toLocaleString()}</span><span class="mstotal">${r.score.toLocaleString()}</span>${arrow}</div>`;
+    }).join("");
+    $("miniStand").classList.add("show");
+  }
+
   function renderReveal(st) {
     hideAllModals();
     setupPartyRound(st);
-    const loc = LOCATIONS[st.locIdx];
+    const loc = st.loc
+      ? { name: st.loc.label || "Mystery location", place: "", lat: st.loc.lat, lon: st.loc.lon }
+      : LOCATIONS[st.locIdx];
     state = "spectate";
     if (!partyGuesses) {
       actualPt = lonLatToMap(loc.lon, loc.lat);
@@ -1549,11 +1795,22 @@ const LOCATIONS = __LOCATIONS__;
       revealCard.classList.add("show");
       timerLabel.textContent = "0:00";
       timerLabel.classList.remove("warn");
+      renderMiniStand(st);
+      if (mode === "player") {
+        const pts = st.you?.pts ?? 0;
+        sfx.reveal(pts >= 4000);
+        if (pts >= 4500) confetti();
+        if (!st.you) sfx.womp();
+      } else {
+        sfx.reveal(false);
+      }
+      if (mode === "player" && st.you) {
+        animateCount(ptsReadout, st.you.pts, (v) => `+${v.toLocaleString()} pts`);
+      }
     }
     if (mode === "player") {
       if (st.you) {
         distReadout.textContent = `your pin landed ${fmtKm(st.you.km)} away`;
-        ptsReadout.textContent = `+${st.you.pts.toLocaleString()} pts`;
         scoreFill.style.width = (st.you.pts / 5000) * 100 + "%";
       } else {
         distReadout.textContent = "no pin placed this round";
@@ -1582,6 +1839,8 @@ const LOCATIONS = __LOCATIONS__;
     if (standingsScreen.classList.contains("show")) return;
     stopPolling();
     hideAllModals();
+    $("miniStand").classList.remove("show");
+    sfx.fanfare();
     const ranked = st.players;
     $("standWinner").textContent = ranked.length ? `${ranked[0].name} takes it` : "Game over";
     $("standList").innerHTML = ranked.map((p, i) =>
@@ -1656,6 +1915,14 @@ const LOCATIONS = __LOCATIONS__;
     menuErr.textContent = "";
     try { await fn(); } catch (err) { menuErr.textContent = String(err.message); }
   };
+  const muteBtn = $("muteBtn");
+  muteBtn.textContent = sfx.muted ? "🔇" : "🔊";
+  muteBtn.addEventListener("click", () => { muteBtn.textContent = sfx.toggle() ? "🔇" : "🔊"; });
+  $("deckSelect").addEventListener("change", () => {
+    const random = $("deckSelect").value === "random";
+    if (random) $("svToggle").checked = true;
+    $("svToggle").disabled = random; // random rounds are Street View by definition
+  });
   $("menuSolo").addEventListener("click", startSolo);
   $("menuHost").addEventListener("click", busyGuard(hostRoom));
   $("menuJoin").addEventListener("click", busyGuard(async () => {

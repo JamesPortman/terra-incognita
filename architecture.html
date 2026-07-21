@@ -329,9 +329,9 @@
       <div class="card">
         <h3>Host creates a room</h3>
         <ol>
-          <li><code>POST /api/create</code> with mode (street/photo) and round seconds (clamped 10–300).</li>
-          <li>Server shuffles a 5-location deck, mints a 4-letter code (no 0/O/1/I/L) and a host token.</li>
-          <li>Host screen shows the code; players join at the site or via <code>/?join=CODE</code>.</li>
+          <li><code>POST /api/create</code> with mode, rounds (1–10), and round seconds (clamped 10–300).</li>
+          <li>Famous mode: server shuffles the landmark deck. Random world: the host's browser resolves random panoramas (city-jittered, free metadata lookups) and submits a validated deck; questions carry only the pano id — coordinates appear at reveal.</li>
+          <li>Host screen shows the 4-letter code; players join at the site or via <code>/?join=CODE</code>.</li>
         </ol>
       </div>
       <div class="card">

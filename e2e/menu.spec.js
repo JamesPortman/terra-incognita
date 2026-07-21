@@ -8,7 +8,18 @@ test.describe('menu', () => {
     await expect(page.locator('#menuHost')).toBeVisible();
     await expect(page.locator('#roundSecInput')).toHaveValue('60');
     await expect(page.locator('#roundsInput')).toHaveValue('5');
+    await expect(page.locator('#deckSelect')).toHaveValue('famous');
     await expect(page.locator('#timerLabel')).toHaveText('1:00');
+  });
+
+  test('mute toggle flips and persists', async ({ page }) => {
+    await page.goto('/');
+    const mute = page.locator('#muteBtn');
+    await expect(mute).toHaveText('🔊');
+    await mute.click();
+    await expect(mute).toHaveText('🔇');
+    await page.reload();
+    await expect(page.locator('#muteBtn')).toHaveText('🔇');
   });
 
   test('rejects joining a room that does not exist', async ({ page }) => {
