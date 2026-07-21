@@ -160,6 +160,53 @@
     white-space: nowrap;
   }
 
+  /* ---------- search ---------- */
+  .searchrow {
+    position: relative;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line);
+    background: var(--ink-soft);
+  }
+  .searchrow input {
+    width: 100%;
+    font-family: var(--sans);
+    font-size: 0.88rem;
+    color: var(--parchment);
+    background: var(--sea);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 9px 12px;
+    outline: none;
+  }
+  .searchrow input::placeholder { color: var(--muted); }
+  .searchrow input:focus { border-color: var(--brass); }
+  .searchrow .results {
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    top: calc(100% - 4px);
+    background: var(--raised);
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    z-index: 30;
+    overflow: hidden;
+    box-shadow: 0 10px 30px #00000080;
+    display: none;
+  }
+  .searchrow .results.open { display: block; }
+  .results .item {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    cursor: pointer;
+  }
+  .results .item .sub { color: var(--muted); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; }
+  .results .item.active { background: var(--brass-soft); }
+  .results .item .kind { color: var(--brass); }
+
   /* ---------- action bar ---------- */
   .actionbar {
     border-top: 1px solid var(--line);
@@ -293,6 +340,11 @@
   </div>
 
   <div class="mapside">
+    <div class="searchrow">
+      <input id="searchBox" type="search" placeholder="Search a country or city&hellip;" autocomplete="off"
+             aria-label="Search for a country or city to move the map there" />
+      <div class="results" id="searchResults" role="listbox"></div>
+    </div>
     <div class="mapwrap">
       <svg id="map" role="application" aria-label="World map — click to place your guess"></svg>
       <div class="maphint" id="mapHint">Click the map to drop your pin &middot; scroll to zoom</div>
@@ -307,6 +359,7 @@
 
 <script>
 __MAP_DATA__
+__SEARCH_DATA__
 const LOCATIONS = __LOCATIONS__;
 
 (() => {
@@ -450,6 +503,81 @@ const LOCATIONS = __LOCATIONS__;
     clampView(); applyView();
   }
   function resetView() { scale = 1; tx = 0; ty = 0; applyView(); }
+  function flyToPoint(x, y, s) {
+    scale = Math.min(10, Math.max(1, s));
+    tx = MAP_W / 2 - x * scale;
+    ty = MAP_H / 2 - y * scale;
+    clampView(); applyView();
+  }
+  function flyToBox(b) {
+    const spanX = Math.max(b[2] - b[0], 20) * 1.3;
+    const spanY = Math.max(b[3] - b[1], 12) * 1.3;
+    flyToPoint((b[0] + b[2]) / 2, (b[1] + b[3]) / 2, Math.min(MAP_W / spanX, MAP_H / spanY));
+  }
+
+  // ---- search ----
+  const searchBox = document.getElementById("searchBox");
+  const searchResults = document.getElementById("searchResults");
+  const norm = (s) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  let matches = [], activeIdx = -1;
+
+  function findMatches(q) {
+    const starts = [], contains = [];
+    for (const c of SEARCH_COUNTRIES) {
+      const n = norm(c.n);
+      if (n.startsWith(q)) starts.push({ ...c, kind: "country" });
+      else if (n.includes(q)) contains.push({ ...c, kind: "country" });
+    }
+    for (const c of SEARCH_CITIES) {
+      if (starts.length + contains.length > 40) break;
+      const n = norm(c.n);
+      if (n.startsWith(q)) starts.push({ ...c, kind: "city" });
+      else if (n.includes(q)) contains.push({ ...c, kind: "city" });
+    }
+    return starts.concat(contains).slice(0, 8);
+  }
+
+  function renderResults() {
+    if (!matches.length) { searchResults.classList.remove("open"); return; }
+    searchResults.innerHTML = matches.map((m, i) =>
+      `<div class="item${i === activeIdx ? " active" : ""}" role="option" data-i="${i}">
+         <span>${m.n}${m.kind === "city" ? ` <span class="sub">${m.s}</span>` : ""}</span>
+         <span class="sub kind">${m.kind}</span>
+       </div>`
+    ).join("");
+    searchResults.classList.add("open");
+  }
+
+  function pickResult(i) {
+    const m = matches[i];
+    if (!m) return;
+    if (m.kind === "country") flyToBox(m.b);
+    else flyToPoint(m.x, m.y, 6);
+    searchBox.value = m.n;
+    matches = []; activeIdx = -1;
+    renderResults();
+    searchBox.blur();
+  }
+
+  searchBox.addEventListener("input", () => {
+    const q = norm(searchBox.value.trim());
+    matches = q.length >= 2 ? findMatches(q) : [];
+    activeIdx = matches.length ? 0 : -1;
+    renderResults();
+  });
+  searchBox.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowDown") { e.preventDefault(); if (matches.length) { activeIdx = (activeIdx + 1) % matches.length; renderResults(); } }
+    else if (e.key === "ArrowUp") { e.preventDefault(); if (matches.length) { activeIdx = (activeIdx - 1 + matches.length) % matches.length; renderResults(); } }
+    else if (e.key === "Enter" || e.key === "Return") { e.preventDefault(); if (activeIdx >= 0) pickResult(activeIdx); }
+    else if (e.key === "Escape") { matches = []; activeIdx = -1; renderResults(); searchBox.blur(); }
+  });
+  searchResults.addEventListener("pointerdown", (e) => {
+    const item = e.target.closest(".item");
+    if (item) { e.preventDefault(); pickResult(+item.dataset.i); }
+  });
+  searchBox.addEventListener("blur", () => {
+    setTimeout(() => { matches = []; activeIdx = -1; renderResults(); }, 150);
+  });
 
   // ---- game ----
   const photo = document.getElementById("photo");
@@ -565,7 +693,8 @@ const LOCATIONS = __LOCATIONS__;
   });
   document.getElementById("againBtn").addEventListener("click", newGame);
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" && !goBtn.disabled && document.activeElement.tagName !== "BUTTON") goBtn.click();
+    const tag = document.activeElement.tagName;
+    if (e.key === "Enter" && !goBtn.disabled && tag !== "BUTTON" && tag !== "INPUT") goBtn.click();
   });
 
   applyView();
