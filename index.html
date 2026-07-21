@@ -1014,6 +1014,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
   function newGame() {
     deck = shuffle([...LOCATIONS]).slice(0, ROUNDS);
     round = 0; total = 0; results = [];
+    if (finalConfirmTimer) { clearTimeout(finalConfirmTimer); finalConfirmTimer = null; }
     finalScreen.classList.remove("show");
     scoreLabel.textContent = "0";
     startRound();
@@ -1103,12 +1104,28 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
       `<tr><td>${r.name}</td><td class="dist">${fmtKm(r.km)}</td><td>+${r.pts.toLocaleString()}</td></tr>`
     ).join("");
     finalScreen.classList.add("show");
-    goBtn.disabled = true;
+    goBtn.disabled = false;
     goBtn.textContent = "Expedition complete";
   }
 
+  let finalConfirmTimer = null;
   goBtn.addEventListener("click", () => {
     if (mode !== "solo") { partyGo(); return; }
+    if (finalScreen.classList.contains("show")) {
+      // two-step confirm: first click asks, second click goes back to the menu
+      if (finalConfirmTimer) {
+        clearTimeout(finalConfirmTimer);
+        finalConfirmTimer = null;
+        backToMenu();
+      } else {
+        goBtn.textContent = "Go back to the menu?";
+        finalConfirmTimer = setTimeout(() => {
+          finalConfirmTimer = null;
+          goBtn.textContent = "Expedition complete";
+        }, 4000);
+      }
+      return;
+    }
     if (state === "guessing" && guessPt) submitGuess();
     else if (state === "result") {
       round++;
@@ -1367,9 +1384,12 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
 
   function backToMenu() {
     stopPolling(); stopTimer(); clearSession();
+    if (finalConfirmTimer) { clearTimeout(finalConfirmTimer); finalConfirmTimer = null; }
     mode = null; party = null; partyGuesses = null;
     lastState = null; lastRoundShown = null;
     finalScreen.classList.remove("show");
+    goBtn.disabled = true;
+    goBtn.textContent = "Place a pin to guess";
     hideAllModals();
     show(menuScreen);
   }

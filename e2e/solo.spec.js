@@ -56,4 +56,26 @@ test.describe('solo game', () => {
     await page.locator('#finalMenuBtn').click();
     await expect(page.locator('#menuScreen')).toBeVisible();
   });
+
+  test('Expedition complete button confirms before returning to menu', async ({ page }) => {
+    await startSolo(page);
+    for (let round = 1; round <= 5; round++) await guessAndAdvance(page);
+    const goBtn = page.locator('#goBtn');
+    await expect(goBtn).toHaveText(/Expedition complete/i);
+    await expect(goBtn).toBeEnabled();
+    await goBtn.click();
+    await expect(goBtn).toHaveText(/Go back to the menu\?/i);
+    await goBtn.click();
+    await expect(page.locator('#menuScreen')).toBeVisible();
+  });
+
+  test('Expedition complete confirm reverts if not confirmed', async ({ page }) => {
+    await startSolo(page);
+    for (let round = 1; round <= 5; round++) await guessAndAdvance(page);
+    await page.locator('#goBtn').click();
+    await expect(page.locator('#goBtn')).toHaveText(/Go back to the menu\?/i);
+    // do nothing — the ask should revert after ~4s
+    await expect(page.locator('#goBtn')).toHaveText(/Expedition complete/i, { timeout: 7_000 });
+    await expect(page.locator('#finalScreen')).toBeVisible();
+  });
 });
