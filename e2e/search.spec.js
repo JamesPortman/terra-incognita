@@ -2,7 +2,7 @@ const { test, expect } = require('@playwright/test');
 
 test.describe('map search', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?plainmap=1'); // deterministic SVG guess map
     await expect(page.locator('#modeToggleRow')).toBeVisible();
     await page.locator('#svToggle').uncheck();
     await page.locator('#menuSolo').click();

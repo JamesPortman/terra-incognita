@@ -2,7 +2,7 @@ const { test, expect } = require('@playwright/test');
 
 // Start a solo photo game (Street View off so no Google dependency in CI).
 async function startSolo(page, { roundSec = 60 } = {}) {
-  await page.goto('/');
+  await page.goto('/?plainmap=1'); // deterministic SVG guess map
   await expect(page.locator('#menuSolo')).toBeVisible();
   // toggle appears once /api/config resolves; uncheck if present
   const toggleRow = page.locator('#modeToggleRow');

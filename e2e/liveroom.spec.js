@@ -13,7 +13,7 @@ test.describe('live room', () => {
     const player = await (await browser.newContext()).newPage();
 
     // host creates a photo-mode room with 30s rounds
-    await host.goto('/');
+    await host.goto('/?plainmap=1');
     await expect(host.locator('#modeToggleRow')).toBeVisible();
     await host.locator('#svToggle').uncheck();
     await host.locator('#roundSecInput').fill('30');
@@ -23,7 +23,7 @@ test.describe('live room', () => {
     expect(code).toMatch(/^[A-Z2-9]{4}$/);
 
     // player joins via the join link
-    await player.goto(`/?join=${code}`);
+    await player.goto(`/?join=${code}&plainmap=1`);
     await player.locator('#joinName').fill('E2E-Scout');
     await player.locator('#menuJoin').click();
     await expect(player.locator('#lobbyScreen')).toBeVisible();

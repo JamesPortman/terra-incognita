@@ -189,6 +189,8 @@
   }
   @media (max-width: 900px) { .mapside { border-left: none; border-top: 1px solid var(--line); } }
   .mapwrap { position: relative; flex: 1; min-height: 0; background: var(--sea); }
+  #gmap { position: absolute; inset: 0; display: none; background: var(--sea); }
+  #gmap.active { display: block; }
   svg#map { width: 100%; height: 100%; display: block; cursor: crosshair; touch-action: none; }
   svg#map.grabbing { cursor: grabbing; }
   .maphint {
@@ -512,6 +514,7 @@
     </div>
     <div class="mapwrap">
       <svg id="map" role="application" aria-label="World map — click to place your guess"></svg>
+      <div id="gmap" role="application" aria-label="World map — click to place your guess"></div>
       <div class="maphint" id="mapHint">Click the map to drop your pin &middot; scroll to zoom</div>
     </div>
     <div class="actionbar">
@@ -824,7 +827,17 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
   function pickResult(i) {
     const m = matches[i];
     if (!m) return;
-    if (m.kind === "country") flyToBox(m.b);
+    if (gmap) {
+      if (m.kind === "country") {
+        const [wLon, nLat] = mapToLonLat(m.b[0], m.b[1]);
+        const [eLon, sLat] = mapToLonLat(m.b[2], m.b[3]);
+        gmap.fitBounds({ north: nLat, south: sLat, west: wLon, east: eLon }, 40);
+      } else {
+        const [lon, lat] = mapToLonLat(m.x, m.y);
+        gmap.panTo({ lat, lng: lon });
+        gmap.setZoom(9);
+      }
+    } else if (m.kind === "country") flyToBox(m.b);
     else flyToPoint(m.x, m.y, 6);
     searchBox.value = m.n;
     matches = []; activeIdx = -1;
@@ -901,7 +914,8 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
     showLine = false;
     results.push({ name: loc.name, km: null, pts: 0, gPt: null, aPt: actualPt.slice() });
     drawMarkers();
-    flyToPoint(actualPt[0], actualPt[1], 3);
+    if (gmap) gmapShowActualOnly(loc);
+    else flyToPoint(actualPt[0], actualPt[1], 3);
     revealName.textContent = loc.name;
     revealPlace.textContent = loc.place;
     revealCard.classList.add("show");
@@ -1018,7 +1032,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
     goBtn.disabled = true;
     goBtn.textContent = "Place a pin to guess";
     mapHint.style.display = "";
-    resetView();
+    resetGuessMap();
     resetPhotoView();
     startTimer();
   }
@@ -1034,7 +1048,8 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
     actualPt = lonLatToMap(loc.lon, loc.lat);
     results.push({ name: loc.name, km, pts, gPt: guessPt.slice(), aPt: actualPt.slice() });
     showLine = true;
-    fitBoth(guessPt, actualPt);
+    if (gmap) gmapReveal([{ lat: glat, lng: glon, isMe: true }], loc);
+    else fitBoth(guessPt, actualPt);
 
     revealName.textContent = loc.name;
     revealPlace.textContent = loc.place;
@@ -1218,6 +1233,122 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
     photo.src = loc.img;
   }
 
+  // ---- Google guess map (dark-styled Dynamic Map; SVG map is the fallback) ----
+  const gmapEl = $("gmap");
+  const FORCE_PLAIN = new URLSearchParams(location.search).has("plainmap");
+  let gmap = null, gGuessMarker = null;
+  let gOverlays = [];
+  const GMAP_STYLE = [
+    { elementType: "geometry", stylers: [{ color: "#1a2436" }] },
+    { elementType: "labels.text.fill", stylers: [{ color: "#8f99ad" }] },
+    { elementType: "labels.text.stroke", stylers: [{ color: "#0c1220" }] },
+    { featureType: "water", elementType: "geometry", stylers: [{ color: "#101a2c" }] },
+    { featureType: "water", elementType: "labels.text.fill", stylers: [{ color: "#4a5a78" }] },
+    { featureType: "landscape.natural", elementType: "geometry", stylers: [{ color: "#1c2739" }] },
+    { featureType: "poi", stylers: [{ visibility: "off" }] },
+    { featureType: "transit", stylers: [{ visibility: "off" }] },
+    { featureType: "road", elementType: "geometry", stylers: [{ color: "#243048" }] },
+    { featureType: "road", elementType: "labels", stylers: [{ visibility: "simplified" }] },
+    { featureType: "road", elementType: "labels.text.fill", stylers: [{ color: "#6b7690" }] },
+    { featureType: "administrative", elementType: "geometry.stroke", stylers: [{ color: "#3a4a68" }] },
+    { featureType: "administrative.country", elementType: "geometry.stroke", stylers: [{ color: "#51648c" }, { weight: 1.2 }] },
+    { featureType: "administrative.country", elementType: "labels.text.fill", stylers: [{ color: "#aab3c5" }] },
+    { featureType: "administrative.locality", elementType: "labels.text.fill", stylers: [{ color: "#98a2b8" }] },
+  ];
+
+  const gIcon = (color, scale) => ({
+    path: google.maps.SymbolPath.CIRCLE,
+    scale: scale || 6,
+    fillColor: color,
+    fillOpacity: 1,
+    strokeColor: "#0c1220",
+    strokeWeight: 1.5,
+    labelOrigin: new google.maps.Point(0, -2.2),
+  });
+
+  async function ensureGuessMap() {
+    if (FORCE_PLAIN || !mapsKey) return false;
+    if (!(await ensureMaps())) return false;
+    if (!gmap) {
+      // show the container before constructing — a hidden map measures 0x0
+      // and never loads tiles
+      gmapEl.classList.add("active");
+      svg.style.display = "none";
+      gmap = new google.maps.Map(gmapEl, {
+        center: { lat: 25, lng: 0 },
+        zoom: 2,
+        minZoom: 2,
+        styles: GMAP_STYLE,
+        disableDefaultUI: true,
+        zoomControl: true,
+        clickableIcons: false,
+        gestureHandling: "greedy",
+        backgroundColor: "#101a2c",
+        draggableCursor: "crosshair",
+      });
+      gmap.addListener("click", (e) => {
+        if (state !== "guessing") return;
+        guessPt = lonLatToMap(e.latLng.lng(), e.latLng.lat());
+        if (!gGuessMarker) {
+          gGuessMarker = new google.maps.Marker({ map: gmap, icon: gIcon("#d9a441"), zIndex: 20 });
+        }
+        gGuessMarker.setPosition(e.latLng);
+        gGuessMarker.setMap(gmap);
+        goBtn.disabled = false;
+        goBtn.textContent = "Make guess";
+        mapHint.style.display = "none";
+      });
+    }
+    return true;
+  }
+
+  function clearGmapOverlays() {
+    if (gGuessMarker) gGuessMarker.setMap(null);
+    for (const o of gOverlays) o.setMap(null);
+    gOverlays = [];
+  }
+
+  function resetGuessMap() {
+    if (gmap) {
+      clearGmapOverlays();
+      gmap.setCenter({ lat: 25, lng: 0 });
+      gmap.setZoom(2);
+    }
+    resetView();
+  }
+
+  const DASH = { path: "M 0,-1 0,1", strokeOpacity: 0.55, strokeColor: "#ece5d3", scale: 1.5 };
+
+  // guessList: [{lat, lng, name?, isMe}] — reveals everyone against the actual location
+  function gmapReveal(guessList, loc) {
+    clearGmapOverlays();
+    const actual = { lat: loc.lat, lng: loc.lon };
+    const bounds = new google.maps.LatLngBounds();
+    bounds.extend(actual);
+    for (const g of guessList) {
+      const pos = { lat: g.lat, lng: g.lng };
+      bounds.extend(pos);
+      gOverlays.push(new google.maps.Polyline({
+        map: gmap, path: [pos, actual], strokeOpacity: 0,
+        icons: [{ icon: DASH, offset: "0", repeat: "9px" }],
+      }));
+      gOverlays.push(new google.maps.Marker({
+        map: gmap, position: pos, zIndex: 15,
+        icon: gIcon(g.isMe ? "#d9a441" : "#7fa8d0"),
+        label: g.name ? { text: g.name.slice(0, 12), color: g.isMe ? "#d9a441" : "#ece5d3", fontSize: "11px", fontWeight: "600" } : null,
+      }));
+    }
+    gOverlays.push(new google.maps.Marker({ map: gmap, position: actual, icon: gIcon("#57c4ad", 7), zIndex: 10 }));
+    gmap.fitBounds(bounds, 70);
+  }
+
+  function gmapShowActualOnly(loc) {
+    clearGmapOverlays();
+    gOverlays.push(new google.maps.Marker({ map: gmap, position: { lat: loc.lat, lng: loc.lon }, icon: gIcon("#57c4ad", 7) }));
+    gmap.setCenter({ lat: loc.lat, lng: loc.lon });
+    gmap.setZoom(5);
+  }
+
   function readRoundSec() {
     const el = $("roundSecInput");
     const v = Math.min(300, Math.max(10, parseInt(el.value, 10) || 60));
@@ -1310,7 +1441,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
     ptsReadout.textContent = "";
     scoreFill.style.width = "0%";
     mapHint.style.display = mode === "player" ? "" : "none";
-    resetView(); resetPhotoView(); drawMarkers();
+    resetGuessMap(); resetPhotoView(); drawMarkers();
   }
 
   function renderLobbyState(st) {
@@ -1362,8 +1493,15 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
         pt: lonLatToMap(g.lon, g.lat), name: g.name, pts: g.pts,
         isMe: mode === "player" && g.id === party.playerId,
       }));
-      drawMarkers();
-      fitAll([actualPt, ...partyGuesses.map((g) => g.pt)]);
+      if (gmap) {
+        gmapReveal(st.reveal.map((g) => ({
+          lat: g.lat, lng: g.lon, name: g.name,
+          isMe: mode === "player" && g.id === party.playerId,
+        })), loc);
+      } else {
+        drawMarkers();
+        fitAll([actualPt, ...partyGuesses.map((g) => g.pt)]);
+      }
       revealName.textContent = loc.name;
       revealPlace.textContent = loc.place;
       revealCard.classList.add("show");
@@ -1500,7 +1638,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
 
   applyView();
   (function init() {
-    loadConfig();
+    loadConfig().then(() => ensureGuessMap()); // warm up the guess map before round 1
     $("joinName").value = localStorage.getItem("terra-name") || "";
     const urlCode = new URLSearchParams(location.search).get("join");
     let saved = null;
