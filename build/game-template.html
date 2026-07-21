@@ -740,11 +740,15 @@ const LOCATIONS = __LOCATIONS__;
     svg.classList.remove("grabbing");
     if (dragging && !moved && state === "guessing") {
       const [vx, vy] = clientToView(e.clientX, e.clientY);
-      guessPt = viewToMap(vx, vy);
-      drawMarkers();
-      goBtn.disabled = false;
-      goBtn.textContent = "Make guess";
-      mapHint.style.display = "none";
+      const pt = viewToMap(vx, vy);
+      // ignore clicks in the empty area outside the map itself
+      if (pt[0] >= 0 && pt[0] <= MAP_W && pt[1] >= 0 && pt[1] <= MAP_H) {
+        guessPt = pt;
+        drawMarkers();
+        goBtn.disabled = false;
+        goBtn.textContent = "Make guess";
+        mapHint.style.display = "none";
+      }
     }
     dragging = false;
   });
@@ -1436,7 +1440,14 @@ const LOCATIONS = __LOCATIONS__;
       try {
         await api("guess", { code: party.code, playerId: party.playerId, token: party.token, lat: glat, lon: glon });
       } catch (err) {
+        // rejected (too late, out of range, ...) — let the player try again
         distReadout.textContent = String(err.message);
+        myGuessSubmitted = false;
+        if (lastState && lastState.state === "question") {
+          state = "guessing";
+          goBtn.disabled = !guessPt;
+          goBtn.textContent = guessPt ? "Make guess" : "Place a pin to guess";
+        }
       }
     } else if (mode === "host") {
       goBtn.disabled = true;

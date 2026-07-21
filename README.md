@@ -35,6 +35,21 @@ guesses the same locations under one timer, and reveals show all pins.
 - Rounds auto-advance to reveal when every player has answered or 45s elapses
   (lazy transition in `api/state.js`); clients poll every 1.5s.
 
+## Tests
+
+```bash
+npm test          # Vitest unit tests (scoring, room codes, store, API handlers)
+npm run test:e2e  # Playwright E2E (starts `vercel dev` on :3300 automatically)
+```
+
+- Unit tests run the real `api/` handlers against the file-based dev store —
+  no Redis or network needed; the final-transition test uses zero players so
+  nothing is written to Neon.
+- E2E covers the menu, a full solo game (including the round timeout), map
+  search, and a two-browser live room. The live-room test writes a real
+  leaderboard row via `vercel dev` (names prefixed `E2E-`) and deletes it in
+  teardown. Street View is kept off in E2E so tests don't consume Google quota.
+
 ## Deploy
 
 Static site + `api/` functions on Vercel. Push to `main` to deploy.

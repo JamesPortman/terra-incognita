@@ -1,0 +1,59 @@
+const { test, expect } = require('@playwright/test');
+
+// Start a solo photo game (Street View off so no Google dependency in CI).
+async function startSolo(page, { roundSec = 60 } = {}) {
+  await page.goto('/');
+  await expect(page.locator('#menuSolo')).toBeVisible();
+  // toggle appears once /api/config resolves; uncheck if present
+  const toggleRow = page.locator('#modeToggleRow');
+  await expect(toggleRow).toBeVisible();
+  await page.locator('#svToggle').uncheck();
+  await page.locator('#roundSecInput').fill(String(roundSec));
+  await page.locator('#menuSolo').click();
+}
+
+async function guessAndAdvance(page) {
+  await expect(page.locator('#goBtn')).toHaveText(/Place a pin to guess/i);
+  await page.locator('#map').click(); // element center is always inside the map
+  await expect(page.locator('#goBtn')).toHaveText(/Make guess/i);
+  await page.locator('#goBtn').click();
+  await expect(page.locator('#distReadout')).toHaveText(/your pin landed/);
+  await expect(page.locator('#ptsReadout')).toHaveText(/\+[\d,]+ pts/);
+  await page.locator('#goBtn').click();
+}
+
+test.describe('solo game', () => {
+  test('plays five rounds to the final screen with a results map', async ({ page }) => {
+    await startSolo(page);
+    for (let round = 1; round <= 5; round++) {
+      await expect(page.locator('#roundLabel')).toHaveText(`${round} / 5`);
+      await guessAndAdvance(page);
+    }
+    await expect(page.locator('#finalScreen')).toBeVisible();
+    await expect(page.locator('#finalTotal')).toHaveText(/^[\d,]+$/);
+    await expect(page.locator('#finalTable tr')).toHaveCount(5);
+    // results map: one numbered guess pin + one actual dot per round
+    await expect(page.locator('#finalMap circle')).toHaveCount(10);
+    await expect(page.locator('#finalMap text')).toHaveCount(5);
+
+    // play again resets cleanly
+    await page.locator('#againBtn').click();
+    await expect(page.locator('#roundLabel')).toHaveText('1 / 5');
+    await expect(page.locator('#scoreLabel')).toHaveText('0');
+  });
+
+  test('times out a round with no pin as +0 pts', async ({ page }) => {
+    await startSolo(page, { roundSec: 10 });
+    await expect(page.locator('#roundLabel')).toHaveText('1 / 5');
+    await expect(page.locator('#distReadout')).toHaveText(/time's up/, { timeout: 20_000 });
+    await expect(page.locator('#ptsReadout')).toHaveText('+0 pts');
+    await expect(page.locator('#goBtn')).toHaveText(/Next round/i);
+  });
+
+  test('back to menu from the final screen', async ({ page }) => {
+    await startSolo(page);
+    for (let round = 1; round <= 5; round++) await guessAndAdvance(page);
+    await page.locator('#finalMenuBtn').click();
+    await expect(page.locator('#menuScreen')).toBeVisible();
+  });
+});
