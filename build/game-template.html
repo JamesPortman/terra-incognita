@@ -1,0 +1,574 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Terra Incognita &#8212; a where-in-the-world game</title>
+<style>
+  :root {
+    --ink: #0c1220;
+    --ink-soft: #101828;
+    --panel: #16203300;
+    --raised: #182338;
+    --line: #263352;
+    --land: #24334d;
+    --land-stroke: #0c1220;
+    --sea: #101a2c;
+    --grid: #1b2740;
+    --brass: #d9a441;
+    --brass-soft: #d9a44133;
+    --teal: #57c4ad;
+    --parchment: #ece5d3;
+    --dim: #93714b00;
+    --muted: #8f99ad;
+    --serif: "Iowan Old Style", Palatino, "Palatino Linotype", Georgia, serif;
+    --mono: ui-monospace, "SF Mono", Menlo, monospace;
+    --sans: -apple-system, "Segoe UI", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    background: var(--ink);
+    color: var(--parchment);
+    font-family: var(--sans);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  /* ---------- top bar ---------- */
+  header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 22px 12px;
+    border-bottom: 1px solid var(--line);
+    flex-wrap: wrap;
+  }
+  .brand { display: flex; align-items: baseline; gap: 12px; }
+  .brand h1 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 1.35rem;
+    letter-spacing: 0.02em;
+    margin: 0;
+    color: var(--parchment);
+  }
+  .brand .tagline {
+    color: var(--muted);
+    font-size: 0.78rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .hud { display: flex; gap: 26px; align-items: baseline; font-variant-numeric: tabular-nums; }
+  .hud .label {
+    display: block;
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 2px;
+  }
+  .hud .value { font-family: var(--mono); font-size: 1.05rem; color: var(--parchment); }
+  .hud .value .accent { color: var(--brass); }
+
+  /* ---------- layout ---------- */
+  main {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr minmax(360px, 480px);
+    min-height: 0;
+  }
+  @media (max-width: 900px) {
+    main { grid-template-columns: 1fr; grid-template-rows: minmax(260px, 1fr) minmax(300px, 44vh); }
+  }
+
+  /* ---------- photo stage ---------- */
+  .stage {
+    position: relative;
+    min-height: 0;
+    background: var(--ink-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .stage img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .stage .credit {
+    position: absolute;
+    left: 12px;
+    bottom: 10px;
+    font-size: 0.68rem;
+    color: #ffffffb0;
+    background: #0c122099;
+    padding: 3px 8px;
+    border-radius: 3px;
+    letter-spacing: 0.04em;
+  }
+  .stage .reveal {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    right: 16px;
+    display: flex;
+    justify-content: center;
+    pointer-events: none;
+  }
+  .reveal .card {
+    background: #0c1220e6;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 10px 20px;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+  .reveal .card.show { opacity: 1; transform: none; }
+  .reveal .card .name { font-family: var(--serif); font-size: 1.25rem; color: var(--parchment); }
+  .reveal .card .place { font-size: 0.8rem; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 2px; }
+
+  /* ---------- map panel ---------- */
+  .mapside {
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid var(--line);
+    min-height: 0;
+  }
+  @media (max-width: 900px) { .mapside { border-left: none; border-top: 1px solid var(--line); } }
+  .mapwrap { position: relative; flex: 1; min-height: 0; background: var(--sea); }
+  svg#map { width: 100%; height: 100%; display: block; cursor: crosshair; touch-action: none; }
+  svg#map.grabbing { cursor: grabbing; }
+  .maphint {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: #0c1220cc;
+    border: 1px solid var(--line);
+    padding: 4px 12px;
+    border-radius: 999px;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  /* ---------- action bar ---------- */
+  .actionbar {
+    border-top: 1px solid var(--line);
+    padding: 14px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: var(--ink-soft);
+  }
+  .readout {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+    min-height: 1.1em;
+  }
+  .readout .pts { color: var(--brass); font-size: 0.95rem; }
+  button.primary {
+    font-family: var(--sans);
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 12px 18px;
+    border-radius: 4px;
+    border: 1px solid var(--brass);
+    background: var(--brass);
+    color: #1a1206;
+    cursor: pointer;
+    transition: filter 0.15s ease;
+  }
+  button.primary:hover:not(:disabled) { filter: brightness(1.1); }
+  button.primary:focus-visible { outline: 2px solid var(--parchment); outline-offset: 2px; }
+  button.primary:disabled {
+    background: transparent;
+    color: var(--muted);
+    border-color: var(--line);
+    cursor: default;
+  }
+  .scorebar {
+    height: 5px;
+    border-radius: 999px;
+    background: var(--grid);
+    overflow: hidden;
+  }
+  .scorebar .fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--brass), #e8c377);
+    border-radius: 999px;
+    transition: width 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* ---------- final screen ---------- */
+  .final {
+    position: absolute;
+    inset: 0;
+    background: var(--ink);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    overflow-y: auto;
+  }
+  .final.show { display: flex; }
+  .final .sheet { max-width: 460px; width: 100%; text-align: center; }
+  .final .kicker {
+    font-size: 0.72rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .final .total {
+    font-family: var(--serif);
+    font-size: clamp(3rem, 9vw, 4.6rem);
+    color: var(--brass);
+    line-height: 1.1;
+    margin: 6px 0 2px;
+    font-variant-numeric: tabular-nums;
+  }
+  .final .outof { color: var(--muted); font-size: 0.85rem; margin-bottom: 20px; }
+  .final .verdict { font-family: var(--serif); font-size: 1.1rem; color: var(--parchment); margin-bottom: 22px; }
+  .final table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    margin-bottom: 26px;
+    font-variant-numeric: tabular-nums;
+  }
+  .final td { padding: 7px 4px; border-top: 1px solid var(--line); text-align: left; }
+  .final td:last-child { text-align: right; font-family: var(--mono); color: var(--brass); }
+  .final td.dist { text-align: right; font-family: var(--mono); color: var(--muted); }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+
+<header>
+  <div class="brand">
+    <h1>Terra Incognita</h1>
+    <span class="tagline">Guess where on Earth</span>
+  </div>
+  <div class="hud">
+    <div><span class="label">Round</span><span class="value" id="roundLabel">1 / 5</span></div>
+    <div><span class="label">Score</span><span class="value"><span class="accent" id="scoreLabel">0</span></span></div>
+  </div>
+</header>
+
+<main>
+  <div class="stage">
+    <img id="photo" alt="Mystery location — study the scene and guess where it is" />
+    <div class="credit">Photo: Wikimedia Commons</div>
+    <div class="reveal"><div class="card" id="revealCard">
+      <div class="name" id="revealName"></div>
+      <div class="place" id="revealPlace"></div>
+    </div></div>
+    <div class="final" id="finalScreen">
+      <div class="sheet">
+        <div class="kicker">Expedition complete</div>
+        <div class="total" id="finalTotal">0</div>
+        <div class="outof">out of 25,000</div>
+        <div class="verdict" id="finalVerdict"></div>
+        <table id="finalTable"></table>
+        <button class="primary" id="againBtn">Chart a new expedition</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="mapside">
+    <div class="mapwrap">
+      <svg id="map" role="application" aria-label="World map — click to place your guess"></svg>
+      <div class="maphint" id="mapHint">Click the map to drop your pin &middot; scroll to zoom</div>
+    </div>
+    <div class="actionbar">
+      <div class="readout"><span id="distReadout"></span><span class="pts" id="ptsReadout"></span></div>
+      <div class="scorebar"><div class="fill" id="scoreFill"></div></div>
+      <button class="primary" id="goBtn" disabled>Place a pin to guess</button>
+    </div>
+  </div>
+</main>
+
+<script>
+__MAP_DATA__
+const LOCATIONS = __LOCATIONS__;
+
+(() => {
+  const NS = "http://www.w3.org/2000/svg";
+  const ROUNDS = 5;
+  const svg = document.getElementById("map");
+  svg.setAttribute("viewBox", `0 0 ${MAP_W} ${MAP_H}`);
+  svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+
+  const world = document.createElementNS(NS, "g");
+  svg.appendChild(world);
+
+  // graticule
+  const grid = document.createElementNS(NS, "g");
+  let gd = "";
+  for (let lon = -150; lon <= 150; lon += 30) { const x = ((lon + 180) / 360) * MAP_W; gd += `M${x} 0V${MAP_H}`; }
+  for (let lat = -30; lat <= 60; lat += 30) { const y = ((85 - lat) / 145) * MAP_H; gd += `M0 ${y}H${MAP_W}`; }
+  const gp = document.createElementNS(NS, "path");
+  gp.setAttribute("d", gd);
+  gp.setAttribute("fill", "none");
+  gp.setAttribute("stroke", "var(--grid)");
+  gp.setAttribute("stroke-width", "0.5");
+  grid.appendChild(gp);
+  world.appendChild(grid);
+
+  const land = document.createElementNS(NS, "g");
+  for (const d of MAP_PATHS) {
+    const p = document.createElementNS(NS, "path");
+    p.setAttribute("d", d);
+    p.setAttribute("fill", "var(--land)");
+    p.setAttribute("stroke", "var(--land-stroke)");
+    p.setAttribute("stroke-width", "0.4");
+    land.appendChild(p);
+  }
+  world.appendChild(land);
+
+  const overlay = document.createElementNS(NS, "g");
+  world.appendChild(overlay);
+
+  // ---- view transform ----
+  let scale = 1, tx = 0, ty = 0;
+  function applyView() {
+    world.setAttribute("transform", `translate(${tx} ${ty}) scale(${scale})`);
+    drawMarkers();
+  }
+  function clampView() {
+    scale = Math.min(10, Math.max(1, scale));
+    tx = Math.min(0, Math.max(MAP_W - MAP_W * scale, tx));
+    ty = Math.min(0, Math.max(MAP_H - MAP_H * scale, ty));
+  }
+  function clientToView(cx, cy) {
+    const pt = new DOMPoint(cx, cy).matrixTransform(svg.getScreenCTM().inverse());
+    return [pt.x, pt.y];
+  }
+  function viewToMap(vx, vy) { return [(vx - tx) / scale, (vy - ty) / scale]; }
+  const lonLatToMap = (lon, lat) => [((lon + 180) / 360) * MAP_W, ((85 - lat) / 145) * MAP_H];
+  const mapToLonLat = (x, y) => [(x / MAP_W) * 360 - 180, 85 - (y / MAP_H) * 145];
+
+  // ---- markers ----
+  let guessPt = null, actualPt = null, showLine = false;
+  function marker(x, y, color, ring) {
+    const g = document.createElementNS(NS, "g");
+    const halo = document.createElementNS(NS, "circle");
+    halo.setAttribute("cx", x); halo.setAttribute("cy", y);
+    halo.setAttribute("r", (ring ? 9 : 7) / scale);
+    halo.setAttribute("fill", color); halo.setAttribute("opacity", "0.22");
+    const dot = document.createElementNS(NS, "circle");
+    dot.setAttribute("cx", x); dot.setAttribute("cy", y);
+    dot.setAttribute("r", 3.6 / scale);
+    dot.setAttribute("fill", color);
+    dot.setAttribute("stroke", "var(--ink)");
+    dot.setAttribute("stroke-width", 1.2 / scale);
+    g.appendChild(halo); g.appendChild(dot);
+    return g;
+  }
+  function drawMarkers() {
+    overlay.innerHTML = "";
+    if (showLine && guessPt && actualPt) {
+      const l = document.createElementNS(NS, "line");
+      l.setAttribute("x1", guessPt[0]); l.setAttribute("y1", guessPt[1]);
+      l.setAttribute("x2", actualPt[0]); l.setAttribute("y2", actualPt[1]);
+      l.setAttribute("stroke", "var(--parchment)");
+      l.setAttribute("stroke-width", 1.4 / scale);
+      l.setAttribute("stroke-dasharray", `${5 / scale} ${4 / scale}`);
+      l.setAttribute("opacity", "0.7");
+      overlay.appendChild(l);
+    }
+    if (actualPt) overlay.appendChild(marker(actualPt[0], actualPt[1], "var(--teal)", true));
+    if (guessPt) overlay.appendChild(marker(guessPt[0], guessPt[1], "var(--brass)"));
+  }
+
+  // ---- interaction ----
+  let dragging = false, moved = false, lastC = null;
+  svg.addEventListener("pointerdown", (e) => {
+    dragging = true; moved = false; lastC = [e.clientX, e.clientY];
+    svg.setPointerCapture(e.pointerId);
+  });
+  svg.addEventListener("pointermove", (e) => {
+    if (!dragging) return;
+    const dx = e.clientX - lastC[0], dy = e.clientY - lastC[1];
+    if (Math.abs(dx) + Math.abs(dy) > 3) moved = true;
+    if (moved) {
+      const [ax, ay] = clientToView(lastC[0], lastC[1]);
+      const [bx, by] = clientToView(e.clientX, e.clientY);
+      tx += bx - ax; ty += by - ay;
+      clampView(); applyView();
+      svg.classList.add("grabbing");
+      lastC = [e.clientX, e.clientY];
+    }
+  });
+  svg.addEventListener("pointerup", (e) => {
+    svg.classList.remove("grabbing");
+    if (dragging && !moved && state === "guessing") {
+      const [vx, vy] = clientToView(e.clientX, e.clientY);
+      guessPt = viewToMap(vx, vy);
+      drawMarkers();
+      goBtn.disabled = false;
+      goBtn.textContent = "Make guess";
+      mapHint.style.display = "none";
+    }
+    dragging = false;
+  });
+  svg.addEventListener("wheel", (e) => {
+    e.preventDefault();
+    const factor = Math.exp(-e.deltaY * 0.0015);
+    const [vx, vy] = clientToView(e.clientX, e.clientY);
+    const ns = Math.min(10, Math.max(1, scale * factor));
+    tx = vx - ((vx - tx) * ns) / scale;
+    ty = vy - ((vy - ty) * ns) / scale;
+    scale = ns;
+    clampView(); applyView();
+  }, { passive: false });
+
+  function fitBoth(a, b) {
+    const cx = (a[0] + b[0]) / 2, cy = (a[1] + b[1]) / 2;
+    const spanX = Math.max(Math.abs(a[0] - b[0]), 60) * 1.8;
+    const spanY = Math.max(Math.abs(a[1] - b[1]), 30) * 1.8;
+    scale = Math.min(6, Math.max(1, Math.min(MAP_W / spanX, MAP_H / spanY)));
+    tx = MAP_W / 2 - cx * scale;
+    ty = MAP_H / 2 - cy * scale;
+    clampView(); applyView();
+  }
+  function resetView() { scale = 1; tx = 0; ty = 0; applyView(); }
+
+  // ---- game ----
+  const photo = document.getElementById("photo");
+  const roundLabel = document.getElementById("roundLabel");
+  const scoreLabel = document.getElementById("scoreLabel");
+  const goBtn = document.getElementById("goBtn");
+  const distReadout = document.getElementById("distReadout");
+  const ptsReadout = document.getElementById("ptsReadout");
+  const scoreFill = document.getElementById("scoreFill");
+  const revealCard = document.getElementById("revealCard");
+  const revealName = document.getElementById("revealName");
+  const revealPlace = document.getElementById("revealPlace");
+  const finalScreen = document.getElementById("finalScreen");
+  const finalTotal = document.getElementById("finalTotal");
+  const finalVerdict = document.getElementById("finalVerdict");
+  const finalTable = document.getElementById("finalTable");
+  const mapHint = document.getElementById("mapHint");
+
+  let deck = [], round = 0, total = 0, state = "guessing", results = [];
+
+  function shuffle(a) {
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function haversine(lat1, lon1, lat2, lon2) {
+    const R = 6371, toR = Math.PI / 180;
+    const dLat = (lat2 - lat1) * toR, dLon = (lon2 - lon1) * toR;
+    const s = Math.sin(dLat / 2) ** 2 +
+      Math.cos(lat1 * toR) * Math.cos(lat2 * toR) * Math.sin(dLon / 2) ** 2;
+    return 2 * R * Math.asin(Math.sqrt(s));
+  }
+
+  const fmtKm = (km) => km < 10 ? km.toFixed(1) + " km" : Math.round(km).toLocaleString() + " km";
+
+  function newGame() {
+    deck = shuffle([...LOCATIONS]).slice(0, ROUNDS);
+    round = 0; total = 0; results = [];
+    finalScreen.classList.remove("show");
+    scoreLabel.textContent = "0";
+    startRound();
+  }
+
+  function startRound() {
+    state = "guessing";
+    guessPt = null; actualPt = null; showLine = false;
+    const loc = deck[round];
+    photo.src = loc.img;
+    roundLabel.textContent = `${round + 1} / ${ROUNDS}`;
+    revealCard.classList.remove("show");
+    distReadout.textContent = "";
+    ptsReadout.textContent = "";
+    scoreFill.style.width = "0%";
+    goBtn.disabled = true;
+    goBtn.textContent = "Place a pin to guess";
+    mapHint.style.display = "";
+    resetView();
+  }
+
+  function submitGuess() {
+    state = "result";
+    const loc = deck[round];
+    const [glon, glat] = mapToLonLat(guessPt[0], guessPt[1]);
+    const km = haversine(glat, glon, loc.lat, loc.lon);
+    const pts = Math.round(5000 * Math.exp(-km / 2000));
+    total += pts;
+    results.push({ name: loc.name, km, pts });
+
+    actualPt = lonLatToMap(loc.lon, loc.lat);
+    showLine = true;
+    fitBoth(guessPt, actualPt);
+
+    revealName.textContent = loc.name;
+    revealPlace.textContent = loc.place;
+    revealCard.classList.add("show");
+    distReadout.textContent = `your pin landed ${fmtKm(km)} away`;
+    ptsReadout.textContent = `+${pts.toLocaleString()} pts`;
+    requestAnimationFrame(() => { scoreFill.style.width = (pts / 5000) * 100 + "%"; });
+    scoreLabel.textContent = total.toLocaleString();
+    goBtn.disabled = false;
+    goBtn.textContent = round + 1 < ROUNDS ? "Next round" : "See final score";
+  }
+
+  function verdictFor(t) {
+    if (t >= 22500) return "A master navigator. The map is barely necessary.";
+    if (t >= 17500) return "A seasoned traveller — your compass rarely lies.";
+    if (t >= 12000) return "A promising explorer with a few detours.";
+    if (t >= 6000) return "The journey matters more than the destination. Apparently.";
+    return "You have discovered several places that were not there.";
+  }
+
+  function showFinal() {
+    finalTotal.textContent = total.toLocaleString();
+    finalVerdict.textContent = verdictFor(total);
+    finalTable.innerHTML = results.map((r) =>
+      `<tr><td>${r.name}</td><td class="dist">${fmtKm(r.km)}</td><td>+${r.pts.toLocaleString()}</td></tr>`
+    ).join("");
+    finalScreen.classList.add("show");
+    goBtn.disabled = true;
+    goBtn.textContent = "Expedition complete";
+  }
+
+  goBtn.addEventListener("click", () => {
+    if (state === "guessing" && guessPt) submitGuess();
+    else if (state === "result") {
+      round++;
+      if (round < ROUNDS) startRound();
+      else showFinal();
+    }
+  });
+  document.getElementById("againBtn").addEventListener("click", newGame);
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !goBtn.disabled && document.activeElement.tagName !== "BUTTON") goBtn.click();
+  });
+
+  applyView();
+  newGame();
+})();
+</script>
