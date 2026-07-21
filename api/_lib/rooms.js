@@ -58,7 +58,7 @@ async function maybeAdvance(meta) {
   ]);
   const everyoneAnswered = Object.keys(players).length > 0 &&
     Object.keys(players).every((pid) => guesses[pid]);
-  const timeUp = Date.now() > meta.roundStartAt + ROUND_MS + GRACE_MS;
+  const timeUp = Date.now() > meta.roundStartAt + (meta.roundMs || ROUND_MS) + GRACE_MS;
   if (everyoneAnswered || timeUp) {
     meta.state = 'reveal';
     await saveRoom(meta);

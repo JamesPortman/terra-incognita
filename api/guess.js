@@ -16,7 +16,7 @@ module.exports = async (req, res) => {
   const meta = await loadRoom(code);
   if (!meta) return sendJSON(res, 404, { error: 'room not found' });
   if (meta.state !== 'question') return sendJSON(res, 409, { error: 'round is not open' });
-  if (Date.now() > meta.roundStartAt + ROUND_MS + GRACE_MS) {
+  if (Date.now() > meta.roundStartAt + (meta.roundMs || ROUND_MS) + GRACE_MS) {
     return sendJSON(res, 409, { error: 'time is up' });
   }
 

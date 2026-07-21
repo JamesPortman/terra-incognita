@@ -8,10 +8,12 @@ module.exports = async (req, res) => {
     code = newCode();
     if (!(await loadRoom(code))) break;
   }
+  const roundSec = Math.min(300, Math.max(10, parseInt(req.body?.roundSec, 10) || 60));
   const meta = {
     code,
     state: 'lobby',
     mode: req.body?.mode === 'street' ? 'street' : 'photo',
+    roundMs: roundSec * 1000,
     roundIdx: -1,
     roundStartAt: 0,
     deck: newDeck(),
@@ -20,5 +22,5 @@ module.exports = async (req, res) => {
     savedToLb: false,
   };
   await saveRoom(meta);
-  sendJSON(res, 200, { code, hostToken: meta.hostToken, rounds: ROUNDS, roundMs: ROUND_MS, mode: meta.mode });
+  sendJSON(res, 200, { code, hostToken: meta.hostToken, rounds: ROUNDS, roundMs: meta.roundMs, mode: meta.mode });
 };

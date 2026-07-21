@@ -29,7 +29,7 @@ module.exports = async (req, res) => {
     mode: meta.mode || 'photo',
     roundIdx: meta.roundIdx,
     rounds: ROUNDS,
-    roundMs: ROUND_MS,
+    roundMs: meta.roundMs || ROUND_MS,
     roundStartAt: meta.roundStartAt,
     serverNow: Date.now(),
     locIdx: inRound ? meta.deck[meta.roundIdx] : null,

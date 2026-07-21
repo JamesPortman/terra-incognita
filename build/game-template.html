@@ -117,6 +117,27 @@
     user-select: none;
   }
   .modetoggle input { accent-color: var(--brass); }
+  .timerow {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+  .timerow input {
+    width: 72px;
+    font-family: var(--mono);
+    font-size: 0.95rem;
+    text-align: center;
+    color: var(--parchment);
+    background: var(--sea);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 8px 6px;
+    outline: none;
+  }
+  .timerow input:focus { border-color: var(--brass); }
   .photobox img {
     width: 100%;
     height: 100%;
@@ -450,7 +471,7 @@
   </div>
   <div class="hud">
     <div><span class="label">Round</span><span class="value" id="roundLabel">1 / 5</span></div>
-    <div><span class="label">Time</span><span class="value" id="timerLabel">0:45</span></div>
+    <div><span class="label">Time</span><span class="value" id="timerLabel">1:00</span></div>
     <div><span class="label">Score</span><span class="value"><span class="accent" id="scoreLabel">0</span></span></div>
   </div>
 </header>
@@ -505,6 +526,11 @@
         <label class="modetoggle" id="modeToggleRow" style="display:none">
           <input type="checkbox" id="svToggle" checked />
           <span>Street View imagery (look around &amp; explore)</span>
+        </label>
+        <label class="timerow">
+          <span>Time per round</span>
+          <input type="number" id="roundSecInput" value="60" min="10" max="300" step="5" inputmode="numeric" aria-label="Seconds per round" />
+          <span>seconds</span>
         </label>
         <button class="primary" id="menuSolo">Play solo</button>
         <button class="primary" id="menuHost">Host a live room</button>
@@ -839,7 +865,7 @@ const LOCATIONS = __LOCATIONS__;
   const timerLabel = document.getElementById("timerLabel");
 
   // ---- round timer ----
-  const ROUND_SECONDS = 45;
+  let roundSeconds = 60;
   let timerId = null, deadline = 0;
   const fmtTime = (ms) => {
     const s = Math.max(0, Math.ceil(ms / 1000));
@@ -847,8 +873,8 @@ const LOCATIONS = __LOCATIONS__;
   };
   function startTimer() {
     stopTimer();
-    deadline = performance.now() + ROUND_SECONDS * 1000;
-    timerLabel.textContent = fmtTime(ROUND_SECONDS * 1000);
+    deadline = performance.now() + roundSeconds * 1000;
+    timerLabel.textContent = fmtTime(roundSeconds * 1000);
     timerLabel.classList.remove("warn");
     timerId = setInterval(() => {
       const left = deadline - performance.now();
@@ -1185,10 +1211,18 @@ const LOCATIONS = __LOCATIONS__;
     photo.src = loc.img;
   }
 
+  function readRoundSec() {
+    const el = $("roundSecInput");
+    const v = Math.min(300, Math.max(10, parseInt(el.value, 10) || 60));
+    el.value = v;
+    return v;
+  }
+
   function startSolo() {
     stopPolling(); stopTimer(); clearSession();
     mode = "solo"; party = null; partyGuesses = null;
     soloStreet = Boolean(mapsKey && $("svToggle").checked);
+    roundSeconds = readRoundSec();
     hideAllModals();
     newGame();
   }
@@ -1204,7 +1238,7 @@ const LOCATIONS = __LOCATIONS__;
 
   async function hostRoom() {
     const svMode = Boolean(mapsKey && $("svToggle").checked);
-    const d = await api("create", { mode: svMode ? "street" : "photo" });
+    const d = await api("create", { mode: svMode ? "street" : "photo", roundSec: readRoundSec() });
     mode = "host"; party = { code: d.code, hostToken: d.hostToken };
     saveSession(); enterParty();
   }
