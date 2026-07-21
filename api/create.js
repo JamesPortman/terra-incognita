@@ -11,6 +11,7 @@ module.exports = async (req, res) => {
   const meta = {
     code,
     state: 'lobby',
+    mode: req.body?.mode === 'street' ? 'street' : 'photo',
     roundIdx: -1,
     roundStartAt: 0,
     deck: newDeck(),
@@ -19,5 +20,5 @@ module.exports = async (req, res) => {
     savedToLb: false,
   };
   await saveRoom(meta);
-  sendJSON(res, 200, { code, hostToken: meta.hostToken, rounds: ROUNDS, roundMs: ROUND_MS });
+  sendJSON(res, 200, { code, hostToken: meta.hostToken, rounds: ROUNDS, roundMs: ROUND_MS, mode: meta.mode });
 };

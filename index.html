@@ -104,6 +104,20 @@
   }
   .photobox.zoomed { cursor: grab; }
   .photobox.panning { cursor: grabbing; }
+  .photobox.hidden { display: none; }
+  .panobox { position: absolute; inset: 0; display: none; }
+  .panobox.active { display: block; }
+  .modetoggle {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    font-size: 0.85rem;
+    cursor: pointer;
+    user-select: none;
+  }
+  .modetoggle input { accent-color: var(--brass); }
   .photobox img {
     width: 100%;
     height: 100%;
@@ -447,7 +461,8 @@
     <div class="photobox" id="photobox">
       <img id="photo" alt="Mystery location — study the scene and guess where it is" />
     </div>
-    <div class="credit">Photo: Wikimedia Commons &middot; scroll to zoom</div>
+    <div id="panobox" class="panobox" aria-label="Street View — look around and guess where you are"></div>
+    <div class="credit" id="creditLine">Photo: Wikimedia Commons &middot; scroll to zoom</div>
     <div class="reveal"><div class="card" id="revealCard">
       <div class="name" id="revealName"></div>
       <div class="place" id="revealPlace"></div>
@@ -488,6 +503,10 @@
       <div class="kicker">A where-in-the-world game</div>
       <h2>Terra Incognita</h2>
       <div class="stack">
+        <label class="modetoggle" id="modeToggleRow" style="display:none">
+          <input type="checkbox" id="svToggle" checked />
+          <span>Street View imagery (look around &amp; explore)</span>
+        </label>
         <button class="primary" id="menuSolo">Play solo</button>
         <button class="primary" id="menuHost">Host a live room</button>
         <div class="joinrow">
@@ -958,7 +977,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
     state = "guessing";
     guessPt = null; actualPt = null; showLine = false;
     const loc = deck[round];
-    photo.src = loc.img;
+    presentLocation(loc, soloStreet);
     roundLabel.textContent = `${round + 1} / ${ROUNDS}`;
     revealCard.classList.remove("show");
     distReadout.textContent = "";
@@ -1082,9 +1101,95 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
   const saveSession = () => sessionStorage.setItem("terra-party", JSON.stringify({ mode, party }));
   const clearSession = () => sessionStorage.removeItem("terra-party");
 
+  // ---- Street View imagery ----
+  const panobox = $("panobox");
+  const creditLine = $("creditLine");
+  let mapsKey = null, mapsReady = null, svService = null, svPano = null;
+  let soloStreet = false, presentSeq = 0;
+
+  async function loadConfig() {
+    try { mapsKey = (await api("config")).mapsKey; } catch {}
+    if (mapsKey) $("modeToggleRow").style.display = "";
+  }
+
+  function ensureMaps() {
+    if (!mapsKey) return Promise.resolve(false);
+    if (!mapsReady) {
+      mapsReady = new Promise((resolve) => {
+        window.__terraMapsInit = () => {
+          try {
+            svService = new google.maps.StreetViewService();
+            svPano = new google.maps.StreetViewPanorama(panobox, {
+              visible: true,
+              addressControl: false,
+              showRoadLabels: false,
+              imageDateControl: false,
+              fullscreenControl: false,
+              motionTracking: false,
+              motionTrackingControl: false,
+              enableCloseButton: false,
+              zoomControl: true,
+            });
+            resolve(true);
+          } catch (e) { window.__svErr = e; resolve(false); }
+        };
+        const s = document.createElement("script");
+        s.src = "https://maps.googleapis.com/maps/api/js?key=" + encodeURIComponent(mapsKey) +
+          "&v=weekly&loading=async&callback=__terraMapsInit";
+        s.onerror = () => { window.__svErr = new Error("maps script failed to load"); resolve(false); };
+        document.head.appendChild(s);
+      });
+    }
+    return mapsReady;
+  }
+
+  async function showStreet(loc) {
+    if (!(await ensureMaps())) return false;
+    try {
+      const res = await svService.getPanorama({
+        location: { lat: loc.lat, lng: loc.lon },
+        radius: 1500,
+        preference: "nearest",
+        sources: ["outdoor"],
+      });
+      svPano.setPano(res.data.location.pano);
+      svPano.setPov({ heading: res.data.links?.[0]?.heading ?? 0, pitch: 0 });
+      svPano.setZoom(0);
+      return true;
+    } catch (e) { window.__svErr = e; return false; } // no coverage near this spot
+  }
+  window.__svDebug = () => ({ mapsKey: Boolean(mapsKey), soloStreet, presentSeq, err: window.__svErr ? String(window.__svErr.message || window.__svErr) : null });
+
+  function showPanoView(active) {
+    panobox.classList.toggle("active", active);
+    photobox.classList.toggle("hidden", active);
+    creditLine.style.display = active ? "none" : "";
+    if (active && svPano) {
+      // pano was initialized in a hidden container — force a relayout
+      requestAnimationFrame(() => {
+        google.maps.event.trigger(svPano, "resize");
+        svPano.setVisible(true);
+      });
+    }
+  }
+
+  // Swap the stage to Street View when requested and available, else the photo.
+  // seq guards against a slow panorama lookup landing after the next round began.
+  async function presentLocation(loc, street) {
+    const seq = ++presentSeq;
+    if (street && (await showStreet(loc))) {
+      if (seq === presentSeq) showPanoView(true);
+      return;
+    }
+    if (seq !== presentSeq) return;
+    showPanoView(false);
+    photo.src = loc.img;
+  }
+
   function startSolo() {
     stopPolling(); stopTimer(); clearSession();
     mode = "solo"; party = null; partyGuesses = null;
+    soloStreet = Boolean(mapsKey && $("svToggle").checked);
     hideAllModals();
     newGame();
   }
@@ -1099,7 +1204,8 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
   }
 
   async function hostRoom() {
-    const d = await api("create", {});
+    const svMode = Boolean(mapsKey && $("svToggle").checked);
+    const d = await api("create", { mode: svMode ? "street" : "photo" });
     mode = "host"; party = { code: d.code, hostToken: d.hostToken };
     saveSession(); enterParty();
   }
@@ -1158,7 +1264,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
     lastRoundShown = st.roundIdx;
     myGuessSubmitted = false;
     guessPt = null; actualPt = null; showLine = false; partyGuesses = null;
-    photo.src = LOCATIONS[st.locIdx].img;
+    presentLocation(LOCATIONS[st.locIdx], st.mode === "street");
     revealCard.classList.remove("show");
     distReadout.textContent = "";
     ptsReadout.textContent = "";
@@ -1347,6 +1453,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
 
   applyView();
   (function init() {
+    loadConfig();
     $("joinName").value = localStorage.getItem("terra-name") || "";
     const urlCode = new URLSearchParams(location.search).get("join");
     let saved = null;

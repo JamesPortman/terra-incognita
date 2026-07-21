@@ -26,6 +26,7 @@ module.exports = async (req, res) => {
 
   const out = {
     state: meta.state,
+    mode: meta.mode || 'photo',
     roundIdx: meta.roundIdx,
     rounds: ROUNDS,
     roundMs: ROUND_MS,
