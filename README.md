@@ -20,6 +20,23 @@ cp build/terra-incognita.html index.html
 - `build/photos/` — location photos; `build/build-photos.sh` re-fetches them from
   Wikipedia. Add a location by adding a photo + an entry in `LOCS` in `build/assemble.js`.
 
+## Live rooms (multiplayer)
+
+Kahoot-style rooms for up to 14 players: the host opens a room on a big screen,
+players join with a 4-letter code (or `/?join=CODE`) on their phones, everyone
+guesses the same locations under one timer, and reveals show all pins.
+
+- **Room state** lives in Upstash Redis (`api/_lib/store.js`) with a 4-hour TTL.
+  Locally, without Redis env vars, a file-based store in the temp dir is used.
+- **Scoring is server-side** (`api/guess.js`) against `shared/locations.js` —
+  the same array embedded in the client; order must stay in sync (rebuild after edits).
+- **All-time leaderboard** persists to Neon Postgres (`leaderboard` table,
+  auto-created); rows are written once per game when the host ends it.
+- Rounds auto-advance to reveal when every player has answered or 45s elapses
+  (lazy transition in `api/state.js`); clients poll every 1.5s.
+
 ## Deploy
 
-Static site on Vercel. Push to `main` to deploy.
+Static site + `api/` functions on Vercel. Push to `main` to deploy.
+Integrations: Neon (`DATABASE_URL`) and Upstash Redis (`KV_REST_API_*` /
+`UPSTASH_REDIS_REST_*`) via the Vercel Marketplace.

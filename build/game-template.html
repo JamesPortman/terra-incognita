@@ -275,6 +275,107 @@
     transition: width 0.9s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
+  /* ---------- modal overlays (menu / lobby / standings / leaderboard) ---------- */
+  main { position: relative; }
+  .modal {
+    position: absolute;
+    inset: 0;
+    background: var(--ink);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    overflow-y: auto;
+    z-index: 40;
+  }
+  .modal.show { display: flex; }
+  .modal .sheet { max-width: 420px; width: 100%; text-align: center; }
+  .modal .kicker {
+    font-size: 0.72rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .modal h2 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 1.9rem;
+    margin: 6px 0 26px;
+    color: var(--parchment);
+  }
+  .modal .stack { display: flex; flex-direction: column; gap: 12px; }
+  .joinrow { display: flex; gap: 8px; }
+  .joinrow input {
+    font-family: var(--sans);
+    font-size: 0.95rem;
+    color: var(--parchment);
+    background: var(--sea);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 11px 12px;
+    outline: none;
+    min-width: 0;
+  }
+  .joinrow input:focus { border-color: var(--brass); }
+  #joinCode { width: 86px; text-transform: uppercase; font-family: var(--mono); letter-spacing: 0.15em; }
+  #joinName { flex: 1; }
+  button.ghost {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 0.85rem;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    padding: 8px;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  button.ghost:hover { color: var(--parchment); }
+  .menuerr { color: var(--red); font-size: 0.85rem; min-height: 1.2em; margin-top: 10px; }
+  .roomcode {
+    font-family: var(--mono);
+    font-size: clamp(2.6rem, 8vw, 4rem);
+    letter-spacing: 0.25em;
+    color: var(--brass);
+    margin: 10px 0 4px;
+  }
+  .chips { margin: 18px 0 24px; min-height: 2.4em; }
+  .chip {
+    display: inline-block;
+    padding: 6px 14px;
+    margin: 4px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--raised);
+    font-size: 0.88rem;
+  }
+  .chip.ans { border-color: var(--teal); color: var(--teal); }
+  .standlist { list-style: none; padding: 0; margin: 0 0 24px; text-align: left; }
+  .standlist li {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    padding: 9px 6px;
+    border-top: 1px solid var(--line);
+    font-size: 0.95rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .standlist li:first-child { border-top: none; font-family: var(--serif); font-size: 1.15rem; color: var(--brass); }
+  .standlist .pts { font-family: var(--mono); color: var(--brass); }
+  .lbtable { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-bottom: 20px; font-variant-numeric: tabular-nums; }
+  .lbtable td, .lbtable th { padding: 7px 6px; border-top: 1px solid var(--line); text-align: left; }
+  .lbtable th { font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); border-top: none; }
+  .lbtable td:last-child, .lbtable th:last-child { text-align: right; }
+  .lbtable td.score { font-family: var(--mono); color: var(--brass); }
+  .modal .subhead {
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 26px 0 10px;
+  }
+
   /* ---------- final screen ---------- */
   .final {
     position: absolute;
@@ -360,6 +461,7 @@
              aria-label="Map of all your guesses versus the actual locations"></svg>
         <table id="finalTable"></table>
         <button class="primary" id="againBtn">Chart a new expedition</button>
+        <button class="ghost" id="finalMenuBtn">Back to menu</button>
       </div>
     </div>
   </div>
@@ -378,6 +480,57 @@
       <div class="readout"><span id="distReadout"></span><span class="pts" id="ptsReadout"></span></div>
       <div class="scorebar"><div class="fill" id="scoreFill"></div></div>
       <button class="primary" id="goBtn" disabled>Place a pin to guess</button>
+    </div>
+  </div>
+  <div class="modal" id="menuScreen">
+    <div class="sheet">
+      <div class="kicker">A where-in-the-world game</div>
+      <h2>Terra Incognita</h2>
+      <div class="stack">
+        <button class="primary" id="menuSolo">Play solo</button>
+        <button class="primary" id="menuHost">Host a live room</button>
+        <div class="joinrow">
+          <input id="joinCode" placeholder="CODE" maxlength="4" autocomplete="off" aria-label="Room code" />
+          <input id="joinName" placeholder="Your name" maxlength="20" autocomplete="off" aria-label="Your name" />
+          <button class="primary" id="menuJoin">Join</button>
+        </div>
+        <button class="ghost" id="menuLb">All-time leaderboard</button>
+      </div>
+      <div class="menuerr" id="menuErr"></div>
+    </div>
+  </div>
+
+  <div class="modal" id="lobbyScreen">
+    <div class="sheet">
+      <div class="kicker" id="lobbyRole">Live room</div>
+      <div class="roomcode" id="lobbyCode">····</div>
+      <div class="kicker">join at this site &middot; enter the code</div>
+      <div class="chips" id="lobbyPlayers"></div>
+      <div class="stack">
+        <button class="primary" id="lobbyStart" disabled>Waiting for players&hellip;</button>
+        <div id="lobbyWait" style="color:var(--muted);font-size:0.9rem;">Waiting for the host to start&hellip;</div>
+        <button class="ghost" id="lobbyLeave">Leave</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="standingsScreen">
+    <div class="sheet">
+      <div class="kicker">Final standings</div>
+      <h2 id="standWinner">&nbsp;</h2>
+      <ul class="standlist" id="standList"></ul>
+      <div class="subhead">All-time leaderboard</div>
+      <table class="lbtable" id="standLbTable"></table>
+      <div class="stack"><button class="primary" id="standMenu">Back to menu</button></div>
+    </div>
+  </div>
+
+  <div class="modal" id="lbScreen">
+    <div class="sheet">
+      <div class="kicker">All-time leaderboard</div>
+      <h2>Hall of Navigators</h2>
+      <table class="lbtable" id="lbTable"></table>
+      <div class="stack"><button class="primary" id="lbBack">Back</button></div>
     </div>
   </div>
 </main>
@@ -444,7 +597,7 @@ const LOCATIONS = __LOCATIONS__;
   const mapToLonLat = (x, y) => [(x / MAP_W) * 360 - 180, 85 - (y / MAP_H) * 145];
 
   // ---- markers ----
-  let guessPt = null, actualPt = null, showLine = false;
+  let guessPt = null, actualPt = null, showLine = false, partyGuesses = null;
   function marker(x, y, color, ring) {
     const g = document.createElementNS(NS, "g");
     const halo = document.createElementNS(NS, "circle");
@@ -472,8 +625,51 @@ const LOCATIONS = __LOCATIONS__;
       l.setAttribute("opacity", "0.7");
       overlay.appendChild(l);
     }
+    if (partyGuesses && actualPt) {
+      for (const g of partyGuesses) {
+        const l = document.createElementNS(NS, "line");
+        l.setAttribute("x1", g.pt[0]); l.setAttribute("y1", g.pt[1]);
+        l.setAttribute("x2", actualPt[0]); l.setAttribute("y2", actualPt[1]);
+        l.setAttribute("stroke", "var(--parchment)");
+        l.setAttribute("stroke-width", 0.9 / scale);
+        l.setAttribute("stroke-dasharray", `${4 / scale} ${3.5 / scale}`);
+        l.setAttribute("opacity", "0.35");
+        overlay.appendChild(l);
+      }
+    }
     if (actualPt) overlay.appendChild(marker(actualPt[0], actualPt[1], "var(--teal)", true));
+    if (partyGuesses) {
+      for (const g of partyGuesses) {
+        overlay.appendChild(marker(g.pt[0], g.pt[1], g.isMe ? "var(--brass)" : "#7fa8d0"));
+        const t = document.createElementNS(NS, "text");
+        t.setAttribute("x", g.pt[0] + 6 / scale);
+        t.setAttribute("y", g.pt[1] - 5 / scale);
+        t.setAttribute("font-size", 9 / scale);
+        t.setAttribute("font-family", "-apple-system, system-ui, sans-serif");
+        t.setAttribute("fill", g.isMe ? "var(--brass)" : "var(--parchment)");
+        t.setAttribute("stroke", "var(--ink)");
+        t.setAttribute("stroke-width", 2.5 / scale);
+        t.setAttribute("paint-order", "stroke");
+        t.textContent = g.name.slice(0, 12);
+        overlay.appendChild(t);
+      }
+    }
     if (guessPt) overlay.appendChild(marker(guessPt[0], guessPt[1], "var(--brass)"));
+  }
+
+  function fitAll(points) {
+    if (!points.length) { resetView(); return; }
+    let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+    for (const [x, y] of points) {
+      if (x < x0) x0 = x; if (x > x1) x1 = x;
+      if (y < y0) y0 = y; if (y > y1) y1 = y;
+    }
+    const spanX = Math.max(x1 - x0, 60) * 1.6;
+    const spanY = Math.max(y1 - y0, 30) * 1.6;
+    scale = Math.min(6, Math.max(1, Math.min(MAP_W / spanX, MAP_H / spanY)));
+    tx = MAP_W / 2 - ((x0 + x1) / 2) * scale;
+    ty = MAP_H / 2 - ((y0 + y1) / 2) * scale;
+    clampView(); applyView();
   }
 
   // ---- interaction ----
@@ -845,6 +1041,7 @@ const LOCATIONS = __LOCATIONS__;
   }
 
   goBtn.addEventListener("click", () => {
+    if (mode !== "solo") { partyGo(); return; }
     if (state === "guessing" && guessPt) submitGuess();
     else if (state === "result") {
       round++;
@@ -858,7 +1055,309 @@ const LOCATIONS = __LOCATIONS__;
     if (e.key === "Enter" && !goBtn.disabled && tag !== "BUTTON" && tag !== "INPUT") goBtn.click();
   });
 
+  // ---- multiplayer: live rooms ----
+  const $ = (id) => document.getElementById(id);
+  const menuScreen = $("menuScreen"), lobbyScreen = $("lobbyScreen"),
+        standingsScreen = $("standingsScreen"), lbScreen = $("lbScreen");
+  let mode = null; // 'solo' | 'host' | 'player'
+  let party = null, pollTimer = null, partyTick = null;
+  let lastState = null, lastRoundShown = null, myGuessSubmitted = false;
+
+  const show = (el) => el.classList.add("show");
+  const hide = (el) => el.classList.remove("show");
+  const hideAllModals = () => [menuScreen, lobbyScreen, standingsScreen, lbScreen].forEach(hide);
+
+  async function api(path, body) {
+    const r = await fetch("/api/" + path, body ? {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    } : undefined);
+    const data = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(data.error || "request failed (" + r.status + ")");
+    return data;
+  }
+
+  const saveSession = () => sessionStorage.setItem("terra-party", JSON.stringify({ mode, party }));
+  const clearSession = () => sessionStorage.removeItem("terra-party");
+
+  function startSolo() {
+    stopPolling(); stopTimer(); clearSession();
+    mode = "solo"; party = null; partyGuesses = null;
+    hideAllModals();
+    newGame();
+  }
+
+  function backToMenu() {
+    stopPolling(); stopTimer(); clearSession();
+    mode = null; party = null; partyGuesses = null;
+    lastState = null; lastRoundShown = null;
+    finalScreen.classList.remove("show");
+    hideAllModals();
+    show(menuScreen);
+  }
+
+  async function hostRoom() {
+    const d = await api("create", {});
+    mode = "host"; party = { code: d.code, hostToken: d.hostToken };
+    saveSession(); enterParty();
+  }
+
+  async function joinRoom(code, name) {
+    const d = await api("join", { code, name });
+    mode = "player";
+    party = { code: code.toUpperCase(), playerId: d.playerId, token: d.token, name: d.name };
+    localStorage.setItem("terra-name", name);
+    saveSession(); enterParty();
+  }
+
+  function enterParty() {
+    stopTimer();
+    state = "spectate";
+    finalScreen.classList.remove("show");
+    hideAllModals();
+    show(lobbyScreen);
+    $("lobbyCode").textContent = party.code;
+    $("lobbyStart").style.display = mode === "host" ? "" : "none";
+    $("lobbyWait").style.display = mode === "host" ? "none" : "";
+    $("lobbyRole").textContent = mode === "host"
+      ? "You are hosting — players join with this code" : "You are in — waiting for the host";
+    startPolling();
+  }
+
+  function startPolling() {
+    stopPolling();
+    const tick = async () => {
+      try {
+        const qs = mode === "host"
+          ? `code=${party.code}&hostToken=${party.hostToken}`
+          : `code=${party.code}&playerId=${party.playerId}&token=${party.token}`;
+        applyPartyState(await api(`state?${encodeURI(qs)}`));
+      } catch (err) {
+        if (/not found|not in this room/.test(String(err.message))) backToMenu();
+      }
+    };
+    tick();
+    pollTimer = setInterval(tick, 1500);
+    partyTick = setInterval(() => {
+      if (!lastState || lastState.state !== "question") return;
+      const left = lastState.roundStartAt + lastState.roundMs - (Date.now() - party.clockOffset);
+      timerLabel.textContent = fmtTime(left);
+      timerLabel.classList.toggle("warn", left < 10000);
+    }, 250);
+  }
+  function stopPolling() {
+    if (pollTimer) clearInterval(pollTimer);
+    if (partyTick) clearInterval(partyTick);
+    pollTimer = partyTick = null;
+  }
+
+  function setupPartyRound(st) {
+    if (lastRoundShown === st.roundIdx) return;
+    lastRoundShown = st.roundIdx;
+    myGuessSubmitted = false;
+    guessPt = null; actualPt = null; showLine = false; partyGuesses = null;
+    photo.src = LOCATIONS[st.locIdx].img;
+    revealCard.classList.remove("show");
+    distReadout.textContent = "";
+    ptsReadout.textContent = "";
+    scoreFill.style.width = "0%";
+    mapHint.style.display = mode === "player" ? "" : "none";
+    resetView(); resetPhotoView(); drawMarkers();
+  }
+
+  function renderLobbyState(st) {
+    show(lobbyScreen);
+    $("lobbyPlayers").innerHTML = st.players.length
+      ? st.players.map((p) => `<span class="chip">${p.name}</span>`).join("")
+      : '<span style="color:var(--muted);font-size:0.85rem">No players yet</span>';
+    if (mode === "host") {
+      const btn = $("lobbyStart");
+      btn.disabled = !st.players.length;
+      btn.textContent = st.players.length
+        ? `Start game (${st.players.length} player${st.players.length > 1 ? "s" : ""})`
+        : "Waiting for players…";
+    }
+  }
+
+  function renderQuestion(st) {
+    hideAllModals();
+    setupPartyRound(st);
+    const answered = st.players.filter((p) => p.answered);
+    const meAnswered = mode === "player" &&
+      (myGuessSubmitted || answered.some((p) => p.id === party.playerId));
+    if (mode === "host") {
+      state = "spectate";
+      distReadout.textContent = `room ${party.code} · ${answered.length}/${st.players.length} answered`;
+      goBtn.disabled = false;
+      goBtn.textContent = "End round early";
+    } else if (meAnswered) {
+      state = "spectate";
+      distReadout.textContent = "locked in — waiting for the others";
+      goBtn.disabled = true;
+      goBtn.textContent = "Locked in";
+    } else {
+      state = "guessing";
+      goBtn.disabled = !guessPt;
+      goBtn.textContent = guessPt ? "Make guess" : "Place a pin to guess";
+    }
+  }
+
+  function renderReveal(st) {
+    hideAllModals();
+    setupPartyRound(st);
+    const loc = LOCATIONS[st.locIdx];
+    state = "spectate";
+    if (!partyGuesses) {
+      actualPt = lonLatToMap(loc.lon, loc.lat);
+      guessPt = null;
+      partyGuesses = st.reveal.map((g) => ({
+        pt: lonLatToMap(g.lon, g.lat), name: g.name, pts: g.pts,
+        isMe: mode === "player" && g.id === party.playerId,
+      }));
+      drawMarkers();
+      fitAll([actualPt, ...partyGuesses.map((g) => g.pt)]);
+      revealName.textContent = loc.name;
+      revealPlace.textContent = loc.place;
+      revealCard.classList.add("show");
+      timerLabel.textContent = "0:00";
+      timerLabel.classList.remove("warn");
+    }
+    if (mode === "player") {
+      if (st.you) {
+        distReadout.textContent = `your pin landed ${fmtKm(st.you.km)} away`;
+        ptsReadout.textContent = `+${st.you.pts.toLocaleString()} pts`;
+        scoreFill.style.width = (st.you.pts / 5000) * 100 + "%";
+      } else {
+        distReadout.textContent = "no pin placed this round";
+        ptsReadout.textContent = "+0 pts";
+      }
+      goBtn.disabled = true;
+      goBtn.textContent = "Waiting for host";
+    } else {
+      const best = [...st.reveal].sort((a, b) => a.km - b.km)[0];
+      distReadout.textContent = best
+        ? `closest: ${best.name} (${fmtKm(best.km)})` : "nobody guessed this round";
+      ptsReadout.textContent = "";
+      goBtn.disabled = false;
+      goBtn.textContent = st.roundIdx + 1 < st.rounds ? "Next round" : "Final standings";
+    }
+  }
+
+  function lbRows(top) {
+    return "<tr><th>#</th><th>Navigator</th><th>Room</th><th>Score</th></tr>" +
+      top.map((r, i) =>
+        `<tr><td>${i + 1}</td><td>${r.name}</td><td style="font-family:var(--mono)">${r.room}</td><td class="score">${r.score.toLocaleString()}</td></tr>`
+      ).join("");
+  }
+
+  async function renderFinalStandings(st) {
+    if (standingsScreen.classList.contains("show")) return;
+    stopPolling();
+    hideAllModals();
+    const ranked = st.players;
+    $("standWinner").textContent = ranked.length ? `${ranked[0].name} takes it` : "Game over";
+    $("standList").innerHTML = ranked.map((p, i) =>
+      `<li><span>${i + 1}. ${p.name}</span><span class="pts">${(p.score ?? 0).toLocaleString()}</span></li>`
+    ).join("");
+    show(standingsScreen);
+    try {
+      const lb = await api("leaderboard");
+      $("standLbTable").innerHTML = lbRows(lb.top);
+    } catch { $("standLbTable").innerHTML = ""; }
+  }
+
+  function applyPartyState(st) {
+    lastState = st;
+    party.clockOffset = Date.now() - st.serverNow;
+    roundLabel.textContent = (st.roundIdx >= 0 ? st.roundIdx + 1 : "–") + " / " + st.rounds;
+    if (mode === "player") {
+      const me = st.players.find((p) => p.id === party.playerId);
+      if (me && me.score != null) scoreLabel.textContent = me.score.toLocaleString();
+    } else {
+      scoreLabel.textContent = party.code;
+    }
+    if (st.state === "lobby") renderLobbyState(st);
+    else if (st.state === "question") renderQuestion(st);
+    else if (st.state === "reveal") renderReveal(st);
+    else if (st.state === "final") renderFinalStandings(st);
+  }
+
+  async function partyGo() {
+    const st = lastState;
+    if (!st) return;
+    if (mode === "player" && st.state === "question" && guessPt && !myGuessSubmitted) {
+      myGuessSubmitted = true;
+      const [glon, glat] = mapToLonLat(guessPt[0], guessPt[1]);
+      goBtn.disabled = true;
+      goBtn.textContent = "Locked in";
+      distReadout.textContent = "locked in — waiting for the others";
+      state = "spectate";
+      try {
+        await api("guess", { code: party.code, playerId: party.playerId, token: party.token, lat: glat, lon: glon });
+      } catch (err) {
+        distReadout.textContent = String(err.message);
+      }
+    } else if (mode === "host") {
+      goBtn.disabled = true;
+      try { await api("next", { code: party.code, hostToken: party.hostToken }); } catch {}
+    }
+  }
+
+  async function showLeaderboard() {
+    hideAllModals();
+    show(lbScreen);
+    $("lbTable").innerHTML = '<tr><td style="color:var(--muted)">Loading…</td></tr>';
+    try {
+      const lb = await api("leaderboard");
+      $("lbTable").innerHTML = lb.top.length ? lbRows(lb.top)
+        : '<tr><td style="color:var(--muted)">No games recorded yet — host a live room!</td></tr>';
+    } catch (err) {
+      $("lbTable").innerHTML = `<tr><td style="color:var(--red)">${err.message}</td></tr>`;
+    }
+  }
+
+  const menuErr = $("menuErr");
+  const busyGuard = (fn) => async () => {
+    menuErr.textContent = "";
+    try { await fn(); } catch (err) { menuErr.textContent = String(err.message); }
+  };
+  $("menuSolo").addEventListener("click", startSolo);
+  $("menuHost").addEventListener("click", busyGuard(hostRoom));
+  $("menuJoin").addEventListener("click", busyGuard(async () => {
+    const code = $("joinCode").value.trim().toUpperCase();
+    const name = $("joinName").value.trim();
+    if (code.length !== 4) throw new Error("enter the 4-letter room code");
+    if (!name) throw new Error("enter your name");
+    await joinRoom(code, name);
+  }));
+  $("joinName").addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === "Return") $("menuJoin").click();
+  });
+  $("menuLb").addEventListener("click", showLeaderboard);
+  $("lbBack").addEventListener("click", backToMenu);
+  $("lobbyStart").addEventListener("click", async () => {
+    $("lobbyStart").disabled = true;
+    try { await api("next", { code: party.code, hostToken: party.hostToken }); } catch {}
+  });
+  $("lobbyLeave").addEventListener("click", backToMenu);
+  $("standMenu").addEventListener("click", backToMenu);
+  $("finalMenuBtn").addEventListener("click", backToMenu);
+
   applyView();
-  newGame();
+  (function init() {
+    $("joinName").value = localStorage.getItem("terra-name") || "";
+    const urlCode = new URLSearchParams(location.search).get("join");
+    let saved = null;
+    try { saved = JSON.parse(sessionStorage.getItem("terra-party")); } catch {}
+    if (saved && saved.party && saved.mode) {
+      mode = saved.mode;
+      party = saved.party;
+      enterParty(); // first poll snaps to the room's real state, or bails to menu
+    } else {
+      show(menuScreen);
+      if (urlCode) $("joinCode").value = urlCode.toUpperCase().slice(0, 4);
+    }
+  })();
 })();
 </script>
