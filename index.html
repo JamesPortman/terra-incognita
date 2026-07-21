@@ -16,6 +16,7 @@
     --brass: #d9a441;
     --brass-soft: #d9a44133;
     --teal: #57c4ad;
+    --red: #e2574c;
     --parchment: #ece5d3;
     --dim: #93714b00;
     --muted: #8f99ad;
@@ -71,6 +72,7 @@
   }
   .hud .value { font-family: var(--mono); font-size: 1.05rem; color: var(--parchment); }
   .hud .value .accent { color: var(--brass); }
+  .hud .value.warn { color: var(--red); }
 
   /* ---------- layout ---------- */
   main {
@@ -93,11 +95,21 @@
     justify-content: center;
     overflow: hidden;
   }
-  .stage img {
+  .photobox {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    cursor: zoom-in;
+    touch-action: none;
+  }
+  .photobox.zoomed { cursor: grab; }
+  .photobox.panning { cursor: grabbing; }
+  .photobox img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
+    transform-origin: 0 0;
   }
   .stage .credit {
     position: absolute;
@@ -276,7 +288,15 @@
     overflow-y: auto;
   }
   .final.show { display: flex; }
-  .final .sheet { max-width: 460px; width: 100%; text-align: center; }
+  .final .sheet { max-width: 560px; width: 100%; text-align: center; }
+  #finalMap {
+    width: 100%;
+    background: var(--sea);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    margin-bottom: 20px;
+    display: block;
+  }
   .final .kicker {
     font-size: 0.72rem;
     letter-spacing: 0.22em;
@@ -316,14 +336,17 @@
   </div>
   <div class="hud">
     <div><span class="label">Round</span><span class="value" id="roundLabel">1 / 5</span></div>
+    <div><span class="label">Time</span><span class="value" id="timerLabel">0:45</span></div>
     <div><span class="label">Score</span><span class="value"><span class="accent" id="scoreLabel">0</span></span></div>
   </div>
 </header>
 
 <main>
   <div class="stage">
-    <img id="photo" alt="Mystery location — study the scene and guess where it is" />
-    <div class="credit">Photo: Wikimedia Commons</div>
+    <div class="photobox" id="photobox">
+      <img id="photo" alt="Mystery location — study the scene and guess where it is" />
+    </div>
+    <div class="credit">Photo: Wikimedia Commons &middot; scroll to zoom</div>
     <div class="reveal"><div class="card" id="revealCard">
       <div class="name" id="revealName"></div>
       <div class="place" id="revealPlace"></div>
@@ -334,6 +357,8 @@
         <div class="total" id="finalTotal">0</div>
         <div class="outof">out of 25,000</div>
         <div class="verdict" id="finalVerdict"></div>
+        <svg id="finalMap" xmlns="http://www.w3.org/2000/svg" role="img"
+             aria-label="Map of all your guesses versus the actual locations"></svg>
         <table id="finalTable"></table>
         <button class="primary" id="againBtn">Chart a new expedition</button>
       </div>
@@ -595,7 +620,115 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
   const finalTotal = document.getElementById("finalTotal");
   const finalVerdict = document.getElementById("finalVerdict");
   const finalTable = document.getElementById("finalTable");
+  const finalMap = document.getElementById("finalMap");
   const mapHint = document.getElementById("mapHint");
+  const timerLabel = document.getElementById("timerLabel");
+
+  // ---- round timer ----
+  const ROUND_SECONDS = 45;
+  let timerId = null, deadline = 0;
+  const fmtTime = (ms) => {
+    const s = Math.max(0, Math.ceil(ms / 1000));
+    return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0");
+  };
+  function startTimer() {
+    stopTimer();
+    deadline = performance.now() + ROUND_SECONDS * 1000;
+    timerLabel.textContent = fmtTime(ROUND_SECONDS * 1000);
+    timerLabel.classList.remove("warn");
+    timerId = setInterval(() => {
+      const left = deadline - performance.now();
+      timerLabel.textContent = fmtTime(left);
+      timerLabel.classList.toggle("warn", left < 10000);
+      if (left <= 0) { stopTimer(); timeUp(); }
+    }, 200);
+  }
+  function stopTimer() { if (timerId) { clearInterval(timerId); timerId = null; } }
+  function timeUp() {
+    if (state !== "guessing") return;
+    if (guessPt) { submitGuess(); return; }
+    // no pin placed: zero-point round
+    state = "result";
+    const loc = deck[round];
+    actualPt = lonLatToMap(loc.lon, loc.lat);
+    showLine = false;
+    results.push({ name: loc.name, km: null, pts: 0, gPt: null, aPt: actualPt.slice() });
+    drawMarkers();
+    flyToPoint(actualPt[0], actualPt[1], 3);
+    revealName.textContent = loc.name;
+    revealPlace.textContent = loc.place;
+    revealCard.classList.add("show");
+    distReadout.textContent = "time's up — no pin placed";
+    ptsReadout.textContent = "+0 pts";
+    scoreFill.style.width = "0%";
+    mapHint.style.display = "none";
+    goBtn.disabled = false;
+    goBtn.textContent = round + 1 < ROUNDS ? "Next round" : "See final score";
+  }
+
+  // ---- photo zoom ----
+  const photobox = document.getElementById("photobox");
+  let pScale = 1, pTx = 0, pTy = 0;
+  const pPointers = new Map();
+  let pinchDist = 0, pPanning = false, pLast = null;
+  function applyPhoto() {
+    const r = photobox.getBoundingClientRect();
+    pScale = Math.min(5, Math.max(1, pScale));
+    pTx = Math.min(0, Math.max(r.width * (1 - pScale), pTx));
+    pTy = Math.min(0, Math.max(r.height * (1 - pScale), pTy));
+    photo.style.transform = `translate(${pTx}px, ${pTy}px) scale(${pScale})`;
+    photobox.classList.toggle("zoomed", pScale > 1);
+  }
+  function resetPhotoView() { pScale = 1; pTx = 0; pTy = 0; applyPhoto(); }
+  function photoZoomAt(cx, cy, factor) {
+    const r = photobox.getBoundingClientRect();
+    const x = cx - r.left, y = cy - r.top;
+    const ns = Math.min(5, Math.max(1, pScale * factor));
+    pTx = x - ((x - pTx) * ns) / pScale;
+    pTy = y - ((y - pTy) * ns) / pScale;
+    pScale = ns;
+    applyPhoto();
+  }
+  photobox.addEventListener("wheel", (e) => {
+    e.preventDefault();
+    photoZoomAt(e.clientX, e.clientY, Math.exp(-e.deltaY * 0.002));
+  }, { passive: false });
+  photobox.addEventListener("dblclick", (e) => {
+    if (pScale > 1) resetPhotoView(); else photoZoomAt(e.clientX, e.clientY, 2.5);
+  });
+  photobox.addEventListener("pointerdown", (e) => {
+    photobox.setPointerCapture(e.pointerId);
+    pPointers.set(e.pointerId, [e.clientX, e.clientY]);
+    if (pPointers.size === 2) {
+      const [a, b] = [...pPointers.values()];
+      pinchDist = Math.hypot(a[0] - b[0], a[1] - b[1]);
+    } else if (pScale > 1) {
+      pPanning = true; pLast = [e.clientX, e.clientY];
+      photobox.classList.add("panning");
+    }
+  });
+  photobox.addEventListener("pointermove", (e) => {
+    if (!pPointers.has(e.pointerId)) return;
+    pPointers.set(e.pointerId, [e.clientX, e.clientY]);
+    if (pPointers.size === 2) {
+      const [a, b] = [...pPointers.values()];
+      const d = Math.hypot(a[0] - b[0], a[1] - b[1]);
+      if (pinchDist > 0) photoZoomAt((a[0] + b[0]) / 2, (a[1] + b[1]) / 2, d / pinchDist);
+      pinchDist = d;
+    } else if (pPanning) {
+      pTx += e.clientX - pLast[0];
+      pTy += e.clientY - pLast[1];
+      pLast = [e.clientX, e.clientY];
+      applyPhoto();
+    }
+  });
+  const endPhotoPointer = (e) => {
+    pPointers.delete(e.pointerId);
+    if (pPointers.size < 2) pinchDist = 0;
+    if (!pPointers.size) { pPanning = false; photobox.classList.remove("panning"); }
+  };
+  photobox.addEventListener("pointerup", endPhotoPointer);
+  photobox.addEventListener("pointercancel", endPhotoPointer);
 
   let deck = [], round = 0, total = 0, state = "guessing", results = [];
 
@@ -615,7 +748,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
     return 2 * R * Math.asin(Math.sqrt(s));
   }
 
-  const fmtKm = (km) => km < 10 ? km.toFixed(1) + " km" : Math.round(km).toLocaleString() + " km";
+  const fmtKm = (km) => km == null ? "no guess" : km < 10 ? km.toFixed(1) + " km" : Math.round(km).toLocaleString() + " km";
 
   function newGame() {
     deck = shuffle([...LOCATIONS]).slice(0, ROUNDS);
@@ -639,18 +772,20 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
     goBtn.textContent = "Place a pin to guess";
     mapHint.style.display = "";
     resetView();
+    resetPhotoView();
+    startTimer();
   }
 
   function submitGuess() {
     state = "result";
+    stopTimer();
     const loc = deck[round];
     const [glon, glat] = mapToLonLat(guessPt[0], guessPt[1]);
     const km = haversine(glat, glon, loc.lat, loc.lon);
     const pts = Math.round(5000 * Math.exp(-km / 2000));
     total += pts;
-    results.push({ name: loc.name, km, pts });
-
     actualPt = lonLatToMap(loc.lon, loc.lat);
+    results.push({ name: loc.name, km, pts, gPt: guessPt.slice(), aPt: actualPt.slice() });
     showLine = true;
     fitBoth(guessPt, actualPt);
 
@@ -673,7 +808,33 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
     return "You have discovered several places that were not there.";
   }
 
+  function renderFinalMap() {
+    const pts = [];
+    for (const r of results) { if (r.gPt) pts.push(r.gPt); pts.push(r.aPt); }
+    let x0 = Math.min(...pts.map((p) => p[0])), x1 = Math.max(...pts.map((p) => p[0]));
+    let y0 = Math.min(...pts.map((p) => p[1])), y1 = Math.max(...pts.map((p) => p[1]));
+    const padX = Math.max((x1 - x0) * 0.15, 40), padY = Math.max((y1 - y0) * 0.15, 25);
+    x0 = Math.max(0, x0 - padX); x1 = Math.min(MAP_W, x1 + padX);
+    y0 = Math.max(0, y0 - padY); y1 = Math.min(MAP_H, y1 + padY);
+    const u = Math.max(x1 - x0, y1 - y0) / 220;
+    finalMap.setAttribute("viewBox", `${x0} ${y0} ${x1 - x0} ${y1 - y0}`);
+    let s = "";
+    for (const d of MAP_PATHS) s += `<path d="${d}" fill="var(--land)" stroke="var(--land-stroke)" stroke-width="0.4"/>`;
+    for (const r of results) {
+      if (!r.gPt) continue;
+      s += `<line x1="${r.gPt[0]}" y1="${r.gPt[1]}" x2="${r.aPt[0]}" y2="${r.aPt[1]}" stroke="var(--parchment)" stroke-width="${u * 0.6}" stroke-dasharray="${u * 2} ${u * 1.6}" opacity="0.6"/>`;
+    }
+    results.forEach((r, i) => {
+      s += `<circle cx="${r.aPt[0]}" cy="${r.aPt[1]}" r="${u * 1.6}" fill="var(--teal)" stroke="var(--ink)" stroke-width="${u * 0.5}"/>`;
+      const p = r.gPt || r.aPt;
+      s += `<circle cx="${p[0]}" cy="${p[1]}" r="${u * 3.2}" fill="${r.gPt ? "var(--brass)" : "var(--red)"}" stroke="var(--ink)" stroke-width="${u * 0.6}"/>` +
+        `<text x="${p[0]}" y="${p[1]}" text-anchor="middle" dominant-baseline="central" font-size="${u * 4}" font-family="ui-monospace, Menlo, monospace" font-weight="700" fill="var(--ink)">${i + 1}</text>`;
+    });
+    finalMap.innerHTML = s;
+  }
+
   function showFinal() {
+    renderFinalMap();
     finalTotal.textContent = total.toLocaleString();
     finalVerdict.textContent = verdictFor(total);
     finalTable.innerHTML = results.map((r) =>
