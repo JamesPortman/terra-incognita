@@ -5,31 +5,30 @@ const REDIS_URL = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_
 const REDIS_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
 
 function redisStore() {
+  // The SDK JSON-serializes on write and deserializes on read — store plain
+  // objects and never stringify ourselves, or values end up double-encoded.
   const { Redis } = require('@upstash/redis');
-  const redis = new Redis({ url: REDIS_URL, token: REDIS_TOKEN, automaticDeserialization: false });
+  const redis = new Redis({ url: REDIS_URL, token: REDIS_TOKEN });
   return {
     async getJSON(key) {
       const v = await redis.get(key);
-      return v == null ? null : JSON.parse(v);
+      return v == null ? null : v;
     },
     async setJSON(key, val, ttlSec) {
-      await redis.set(key, JSON.stringify(val), ttlSec ? { ex: ttlSec } : undefined);
+      await redis.set(key, val, ttlSec ? { ex: ttlSec } : undefined);
     },
     async hsetJSON(key, field, val, ttlSec) {
-      await redis.hset(key, { [field]: JSON.stringify(val) });
+      await redis.hset(key, { [field]: val });
       if (ttlSec) await redis.expire(key, ttlSec);
     },
     // returns false (and writes nothing) if the field already exists
     async hsetnxJSON(key, field, val, ttlSec) {
-      const set = await redis.hsetnx(key, field, JSON.stringify(val));
+      const set = await redis.hsetnx(key, field, val);
       if (ttlSec) await redis.expire(key, ttlSec);
       return set === 1;
     },
     async hgetallJSON(key) {
-      const o = await redis.hgetall(key);
-      const out = {};
-      for (const [f, v] of Object.entries(o || {})) out[f] = typeof v === 'string' ? JSON.parse(v) : v;
-      return out;
+      return (await redis.hgetall(key)) || {};
     },
     async del(...keys) { await redis.del(...keys); },
   };
