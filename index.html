@@ -1359,6 +1359,8 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
     if (mapsKey) {
       $("modeToggleRow").style.display = "";
       $("deckRandomOpt").disabled = false;
+      $("deckSelect").value = "random"; // default to Random world when available
+      syncDeckUI();
     }
   }
 
@@ -2070,11 +2072,12 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
   const muteBtn = $("muteBtn");
   muteBtn.textContent = sfx.muted ? "🔇" : "🔊";
   muteBtn.addEventListener("click", () => { muteBtn.textContent = sfx.toggle() ? "🔇" : "🔊"; });
-  $("deckSelect").addEventListener("change", () => {
+  function syncDeckUI() {
     const random = $("deckSelect").value === "random";
     if (random) $("svToggle").checked = true;
     $("svToggle").disabled = random; // random rounds are Street View by definition
-  });
+  }
+  $("deckSelect").addEventListener("change", syncDeckUI);
   $("menuSolo").addEventListener("click", startSolo);
   $("menuWeekly").addEventListener("click", busyGuard(startWeekly));
   $("menuWeeklyBoard").addEventListener("click", () => showWeeklyBoard());

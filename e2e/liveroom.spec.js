@@ -13,6 +13,7 @@ test.describe('live room', () => {
     // host creates a photo-mode room with 30s rounds and 2 rounds
     await host.goto('/?plainmap=1');
     await expect(host.locator('#modeToggleRow')).toBeVisible();
+    await host.locator('#deckSelect').selectOption('famous');
     await host.locator('#svToggle').uncheck();
     await host.locator('#roundSecInput').fill('30');
     await host.locator('#roundsInput').fill(String(ROUNDS));

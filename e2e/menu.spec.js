@@ -8,7 +8,8 @@ test.describe('menu', () => {
     await expect(page.locator('#menuHost')).toBeVisible();
     await expect(page.locator('#roundSecInput')).toHaveValue('60');
     await expect(page.locator('#roundsInput')).toHaveValue('5');
-    await expect(page.locator('#deckSelect')).toHaveValue('famous');
+    // flips from famous to random once /api/config supplies the Maps key
+    await expect(page.locator('#deckSelect')).toHaveValue('random');
     await expect(page.locator('#timerLabel')).toHaveText('1:00');
   });
 

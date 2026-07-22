@@ -1358,6 +1358,8 @@ const LOCATIONS = __LOCATIONS__;
     if (mapsKey) {
       $("modeToggleRow").style.display = "";
       $("deckRandomOpt").disabled = false;
+      $("deckSelect").value = "random"; // default to Random world when available
+      syncDeckUI();
     }
   }
 
@@ -2069,11 +2071,12 @@ const LOCATIONS = __LOCATIONS__;
   const muteBtn = $("muteBtn");
   muteBtn.textContent = sfx.muted ? "🔇" : "🔊";
   muteBtn.addEventListener("click", () => { muteBtn.textContent = sfx.toggle() ? "🔇" : "🔊"; });
-  $("deckSelect").addEventListener("change", () => {
+  function syncDeckUI() {
     const random = $("deckSelect").value === "random";
     if (random) $("svToggle").checked = true;
     $("svToggle").disabled = random; // random rounds are Street View by definition
-  });
+  }
+  $("deckSelect").addEventListener("change", syncDeckUI);
   $("menuSolo").addEventListener("click", startSolo);
   $("menuWeekly").addEventListener("click", busyGuard(startWeekly));
   $("menuWeeklyBoard").addEventListener("click", () => showWeeklyBoard());
