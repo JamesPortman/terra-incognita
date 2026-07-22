@@ -177,9 +177,9 @@
     <div class="cards cols3">
       <div class="card">
         <div class="title">Tests gate every deploy</div>
-        <p>Vercel's git auto-deploy is off. GitHub Actions runs 30 unit tests
-        and an 11-test Playwright suite (including a two-browser live room) on
-        every push; <code>main</code> deploys via <code>vercel deploy --prebuilt --prod</code>
+        <p>Vercel's git auto-deploy is off. GitHub Actions runs the unit suite (49 tests,
+        with an enforced coverage floor) and the 19-test Playwright suite
+        (including a two-browser live room) on every push; <code>main</code> deploys via <code>vercel deploy --prebuilt --prod</code>
         only when both are green.</p>
       </div>
       <div class="card">
@@ -214,8 +214,8 @@
         </defs>
         <!-- Browser layer -->
         <rect x="20" y="10" width="720" height="108" rx="10" fill="#7fa8d0" fill-opacity="0.10" stroke="#7fa8d0" stroke-width="1.5"/>
-        <text x="40" y="36" font-size="15" font-weight="700" fill="#7fa8d0">Browser — index.html (3&#8201;MB, self-contained)</text>
-        <text x="40" y="58" font-size="12" fill="currentColor" fill-opacity="0.85">Google guess map (dark-styled, full labels) · SVG atlas fallback + results map · 20 embedded photos · gazetteer</text>
+        <text x="40" y="36" font-size="15" font-weight="700" fill="#7fa8d0">Browser — index.html (~350&#8201;KB) + /photos static files</text>
+        <text x="40" y="58" font-size="12" fill="currentColor" fill-opacity="0.85">Google guess map (dark-styled, full labels) · SVG atlas fallback + results map · 50 famous places (static photos, prefetched) · gazetteer</text>
         <text x="40" y="76" font-size="12" fill="currentColor" fill-opacity="0.85">Street View panorama · random-deck resolver (free metadata) · solo engine · party polling loop (1.5&#8201;s)</text>
         <text x="40" y="94" font-size="12" fill="currentColor" fill-opacity="0.85">WebAudio sfx (ticks, stings, fanfare; muteable) · count-up + confetti theatrics · sessionStorage per tab</text>
         <!-- arrows down -->
@@ -227,7 +227,7 @@
         <!-- Functions layer -->
         <rect x="20" y="168" width="500" height="118" rx="10" fill="#d9a441" fill-opacity="0.10" stroke="#d9a441" stroke-width="1.5"/>
         <text x="40" y="194" font-size="15" font-weight="700" fill="#d9a441">Vercel Functions — api/</text>
-        <text x="40" y="216" font-size="12" fill="currentColor" fill-opacity="0.85">create · join · guess · next · state · leaderboard · config</text>
+        <text x="40" y="216" font-size="12" fill="currentColor" fill-opacity="0.85">create · join · guess · next · state · weekly · leaderboard · admin · config</text>
         <text x="40" y="234" font-size="12" fill="currentColor" fill-opacity="0.85">All scoring server-side (haversine + exponential decay)</text>
         <text x="40" y="252" font-size="12" fill="currentColor" fill-opacity="0.85">Lazy transitions: any state read can flip question &#8594; reveal</text>
         <text x="40" y="270" font-size="12" fill="currentColor" fill-opacity="0.85">Host token / player tokens checked on every call</text>
@@ -246,7 +246,7 @@
         <!-- Neon -->
         <rect x="290" y="338" width="230" height="112" rx="10" fill="#57c4ad" fill-opacity="0.10" stroke="#57c4ad" stroke-width="1.5"/>
         <text x="310" y="364" font-size="15" font-weight="700" fill="#57c4ad">Neon Postgres</text>
-        <text x="310" y="386" font-size="12" fill="currentColor" fill-opacity="0.85">leaderboard table</text>
+        <text x="310" y="386" font-size="12" fill="currentColor" fill-opacity="0.85">leaderboard + weekly_scores</text>
         <text x="310" y="404" font-size="12" fill="currentColor" fill-opacity="0.85">one row / player / game</text>
         <text x="310" y="422" font-size="12" fill="currentColor" fill-opacity="0.85">written once, on final</text>
         <text x="310" y="440" font-size="12" fill="currentColor" fill-opacity="0.85">HTTP driver, no pool mgmt</text>
@@ -408,7 +408,7 @@
       <ul class="notes">
         <li><code>build/game-template.html</code> is the source of truth; <code>build/assemble.js</code> injects data and writes <code>index.html</code>.</li>
         <li>World map: Natural-Earth-derived GeoJSON &#8594; simplified SVG paths (~110&#8201;KB, 179 countries) by <code>build/build-map.js</code>.</li>
-        <li>Photos: Wikipedia lead images, downscaled and inlined as data URIs by <code>build/build-photos.sh</code>.</li>
+        <li>Photos: Wikipedia lead images, downscaled by <code>build/build-photos.sh</code> (idempotent) and served statically from <code>/photos</code>.</li>
         <li>Search gazetteer: GeoNames cities &#8805;200k + country bounding boxes (~160&#8201;KB) by <code>build/build-search.js</code>.</li>
         <li>Locations live once in <code>shared/locations.js</code> — embedded into the client <em>and</em> imported by the scoring API; order is the contract.</li>
         <li>Rebuild = <code>node build/assemble.js</code>, prepend doctype, commit.</li>
@@ -436,7 +436,7 @@
         <text x="24" y="86" font-size="11" fill="currentColor" fill-opacity="0.85">github.com</text>
         <rect x="200" y="24" width="180" height="92" rx="10" fill="#d9a441" fill-opacity="0.12" stroke="#d9a441" stroke-width="1.5"/>
         <text x="216" y="50" font-size="14" font-weight="700" fill="#d9a441">Actions · test</text>
-        <text x="216" y="70" font-size="11" fill="currentColor" fill-opacity="0.85">vitest (30 unit tests)</text>
+        <text x="216" y="70" font-size="11" fill="currentColor" fill-opacity="0.85">vitest + coverage floor</text>
         <text x="216" y="86" font-size="11" fill="currentColor" fill-opacity="0.85">playwright vs vercel dev</text>
         <text x="216" y="102" font-size="11" fill="currentColor" fill-opacity="0.85">(11 E2E, real Redis)</text>
         <rect x="422" y="24" width="160" height="92" rx="10" fill="#e2574c" fill-opacity="0.12" stroke="#e2574c" stroke-width="1.5"/>
