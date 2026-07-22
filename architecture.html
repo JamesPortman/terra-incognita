@@ -149,12 +149,16 @@
     <p>
       Terra Incognita is a GeoGuessr-style geography game: look at a place —
       a Street View panorama or a photo — and drop a pin on a world map;
-      points scale with distance. It ships as a single self-contained HTML
-      file served by Vercel, with a thin set of serverless functions adding
-      Kahoot-style live rooms for up to 14 players (room state in Upstash
-      Redis, expiring automatically) and a persistent all-time leaderboard
-      (Neon Postgres). Unit and end-to-end suites run in GitHub Actions on
-      every push; production deploys only when they pass.
+      points scale with distance. Games run against two decks: 20 curated
+      famous places, or <em>Random world</em>, which drops players into a
+      random panorama anywhere on Earth. It ships as a single self-contained
+      HTML file served by Vercel, with a thin set of serverless functions
+      adding Kahoot-style live rooms for up to 14 players (room state in
+      Upstash Redis, expiring automatically), between-round standings, and a
+      persistent all-time leaderboard (Neon Postgres) with an admin reset.
+      Rounds (1–10) and the round timer (10–300&#8201;s) are configurable per
+      game. Unit and end-to-end suites run in GitHub Actions on every push;
+      production deploys only when they pass.
     </p>
   </div>
 
@@ -209,8 +213,8 @@
         <rect x="20" y="10" width="720" height="108" rx="10" fill="#7fa8d0" fill-opacity="0.10" stroke="#7fa8d0" stroke-width="1.5"/>
         <text x="40" y="36" font-size="15" font-weight="700" fill="#7fa8d0">Browser — index.html (3&#8201;MB, self-contained)</text>
         <text x="40" y="58" font-size="12" fill="currentColor" fill-opacity="0.85">Google guess map (dark-styled, full labels) · SVG atlas fallback + results map · 20 embedded photos · gazetteer</text>
-        <text x="40" y="76" font-size="12" fill="currentColor" fill-opacity="0.85">Street View panorama (loaded on demand) · solo engine · party polling loop (1.5&#8201;s)</text>
-        <text x="40" y="94" font-size="12" fill="currentColor" fill-opacity="0.85">sessionStorage per tab: role, room code, player token</text>
+        <text x="40" y="76" font-size="12" fill="currentColor" fill-opacity="0.85">Street View panorama · random-deck resolver (free metadata) · solo engine · party polling loop (1.5&#8201;s)</text>
+        <text x="40" y="94" font-size="12" fill="currentColor" fill-opacity="0.85">WebAudio sfx (ticks, stings, fanfare; muteable) · count-up + confetti theatrics · sessionStorage per tab</text>
         <!-- arrows down -->
         <line x1="250" y1="118" x2="250" y2="168" stroke="currentColor" stroke-width="1.5" marker-end="url(#ar)"/>
         <text x="262" y="148" font-size="11" fill="currentColor" fill-opacity="0.7">fetch /api/* (JSON)</text>
@@ -256,7 +260,7 @@
   <section>
     <h2>2 · Live-room state machine</h2>
     <p class="lede">
-      One host, up to 14 players, five rounds. The server holds a single small
+      One host, up to 14 players, 1&#8211;10 rounds. The server holds a single small
       state machine per room; clients poll <code>/api/state</code> and render
       whatever phase comes back — a refresh rejoins mid-game losslessly.
     </p>
@@ -275,7 +279,7 @@
         <text x="331" y="117" font-size="11" fill="currentColor" fill-opacity="0.8" text-anchor="middle">timer runs · pins drop</text>
         <rect x="496" y="70" width="150" height="64" rx="10" fill="#57c4ad" fill-opacity="0.12" stroke="#57c4ad" stroke-width="1.5"/>
         <text x="571" y="97" font-size="15" font-weight="700" fill="#57c4ad" text-anchor="middle">reveal</text>
-        <text x="571" y="117" font-size="11" fill="currentColor" fill-opacity="0.8" text-anchor="middle">all pins + distances</text>
+        <text x="571" y="117" font-size="11" fill="currentColor" fill-opacity="0.8" text-anchor="middle">all pins + standings</text>
         <rect x="606" y="160" width="140" height="42" rx="10" fill="#e2574c" fill-opacity="0.12" stroke="#e2574c" stroke-width="1.5"/>
         <text x="676" y="186" font-size="14" font-weight="700" fill="#e2574c" text-anchor="middle">final</text>
         <line x1="166" y1="102" x2="252" y2="102" stroke="currentColor" stroke-width="1.5" marker-end="url(#ar2)"/>
@@ -298,7 +302,7 @@
       <div class="card">
         <h3 style="color:var(--red)">Redis — ephemeral room state</h3>
         <table class="plain keys">
-          <tr><td>room:CODE</td><td>meta JSON: state, mode, roundIdx, roundStartAt, roundMs, deck[5], hostToken, savedToLb</td></tr>
+          <tr><td>room:CODE</td><td>meta JSON: state, mode, rounds, roundIdx, roundStartAt, roundMs, deck, customDeck (random-world panos), hostToken, savedToLb</td></tr>
           <tr><td>room:CODE:players</td><td>hash <code>playerId &#8594; {name, token, score}</code> — per-field writes, no races</td></tr>
           <tr><td>room:CODE:g:N</td><td>hash <code>playerId &#8594; {lat, lon, km, pts, ms}</code> — written once via <code>HSETNX</code></td></tr>
         </table>
@@ -356,6 +360,7 @@
           <li><code>/api/config</code> supplies the referrer-locked Maps key; the Maps script loads once, on demand.</li>
           <li>Each round asks <code>StreetViewService</code> for the nearest outdoor panorama within 1.5&nbsp;km.</li>
           <li>No coverage → the round silently falls back to the embedded photo. Labels, addresses, and dates are hidden.</li>
+          <li>Random world: the resolver jitters around one of 3,057 gazetteer cities and snaps to the nearest pano within 5&nbsp;km — coverage-biased without any extra data.</li>
         </ol>
       </div>
     </div>
@@ -374,7 +379,10 @@
     </table>
     <p class="lede" style="margin-top:12px">
       Identical for solo and multiplayer; in rooms the formula runs server-side
-      so a modified client cannot inflate scores. Five rounds, 25,000 max.
+      so a modified client cannot inflate scores. Games run 1–10 rounds
+      (default 5), so the maximum is rounds &#215; 5,000. Reveals count the
+      points up, drop confetti on 4,500+ pins, and — in live rooms — show
+      ranked between-round standings with rank-movement arrows.
     </p>
   </section>
 
@@ -457,6 +465,7 @@ api/
   create.js · join.js       room lifecycle
   guess.js · next.js        server-side scoring · host transitions
   state.js · leaderboard.js polling endpoint · all-time top 20
+  admin.js                  ADMIN_TOKEN-gated actions (clear leaderboard)
   config.js                 serves the referrer-locked Maps key
 shared/locations.js         the 20 locations — client deck + server answer key
 build/
