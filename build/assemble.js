@@ -4,9 +4,13 @@ const dir = __dirname;
 
 const LOCS = require('../shared/locations.js');
 
+// Photos are served as static files from /photos (copy build/photos -> ../photos
+// after fetching); embedding them inline would put ~7MB of base64 in the page.
 const locs = LOCS.map((l) => {
-  const img = fs.readFileSync(path.join(dir, 'photos', l.k + '.jpg'));
-  return { name: l.name, place: l.place, lat: l.lat, lon: l.lon, img: 'data:image/jpeg;base64,' + img.toString('base64') };
+  if (!fs.existsSync(path.join(dir, '..', 'photos', l.k + '.jpg'))) {
+    throw new Error(`missing photo for "${l.k}" — run build/build-photos.sh and copy build/photos -> photos`);
+  }
+  return { name: l.name, place: l.place, lat: l.lat, lon: l.lon, img: '/photos/' + l.k + '.jpg' };
 });
 
 const mapData = fs.readFileSync(path.join(dir, 'map-data.js'), 'utf8');

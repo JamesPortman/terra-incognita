@@ -149,10 +149,13 @@
     <p>
       Terra Incognita is a GeoGuessr-style geography game: look at a place —
       a Street View panorama or a photo — and drop a pin on a world map;
-      points scale with distance. Games run against two decks: 20 curated
-      famous places, or <em>Random world</em>, which drops players into a
-      random panorama anywhere on Earth. It ships as a single self-contained
-      HTML file served by Vercel, with a thin set of serverless functions
+      points scale with distance. Games run against two decks: 50 curated
+      famous places (photos served as static files), or <em>Random world</em>,
+      which drops players into a random panorama anywhere on Earth. A
+      <em>Weekly Expedition</em> gives everyone the same seeded deck each ISO
+      week — one server-scored attempt per name, with its own weekly board.
+      The client is one ~350&#8201;KB HTML file served by Vercel, with a thin
+      set of serverless functions
       adding Kahoot-style live rooms for up to 14 players (room state in
       Upstash Redis, expiring automatically), between-round standings, and a
       persistent all-time leaderboard (Neon Postgres) with an admin reset.
@@ -319,6 +322,7 @@
           <tr><td>score</td><td>int — out of 25,000</td></tr>
           <tr><td>rounds</td><td>int</td></tr>
           <tr><td>played_at</td><td>timestamptz, default now()</td></tr>
+          <tr><td colspan="2" style="color:var(--muted)">+ <code>weekly_scores</code>: same shape keyed by ISO week, <code>UNIQUE(week, player_name)</code> — one attempt per name per week</td></tr>
         </table>
         <p style="margin-top:10px">Auto-created with <code>CREATE TABLE IF NOT EXISTS</code>;
         written exactly once per game, guarded by the <code>savedToLb</code> flag in room meta.
@@ -466,6 +470,8 @@ api/
   guess.js · next.js        server-side scoring · host transitions
   state.js · leaderboard.js polling endpoint · all-time top 20
   admin.js                  ADMIN_TOKEN-gated actions (clear leaderboard)
+  weekly.js · _lib/weekly.js  weekly expedition: seeded deck, server-scored attempts
+photos/                     50 famous-place photos, served statically
   config.js                 serves the referrer-locked Maps key
 shared/locations.js         the 20 locations — client deck + server answer key
 build/

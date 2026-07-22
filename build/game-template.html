@@ -603,6 +603,7 @@
           <span>rounds</span>
         </label>
         <button class="primary" id="menuSolo">Play solo</button>
+        <button class="primary" id="menuWeekly">Weekly Expedition</button>
         <button class="primary" id="menuHost">Host a live room</button>
         <div class="joinrow">
           <input id="joinCode" placeholder="CODE" maxlength="4" autocomplete="off" aria-label="Room code" />
@@ -610,6 +611,7 @@
           <button class="primary" id="menuJoin">Join</button>
         </div>
         <button class="ghost" id="menuLb">All-time leaderboard</button>
+        <button class="ghost" id="menuWeeklyBoard">This week's board</button>
         <a class="ghost" href="/architecture">Architecture &mdash; how this is built</a>
       </div>
       <div class="menuerr" id="menuErr"></div>
@@ -638,6 +640,19 @@
       <div class="subhead">All-time leaderboard</div>
       <table class="lbtable" id="standLbTable"></table>
       <div class="stack"><button class="primary" id="standMenu">Back to menu</button></div>
+    </div>
+  </div>
+
+  <div class="modal" id="weeklyScreen">
+    <div class="sheet">
+      <div class="kicker" id="weeklyKicker">Weekly Expedition</div>
+      <h2 id="weeklyHead">&nbsp;</h2>
+      <div class="menuerr" id="weeklyMsg" style="margin-bottom:10px"></div>
+      <table class="lbtable" id="weeklyTable"></table>
+      <div class="stack">
+        <button class="primary" id="weeklyPlay" style="display:none">Play this week's expedition</button>
+        <button class="primary" id="weeklyMenu">Back to menu</button>
+      </div>
     </div>
   </div>
 
@@ -1058,6 +1073,7 @@ const LOCATIONS = __LOCATIONS__;
   function stopTimer() { if (timerId) { clearInterval(timerId); timerId = null; } }
   function timeUp() {
     if (state !== "guessing") return;
+    if (mode === "weekly") { weeklySubmit(); return; }
     if (guessPt) { submitGuess(); return; }
     // no pin placed: zero-point round
     state = "result";
@@ -1179,6 +1195,8 @@ const LOCATIONS = __LOCATIONS__;
     guessPt = null; actualPt = null; showLine = false;
     const loc = deck[round];
     presentLocation(loc, soloStreet);
+    const upNext = deck[round + 1];
+    if (upNext && upNext.img) { new Image().src = upNext.img; } // warm the next photo
     roundLabel.textContent = `${round + 1} / ${ROUNDS}`;
     revealCard.classList.remove("show");
     distReadout.textContent = "";
@@ -1272,6 +1290,7 @@ const LOCATIONS = __LOCATIONS__;
 
   let finalConfirmTimer = null;
   goBtn.addEventListener("click", () => {
+    if (mode === "weekly") { weeklyGo(); return; }
     if (mode !== "solo") { partyGo(); return; }
     if (finalScreen.classList.contains("show")) {
       // two-step confirm: first click asks, second click goes back to the menu
@@ -1304,14 +1323,15 @@ const LOCATIONS = __LOCATIONS__;
   // ---- multiplayer: live rooms ----
   const $ = (id) => document.getElementById(id);
   const menuScreen = $("menuScreen"), lobbyScreen = $("lobbyScreen"),
-        standingsScreen = $("standingsScreen"), lbScreen = $("lbScreen");
+        standingsScreen = $("standingsScreen"), lbScreen = $("lbScreen"),
+        weeklyScreen = $("weeklyScreen");
   let mode = null; // 'solo' | 'host' | 'player'
   let party = null, pollTimer = null, partyTick = null;
   let lastState = null, lastRoundShown = null, myGuessSubmitted = false;
 
   const show = (el) => el.classList.add("show");
   const hide = (el) => el.classList.remove("show");
-  const hideAllModals = () => [menuScreen, lobbyScreen, standingsScreen, lbScreen].forEach(hide);
+  const hideAllModals = () => [menuScreen, lobbyScreen, standingsScreen, lbScreen, weeklyScreen].forEach(hide);
 
   async function api(path, body) {
     const r = await fetch("/api/" + path, body ? {
@@ -1611,10 +1631,133 @@ const LOCATIONS = __LOCATIONS__;
     newGame(customDeck);
   }
 
+  // ---- Weekly Expedition (server-scored solo vs the week's shared deck) ----
+  let weekly = null, weeklyFinal = null;
+
+  function weeklyRows(top, highlightName) {
+    if (!top.length) return '<tr><td style="color:var(--muted)">Nobody has played yet — be first!</td></tr>';
+    return "<tr><th>#</th><th>Navigator</th><th>Score</th></tr>" + top.map((r, i) => {
+      const me = r.name.toLowerCase() === (highlightName || "").toLowerCase();
+      return `<tr${me ? ' style="color:var(--brass)"' : ""}><td>${i + 1}</td><td>${r.name}</td><td class="score">${r.score.toLocaleString()}</td></tr>`;
+    }).join("");
+  }
+
+  async function showWeeklyBoard(message) {
+    hideAllModals();
+    show(weeklyScreen);
+    $("weeklyHead").textContent = "…";
+    $("weeklyMsg").textContent = "";
+    $("weeklyPlay").style.display = "none";
+    try {
+      const name = $("joinName").value.trim();
+      const d = await api("weekly" + (name ? "?name=" + encodeURIComponent(name) : ""));
+      $("weeklyKicker").textContent = `Weekly Expedition · ${d.week}`;
+      $("weeklyHead").textContent = "This week's board";
+      $("weeklyTable").innerHTML = weeklyRows(d.top, name);
+      if (message) $("weeklyMsg").textContent = message;
+      else if (d.played) $("weeklyMsg").textContent = `You've already played this week — ${d.yourScore.toLocaleString()} pts`;
+      $("weeklyPlay").style.display = d.played ? "none" : "";
+    } catch (err) {
+      $("weeklyMsg").textContent = String(err.message);
+    }
+  }
+
+  async function startWeekly() {
+    const name = $("joinName").value.trim();
+    if (!name) {
+      menuErr.textContent = "enter your name (the Join field) to play the weekly";
+      return;
+    }
+    localStorage.setItem("terra-name", name);
+    try {
+      const d = await api("weekly", { action: "start", name });
+      stopPolling(); stopTimer(); clearSession();
+      mode = "weekly";
+      weekly = { token: d.token, name, week: d.week };
+      weeklyFinal = null;
+      party = null; partyGuesses = null;
+      soloStreet = false; // photo mode for everyone — a level playing field
+      roundSeconds = d.roundSec;
+      ROUNDS = d.rounds;
+      hideAllModals();
+      newGame(d.deck.map((i) => LOCATIONS[i]));
+    } catch (err) {
+      if (/already played/.test(String(err.message))) showWeeklyBoard();
+      else menuErr.textContent = String(err.message);
+    }
+  }
+
+  async function weeklySubmit() {
+    state = "result";
+    stopTimer();
+    const hasPin = Boolean(guessPt);
+    const [glon, glat] = hasPin ? mapToLonLat(guessPt[0], guessPt[1]) : [null, null];
+    goBtn.disabled = true;
+    let resp;
+    try {
+      resp = await api("weekly", {
+        action: "guess", name: weekly.name, token: weekly.token,
+        lat: glat, lon: glon, skip: !hasPin,
+      });
+    } catch (err) {
+      distReadout.textContent = String(err.message) + " — tap to retry";
+      goBtn.disabled = false;
+      state = "guessing";
+      return;
+    }
+    const loc = LOCATIONS[resp.locIdx];
+    actualPt = lonLatToMap(loc.lon, loc.lat);
+    results.push({ name: loc.name, km: resp.km, pts: resp.pts, gPt: hasPin ? guessPt.slice() : null, aPt: actualPt.slice() });
+    total = resp.total;
+    showLine = hasPin;
+    if (gmap) gmapReveal(hasPin ? [{ lat: glat, lng: glon, isMe: true }] : [], loc);
+    else if (hasPin) fitBoth(guessPt, actualPt);
+    else { drawMarkers(); flyToPoint(actualPt[0], actualPt[1], 3); }
+    revealName.textContent = loc.name;
+    revealPlace.textContent = loc.place;
+    revealCard.classList.add("show");
+    distReadout.textContent = resp.km == null ? "no pin scored this round" : `your pin landed ${fmtKm(resp.km)} away`;
+    animateCount(ptsReadout, resp.pts, (v) => `+${v.toLocaleString()} pts`);
+    requestAnimationFrame(() => { scoreFill.style.width = (resp.pts / 5000) * 100 + "%"; });
+    animateCount(scoreLabel, total, (v) => v.toLocaleString());
+    sfx.reveal(resp.pts >= 4000);
+    if (resp.pts >= 4500) confetti();
+    goBtn.disabled = false;
+    if (resp.done) {
+      weeklyFinal = resp;
+      goBtn.textContent = "See weekly standings";
+    } else {
+      goBtn.textContent = "Next round";
+    }
+  }
+
+  function weeklyGo() {
+    if (state === "guessing") {
+      if (guessPt) weeklySubmit();
+    } else if (state === "result") {
+      if (weeklyFinal) {
+        sfx.fanfare();
+        hideAllModals();
+        show(weeklyScreen);
+        $("weeklyKicker").textContent = `Weekly Expedition · ${weekly.week}`;
+        $("weeklyHead").textContent = weeklyFinal.rank
+          ? `You placed #${weeklyFinal.rank} — ${weeklyFinal.total.toLocaleString()} pts`
+          : `${weeklyFinal.total.toLocaleString()} pts this week`;
+        $("weeklyTable").innerHTML = weeklyRows(weeklyFinal.top, weekly.name);
+        $("weeklyMsg").textContent = "";
+        $("weeklyPlay").style.display = "none";
+      } else {
+        round++;
+        startRound();
+      }
+    }
+  }
+
   function backToMenu() {
     stopPolling(); stopTimer(); clearSession();
     if (finalConfirmTimer) { clearTimeout(finalConfirmTimer); finalConfirmTimer = null; }
     mode = null; party = null; partyGuesses = null;
+    weekly = null; weeklyFinal = null;
     lastState = null; lastRoundShown = null;
     finalScreen.classList.remove("show");
     goBtn.disabled = true;
@@ -1932,6 +2075,10 @@ const LOCATIONS = __LOCATIONS__;
     $("svToggle").disabled = random; // random rounds are Street View by definition
   });
   $("menuSolo").addEventListener("click", startSolo);
+  $("menuWeekly").addEventListener("click", busyGuard(startWeekly));
+  $("menuWeeklyBoard").addEventListener("click", () => showWeeklyBoard());
+  $("weeklyPlay").addEventListener("click", busyGuard(startWeekly));
+  $("weeklyMenu").addEventListener("click", backToMenu);
   $("menuHost").addEventListener("click", busyGuard(hostRoom));
   $("menuJoin").addEventListener("click", busyGuard(async () => {
     const code = $("joinCode").value.trim().toUpperCase();

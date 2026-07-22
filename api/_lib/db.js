@@ -26,4 +26,21 @@ async function ensureTable() {
   await tableReady;
 }
 
-module.exports = { getSql, ensureTable };
+let weeklyReady = null;
+async function ensureWeeklyTable() {
+  if (!weeklyReady) {
+    weeklyReady = getSql()`
+      CREATE TABLE IF NOT EXISTS weekly_scores (
+        id serial PRIMARY KEY,
+        week text NOT NULL,
+        player_name text NOT NULL,
+        score int NOT NULL,
+        rounds int NOT NULL,
+        played_at timestamptz NOT NULL DEFAULT now(),
+        UNIQUE (week, player_name)
+      )`;
+  }
+  await weeklyReady;
+}
+
+module.exports = { getSql, ensureTable, ensureWeeklyTable };
