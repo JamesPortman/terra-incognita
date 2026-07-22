@@ -7,7 +7,7 @@ module.exports = defineConfig({
   workers: 1,
   timeout: 90_000,
   expect: { timeout: 15_000 },
-  retries: 0,
+  retries: process.env.CI ? 1 : 0, // absorb external-network flakes (Google Maps) in CI
   reporter: 'list',
   use: {
     baseURL: 'http://localhost:3300',
