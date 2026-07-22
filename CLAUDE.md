@@ -6,7 +6,7 @@ See `/architecture` (architecture.html) for the full system reference.
 ## Build & test
 
 ```bash
-node build/assemble.js && printf '<!doctype html>\n' | cat - build/terra-incognita.html > index.html
+node build/assemble.js && cp build/terra-incognita.html index.html
 npm test          # Vitest + coverage floor (fails below thresholds)
 npm run test:e2e  # Playwright vs `vercel dev` on :3300
 ```

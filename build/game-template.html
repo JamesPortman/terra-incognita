@@ -1,3 +1,6 @@
+<!doctype html>
+<html lang="en">
+<head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Terra Incognita &#8212; a where-in-the-world game</title>
@@ -518,6 +521,8 @@
     * { transition: none !important; }
   }
 </style>
+</head>
+<body>
 
 <header>
   <div class="brand">
@@ -1411,10 +1416,23 @@ const LOCATIONS = __LOCATIONS__;
   }
   window.__svDebug = () => ({ mapsKey: Boolean(mapsKey), soloStreet, presentSeq, err: window.__svErr ? String(window.__svErr.message || window.__svErr) : null });
 
+  // Google's map/pano DOM keeps focusable elements inside its own aria-hidden
+  // layers (an axe "serious" hit). We can't change their DOM, but we can take
+  // those elements out of the tab order — the axe-recommended remediation.
+  function tidyGoogleA11y() {
+    setTimeout(() => {
+      document
+        .querySelectorAll('#gmap [aria-hidden="true"], #panobox [aria-hidden="true"]')
+        .forEach((h) => h.querySelectorAll('a[href], button, input, select, [tabindex="0"]')
+          .forEach((f) => f.setAttribute("tabindex", "-1")));
+    }, 1200); // after Google finishes rendering its controls
+  }
+
   function showPanoView(active) {
     panobox.classList.toggle("active", active);
     photobox.classList.toggle("hidden", active);
     creditLine.style.display = active ? "none" : "";
+    if (active) tidyGoogleA11y();
     if (active && svPano) {
       // pano was initialized in a hidden container — force a relayout
       requestAnimationFrame(() => {
@@ -1518,6 +1536,7 @@ const LOCATIONS = __LOCATIONS__;
       // and never loads tiles
       gmapEl.classList.add("active");
       svg.style.display = "none";
+      tidyGoogleA11y();
       gmap = new google.maps.Map(gmapEl, {
         center: { lat: 25, lng: 0 },
         zoom: 2,
@@ -2156,3 +2175,5 @@ const LOCATIONS = __LOCATIONS__;
   })();
 })();
 </script>
+</body>
+</html>
