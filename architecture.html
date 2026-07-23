@@ -179,8 +179,8 @@
     <div class="cards cols3">
       <div class="card">
         <div class="title">Tests gate every deploy</div>
-        <p>Vercel's git auto-deploy is off. GitHub Actions runs the unit suite (49 tests,
-        with an enforced coverage floor) and the 19-test Playwright suite
+        <p>Vercel's git auto-deploy is off. GitHub Actions runs the Vitest suite
+        (with an enforced coverage floor) and the Playwright suite
         (including a two-browser live room) on every push; <code>main</code> deploys via <code>vercel deploy --prebuilt --prod</code>
         only when both are green.</p>
       </div>
