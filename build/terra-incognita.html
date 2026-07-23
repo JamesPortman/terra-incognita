@@ -589,10 +589,10 @@
         <label class="timerow">
           <span>Locations</span>
           <select id="deckSelect" aria-label="Location set">
-            <option value="random" id="deckRandomOpt" disabled>Random world (Street View)</option>
+            <option value="na" selected>North America &mdash; Famous Places</option>
             <option value="world">World &mdash; Famous Places</option>
-            <option value="na">North America &mdash; Famous Places</option>
             <option value="sa">South America &mdash; Famous Places</option>
+            <option value="random" id="deckRandomOpt" disabled>Random world (Street View)</option>
           </select>
         </label>
         <label class="modetoggle" id="modeToggleRow" style="display:none">
@@ -1366,8 +1366,6 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
     if (mapsKey) {
       $("modeToggleRow").style.display = "";
       $("deckRandomOpt").disabled = false;
-      $("deckSelect").value = "random"; // default to Random world when available
-      syncDeckUI();
     }
   }
 
