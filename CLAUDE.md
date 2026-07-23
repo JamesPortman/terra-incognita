@@ -36,7 +36,9 @@ auto-deploy is off.
   constructed, or trigger a resize after showing them.
 - The embedded browser pane used by Claude reports `visibilityState: "hidden"`,
   so Google Maps won't render there — verify map behavior via Playwright.
-- `shared/locations.js` order is a contract between the embedded client deck
-  and server-side scoring — rebuild index.html after any change.
+- `shared/locations.js` order is a contract between the embedded client decks
+  and server-side scoring — APPEND-ONLY; deck membership lives in
+  `shared/decks.js` (world/na/sa key lists) and can change freely. Rebuild
+  index.html after any change.
 - Local dev uses the real production Neon + Upstash (env from `.env.local`);
   clean up any non-`E2E-` test data you create.

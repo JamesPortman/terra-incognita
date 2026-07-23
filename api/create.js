@@ -1,5 +1,6 @@
 const crypto = require('crypto');
 const { newCode, newDeck, saveRoom, loadRoom, ROUNDS, ROUND_MS, sendJSON } = require('./_lib/rooms.js');
+const { DECKS } = require('../shared/decks.js');
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return sendJSON(res, 405, { error: 'method not allowed' });
@@ -43,7 +44,7 @@ module.exports = async (req, res) => {
     rounds,
     roundIdx: -1,
     roundStartAt: 0,
-    deck: newDeck(rounds),
+    deck: newDeck(rounds, DECKS[['world', 'na', 'sa'].includes(req.body?.deckId) ? req.body.deckId : 'world']),
     customDeck,
     hostToken: crypto.randomUUID(),
     createdAt: Date.now(),

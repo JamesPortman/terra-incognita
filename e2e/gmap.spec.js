@@ -10,7 +10,7 @@ test.describe('google guess map', () => {
     await expect(page.locator('#gmap')).toHaveClass(/active/, { timeout: 30_000 });
     await expect(page.locator('#map')).toBeHidden();
 
-    await page.locator('#deckSelect').selectOption('famous'); // photo round vs the google guess map
+    await page.locator('#deckSelect').selectOption('world'); // photo round vs the google guess map
     await page.locator('#svToggle').uncheck();
     await page.locator('#menuSolo').click();
     await expect(page.locator('#roundLabel')).toHaveText('1 / 5');

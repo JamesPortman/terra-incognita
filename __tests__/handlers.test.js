@@ -136,6 +136,28 @@ describe('guess', () => {
   });
 });
 
+describe('regional decks', () => {
+  it('samples every round from the requested deck', async () => {
+    const { DECKS } = await import('../shared/decks.js').then((m) => m.default || m);
+    const { code, hostToken } = await newRoom({ deckId: 'sa', rounds: 5 });
+    const pool = new Set(DECKS.sa);
+    for (let r = 0; r < 5; r++) {
+      await call(next, { body: { code, hostToken } }); // -> question
+      const st = await call(state, { method: 'GET', query: { code, hostToken } });
+      expect(pool.has(st.body.locIdx)).toBe(true);
+      await call(next, { body: { code, hostToken } }); // -> reveal
+    }
+  });
+
+  it('falls back to the world deck for unknown ids', async () => {
+    const { DECKS } = await import('../shared/decks.js').then((m) => m.default || m);
+    const { code, hostToken } = await newRoom({ deckId: 'mars' });
+    await call(next, { body: { code, hostToken } });
+    const st = await call(state, { method: 'GET', query: { code, hostToken } });
+    expect(new Set(DECKS.world).has(st.body.locIdx)).toBe(true);
+  });
+});
+
 describe('random-world custom decks', () => {
   const deck3 = [
     { lat: 48.85, lon: 2.35, panoId: 'abc123', label: 'Paris, France' },

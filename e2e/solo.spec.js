@@ -7,7 +7,7 @@ async function startSolo(page, { roundSec = 60 } = {}) {
   // toggle appears once /api/config resolves; uncheck if present
   const toggleRow = page.locator('#modeToggleRow');
   await expect(toggleRow).toBeVisible();
-  await page.locator('#deckSelect').selectOption('famous'); // random is the default; famous keeps specs deterministic
+  await page.locator('#deckSelect').selectOption('world'); // random is the default; famous keeps specs deterministic
   await page.locator('#svToggle').uncheck();
   await page.locator('#roundSecInput').fill(String(roundSec));
   await page.locator('#menuSolo').click();

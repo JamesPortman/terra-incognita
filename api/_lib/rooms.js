@@ -19,8 +19,8 @@ function newCode() {
   return c;
 }
 
-function newDeck(rounds = ROUNDS) {
-  const idx = [...LOCATIONS.keys()];
+function newDeck(rounds = ROUNDS, pool = null) {
+  const idx = pool ? [...pool] : [...LOCATIONS.keys()];
   for (let i = idx.length - 1; i > 0; i--) {
     const j = crypto.randomInt(i + 1);
     [idx[i], idx[j]] = [idx[j], idx[i]];

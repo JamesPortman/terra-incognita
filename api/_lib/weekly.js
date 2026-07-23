@@ -2,6 +2,7 @@
 // The deck is a pure function of the week string — no storage needed, and every
 // player faces the same five locations.
 const LOCATIONS = require('../../shared/locations.js');
+const { DECKS } = require('../../shared/decks.js');
 
 const WEEKLY_ROUNDS = 5;
 const WEEKLY_ROUND_SEC = 60;
@@ -35,10 +36,10 @@ function mulberry32(seed) {
   };
 }
 
-// Deterministic: same week -> same deck of location indices.
+// Deterministic: same week -> same deck of location indices (World pool).
 function weeklyDeck(week, rounds = WEEKLY_ROUNDS) {
   const rand = mulberry32(hashString('terra-' + week));
-  const idx = [...LOCATIONS.keys()];
+  const idx = [...DECKS.world];
   for (let i = idx.length - 1; i > 0; i--) {
     const j = Math.floor(rand() * (i + 1));
     [idx[i], idx[j]] = [idx[j], idx[i]];

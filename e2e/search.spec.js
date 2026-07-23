@@ -4,7 +4,7 @@ test.describe('map search', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/?plainmap=1'); // deterministic SVG guess map
     await expect(page.locator('#modeToggleRow')).toBeVisible();
-    await page.locator('#deckSelect').selectOption('famous');
+    await page.locator('#deckSelect').selectOption('world');
     await page.locator('#svToggle').uncheck();
     await page.locator('#menuSolo').click();
     await expect(page.locator('#roundLabel')).toHaveText('1 / 5');

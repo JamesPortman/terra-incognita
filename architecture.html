@@ -149,9 +149,11 @@
     <p>
       Terra Incognita is a GeoGuessr-style geography game: look at a place —
       a Street View panorama or a photo — and drop a pin on a world map;
-      points scale with distance. Games run against two decks: 50 curated
-      famous places (photos served as static files), or <em>Random world</em>,
-      which drops players into a random panorama anywhere on Earth. A
+      points scale with distance. Games draw from four decks: three curated
+      famous-place decks — World (40), North America (37), and South America
+      (35), from a 111-location pool with statically served photos — or
+      <em>Random world</em>, which drops players into a random panorama
+      anywhere on Earth. A
       <em>Weekly Expedition</em> gives everyone the same seeded deck each ISO
       week — one server-scored attempt per name, with its own weekly board.
       The client is one ~350&#8201;KB HTML file served by Vercel, with a thin
@@ -338,7 +340,7 @@
         <h3>Host creates a room</h3>
         <ol>
           <li><code>POST /api/create</code> with mode, rounds (1–10), and round seconds (clamped 10–300).</li>
-          <li>Famous mode: server shuffles the landmark deck. Random world: the host's browser resolves random panoramas (city-jittered, free metadata lookups) and submits a validated deck; questions carry only the pano id — coordinates appear at reveal.</li>
+          <li>Famous decks (World / North America / South America): server samples the chosen pool (<code>shared/decks.js</code>). Random world: the host's browser resolves random panoramas (city-jittered, free metadata lookups) and submits a validated deck; questions carry only the pano id — coordinates appear at reveal.</li>
           <li>Host screen shows the 4-letter code; players join at the site or via <code>/?join=CODE</code>.</li>
         </ol>
       </div>
@@ -473,7 +475,8 @@ api/
   weekly.js · _lib/weekly.js  weekly expedition: seeded deck, server-scored attempts
 photos/                     50 famous-place photos, served statically
   config.js                 serves the referrer-locked Maps key
-shared/locations.js         the 20 locations — client deck + server answer key
+shared/locations.js         111 locations — client decks + server answer key (append-only)
+shared/decks.js             world / na / sa famous-deck pools (key lists)
 build/
   game-template.html        client source (edit this, not index.html)
   assemble.js               embeds map + photos + gazetteer -> index.html
