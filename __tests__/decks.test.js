@@ -5,11 +5,10 @@ import LOCATIONS from '../shared/locations.js';
 const { DECKS, DECK_KEYS } = decksMod;
 
 describe('famous decks', () => {
-  it('defines world, na, and sa decks of 30-40 places each', () => {
+  it('defines world, na, and sa decks of exactly 50 places each', () => {
     for (const id of ['world', 'na', 'sa']) {
-      expect(DECKS[id].length).toBeGreaterThanOrEqual(30);
-      expect(DECKS[id].length).toBeLessThanOrEqual(40);
-      expect(new Set(DECKS[id]).size).toBe(DECKS[id].length);
+      expect(DECKS[id]).toHaveLength(50);
+      expect(new Set(DECKS[id]).size).toBe(50);
     }
   });
 

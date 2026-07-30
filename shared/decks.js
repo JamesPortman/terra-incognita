@@ -11,7 +11,9 @@ const DECK_KEYS = {
     'neuschwanstein', 'sagrada', 'angkor', 'fuji', 'liberty', 'goldentemple',
     'bigben', 'brandenburg', 'acropolis', 'uluru', 'victoriafalls', 'giza',
     'bluemosque', 'kinkakuji', 'gardensbay', 'cappadocia', 'matterhorn',
-    'cliffsofmoher', 'plitvice', 'borabora', 'watarun',
+    'cliffsofmoher', 'plitvice', 'borabora', 'watarun', 'moraine', 'niagara',
+    'grandcanyon', 'chichenitza', 'torresdelpaine', 'uyuni', 'victoriapeak',
+    'charlesbridge', 'positano', 'lofoten',
   ],
   na: [
     'timessquare', 'goldengate', 'moraine', 'niagara', 'liberty', 'grandcanyon',
@@ -20,7 +22,10 @@ const DECK_KEYS = {
     'antelopecanyon', 'monumentvalley', 'denali', 'brooklynbridge', 'cloudgate',
     'lakelouise', 'cntower', 'chateaufrontenac', 'peggyscove', 'parliamenthill',
     'capilano', 'percerock', 'tulum', 'teotihuacan', 'cabosanlucas', 'zocalo',
-    'guanajuato', 'tikal', 'arenal', 'panamacanal', 'oldhavana',
+    'guanajuato', 'tikal', 'arenal', 'panamacanal', 'oldhavana', 'brycecanyon',
+    'keywest', 'rockefeller', 'alcatraz', 'mesaverde', 'kennedyspace',
+    'signalhill', 'athabascafalls', 'hopewellrocks', 'notredamemtl',
+    'coppercanyon', 'palenque', 'oldsanjuan',
   ],
   sa: [
     'machupicchu', 'rio', 'torresdelpaine', 'uyuni', 'iguazufalls', 'peritomoreno',
@@ -28,7 +33,10 @@ const DECK_KEYS = {
     'amazontheatre', 'pelourinho', 'lencois', 'brasilia', 'cartagena', 'cocora',
     'guatape', 'cusco', 'rainbowmountain', 'nazca', 'arequipa', 'titicaca',
     'galapagos', 'quito', 'cotopaxi', 'angelfalls', 'roraima', 'atacama',
-    'easterisland', 'valparaiso', 'montevideo', 'lamano', 'chiloe',
+    'easterisland', 'valparaiso', 'montevideo', 'lamano', 'chiloe', 'maracana',
+    'paraty', 'fernandodenoronha', 'chapada', 'monserrate', 'tayrona',
+    'huacachina', 'colcacanyon', 'sacsayhuaman', 'ollantaytambo', 'banos',
+    'quilotoa', 'canaima', 'ushuaia', 'lapaz',
   ],
 };
 
