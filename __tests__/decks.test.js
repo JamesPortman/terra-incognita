@@ -5,8 +5,8 @@ import LOCATIONS from '../shared/locations.js';
 const { DECKS, DECK_KEYS } = decksMod;
 
 describe('famous decks', () => {
-  it('defines world, na, and sa decks of exactly 50 places each', () => {
-    for (const id of ['world', 'na', 'sa']) {
+  it('defines world, na, sa, and us decks of exactly 50 places each', () => {
+    for (const id of ['world', 'na', 'sa', 'us']) {
       expect(DECKS[id]).toHaveLength(50);
       expect(new Set(DECKS[id]).size).toBe(50);
     }
@@ -30,6 +30,9 @@ describe('famous decks', () => {
     expect(names('sa')).toContain('iguazufalls');
     expect(names('sa')).not.toContain('sydneyopera');
     expect(names('world')).toContain('eiffel');
+    expect(names('us')).toContain('empirestate');
+    expect(names('us')).toContain('waikiki');
+    expect(names('us')).not.toContain('cntower');
   });
 
   it('keeps deck pools large enough for the 10-round maximum', () => {

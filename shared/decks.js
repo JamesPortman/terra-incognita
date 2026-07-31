@@ -38,6 +38,19 @@ const DECK_KEYS = {
     'huacachina', 'colcacanyon', 'sacsayhuaman', 'ollantaytambo', 'banos',
     'quilotoa', 'canaima', 'ushuaia', 'lapaz',
   ],
+  us: [
+    'timessquare', 'goldengate', 'liberty', 'grandcanyon', 'mountrushmore',
+    'elcapitan', 'oldfaithful', 'spaceneedle', 'gatewayarch', 'whitehouse',
+    'hollywoodsign', 'lasvegasstrip', 'frenchquarter', 'antelopecanyon',
+    'monumentvalley', 'denali', 'brooklynbridge', 'cloudgate', 'brycecanyon',
+    'keywest', 'rockefeller', 'alcatraz', 'mesaverde', 'kennedyspace',
+    'oldsanjuan', 'empirestate', 'centralpark', 'lincolnmemorial', 'uscapitol',
+    'libertybell', 'fenway', 'fishermanswharf', 'santamonicapier', 'griffith',
+    'magickingdom', 'southbeach', 'bealestreet', 'nashvillebroadway',
+    'riverwalk', 'thealamo', 'navypier', 'willistower', 'jeffersonmemorial',
+    'lombardstreet', 'pikeplace', 'multnomah', 'zion', 'delicatearch',
+    'horseshoebend', 'waikiki',
+  ],
 };
 
 const keyToIndex = new Map(LOCATIONS.map((l, i) => [l.k, i]));

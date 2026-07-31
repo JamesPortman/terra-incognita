@@ -87,8 +87,8 @@ describe('newDeck', () => {
 });
 
 describe('locations data', () => {
-  it('has 139 locations with valid coordinates and unique keys', () => {
-    expect(LOCATIONS).toHaveLength(139);
+  it('has 164 locations with valid coordinates and unique keys', () => {
+    expect(LOCATIONS).toHaveLength(164);
     const keys = new Set(LOCATIONS.map((l) => l.k));
     expect(keys.size).toBe(LOCATIONS.length);
     for (const l of LOCATIONS) {
