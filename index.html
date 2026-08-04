@@ -440,11 +440,24 @@
   button.ghost:hover, a.ghost:hover { color: var(--parchment); }
   .menuerr { color: var(--red); font-size: 0.85rem; min-height: 1.2em; margin-top: 10px; }
   .roomcode {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    margin: 20px 0 12px;
+  }
+  .roomcode span {
     font-family: var(--mono);
-    font-size: clamp(2.6rem, 8vw, 4rem);
-    letter-spacing: 0.25em;
+    font-size: clamp(3rem, 11vw, 4.8rem);
+    line-height: 1;
     color: var(--brass);
-    margin: 10px 0 4px;
+    background: var(--sea);
+    border: 2px solid var(--brass);
+    border-radius: 12px;
+    padding: 16px 12px;
+    min-width: 1.25em;
+    text-align: center;
+    box-shadow: 0 0 28px #d9a44140, inset 0 0 14px #d9a44114;
+    text-shadow: 0 0 14px #d9a44180;
   }
   .chips { margin: 18px 0 24px; min-height: 2.4em; }
   .chip {
@@ -643,7 +656,7 @@
   <div class="modal" id="lobbyScreen">
     <div class="sheet">
       <div class="kicker" id="lobbyRole">Live room</div>
-      <div class="roomcode" id="lobbyCode">····</div>
+      <div class="roomcode" id="lobbyCode"><span>·</span><span>·</span><span>·</span><span>·</span></div>
       <div class="kicker">join at this site &middot; enter the code</div>
       <div class="chips" id="lobbyPlayers"></div>
       <div class="stack">
@@ -1843,7 +1856,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
     finalScreen.classList.remove("show");
     hideAllModals();
     show(lobbyScreen);
-    $("lobbyCode").textContent = party.code;
+    $("lobbyCode").innerHTML = party.code.split("").map((c) => `<span>${c}</span>`).join("");
     $("lobbyStart").style.display = mode === "host" ? "" : "none";
     $("lobbyWait").style.display = mode === "host" ? "none" : "";
     $("lobbyRole").textContent = mode === "host"
@@ -2018,9 +2031,9 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
   }
 
   function lbRows(top) {
-    return "<tr><th>#</th><th>Navigator</th><th>Room</th><th>Score</th></tr>" +
+    return "<tr><th>#</th><th>Navigator</th><th>Locations</th><th>Score</th></tr>" +
       top.map((r, i) =>
-        `<tr><td>${i + 1}</td><td>${r.name}</td><td style="font-family:var(--mono)">${r.room}</td><td class="score">${r.score.toLocaleString()}</td></tr>`
+        `<tr><td>${i + 1}</td><td>${r.name}</td><td>${r.deck || "—"}</td><td class="score">${r.score.toLocaleString()}</td></tr>`
       ).join("");
   }
 

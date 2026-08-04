@@ -22,6 +22,8 @@ async function ensureTable() {
         rounds int NOT NULL,
         played_at timestamptz NOT NULL DEFAULT now()
       )`;
+    tableReady = tableReady.then(() =>
+      getSql()`ALTER TABLE leaderboard ADD COLUMN IF NOT EXISTS deck text`);
   }
   await tableReady;
 }

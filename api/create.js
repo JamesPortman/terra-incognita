@@ -44,6 +44,7 @@ module.exports = async (req, res) => {
     rounds,
     roundIdx: -1,
     roundStartAt: 0,
+    deckId: customDeck ? 'random' : (['world', 'na', 'sa', 'us'].includes(req.body?.deckId) ? req.body.deckId : 'world'),
     deck: newDeck(rounds, DECKS[['world', 'na', 'sa', 'us'].includes(req.body?.deckId) ? req.body.deckId : 'world']),
     customDeck,
     hostToken: crypto.randomUUID(),
