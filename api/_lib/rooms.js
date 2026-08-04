@@ -38,6 +38,10 @@ function haversineKm(lat1, lon1, lat2, lon2) {
 
 const pointsFor = (km) => Math.round(5000 * Math.exp(-km / 2000));
 
+// Games longer than five rounds score only the best five.
+const bestFiveTotal = (ptsList) =>
+  [...ptsList].sort((a, b) => b - a).slice(0, 5).reduce((s, v) => s + v, 0);
+
 async function loadRoom(code) {
   if (!/^[A-Z2-9]{4}$/.test(code || '')) return null;
   return getStore().getJSON(metaKey(code));
@@ -73,6 +77,6 @@ function sendJSON(res, status, body) {
 module.exports = {
   ROUNDS, ROUND_MS, GRACE_MS, MAX_PLAYERS, TTL_SEC, LOCATIONS,
   metaKey, playersKey, guessesKey,
-  newCode, newDeck, haversineKm, pointsFor,
+  newCode, newDeck, haversineKm, pointsFor, bestFiveTotal,
   loadRoom, saveRoom, maybeAdvance, sendJSON,
 };

@@ -1,6 +1,6 @@
 const { getStore } = require('./_lib/store.js');
 const {
-  loadRoom, playersKey, guessesKey, haversineKm, pointsFor,
+  loadRoom, playersKey, guessesKey, haversineKm, pointsFor, bestFiveTotal,
   LOCATIONS, ROUND_MS, GRACE_MS, TTL_SEC, sendJSON,
 } = require('./_lib/rooms.js');
 
@@ -33,7 +33,8 @@ module.exports = async (req, res) => {
   const fresh = await store.hsetnxJSON(guessesKey(code, meta.roundIdx), playerId, { lat, lon, km, pts, ms }, TTL_SEC);
   if (!fresh) return sendJSON(res, 409, { error: 'already guessed this round' });
 
-  player.score += pts;
+  player.ptsByRound = { ...(player.ptsByRound || {}), [meta.roundIdx]: pts };
+  player.score = bestFiveTotal(Object.values(player.ptsByRound));
   await store.hsetJSON(playersKey(code), playerId, player, TTL_SEC);
   sendJSON(res, 200, { ok: true });
 };

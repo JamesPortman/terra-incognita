@@ -136,6 +136,22 @@ describe('guess', () => {
   });
 });
 
+describe('best-five scoring in long games', () => {
+  it('caps a six-round perfect game at 25,000', async () => {
+    const { code, hostToken } = await newRoom({ rounds: 6 });
+    const p = (await joinAs(code, 'Alice')).body;
+    for (let r = 0; r < 6; r++) {
+      await call(next, { body: { code, hostToken } }); // -> question
+      const st = await call(state, { method: 'GET', query: { code, hostToken } });
+      const loc = LOCATIONS[st.body.locIdx];
+      await call(guess, { body: { code, playerId: p.playerId, token: p.token, lat: loc.lat, lon: loc.lon } });
+      await call(state, { method: 'GET', query: { code, hostToken } }); // trigger reveal
+    }
+    const final = await call(state, { method: 'GET', query: { code, hostToken } });
+    expect(final.body.players[0].score).toBe(25000); // six perfect rounds, best five count
+  });
+});
+
 describe('regional decks', () => {
   it('samples every round from the requested deck', async () => {
     const { DECKS } = await import('../shared/decks.js').then((m) => m.default || m);

@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import rooms from '../api/_lib/rooms.js';
 import LOCATIONS from '../shared/locations.js';
 
-const { haversineKm, pointsFor, newCode, newDeck, ROUNDS } = rooms;
+const { haversineKm, pointsFor, newCode, newDeck, bestFiveTotal, ROUNDS } = rooms;
 
 describe('haversineKm', () => {
   it('is zero for identical points', () => {
@@ -83,6 +83,20 @@ describe('newDeck', () => {
   it('honors a custom round count', () => {
     expect(newDeck(3)).toHaveLength(3);
     expect(new Set(newDeck(10)).size).toBe(10);
+  });
+});
+
+describe('bestFiveTotal', () => {
+  it('sums everything for five or fewer rounds', () => {
+    expect(bestFiveTotal([])).toBe(0);
+    expect(bestFiveTotal([1000, 2000])).toBe(3000);
+    expect(bestFiveTotal([1, 2, 3, 4, 5])).toBe(15);
+  });
+
+  it('keeps only the best five of longer games', () => {
+    expect(bestFiveTotal([5000, 4000, 3000, 2000, 1000, 999])).toBe(15000);
+    expect(bestFiveTotal([100, 100, 100, 100, 100, 100, 100])).toBe(500);
+    expect(bestFiveTotal([0, 0, 0, 0, 0, 0, 5000])).toBe(5000);
   });
 });
 

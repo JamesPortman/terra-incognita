@@ -80,3 +80,27 @@ test.describe('solo game', () => {
     await expect(page.locator('#finalScreen')).toBeVisible();
   });
 });
+
+test.describe('best-five scoring', () => {
+  test('a six-round game drops the weakest round and says so', async ({ page }) => {
+    await page.goto('/?plainmap=1');
+    await expect(page.locator('#modeToggleRow')).toBeVisible();
+    await page.locator('#deckSelect').selectOption('world');
+    await page.locator('#svToggle').uncheck();
+    await page.locator('#roundsInput').fill('6');
+    await expect(page.locator('#bestFiveNote')).toBeVisible();
+    await page.locator('#menuSolo').click();
+    for (let round = 1; round <= 6; round++) {
+      await expect(page.locator('#roundLabel')).toHaveText(`${round} / 6`);
+      await page.locator('#map').click();
+      await expect(page.locator('#goBtn')).toHaveText(/Make guess/i);
+      await page.locator('#goBtn').click();
+      await expect(page.locator('#distReadout')).toHaveText(/your pin landed/);
+      await page.locator('#goBtn').click();
+    }
+    await expect(page.locator('#finalScreen')).toBeVisible();
+    await expect(page.locator('#finalOutOf')).toHaveText(/out of 25,000 — best 5 rounds count/);
+    await expect(page.locator('#finalTable tr')).toHaveCount(6);
+    await expect(page.locator('#finalTable tr', { hasText: '(dropped)' })).toHaveCount(1);
+  });
+});
