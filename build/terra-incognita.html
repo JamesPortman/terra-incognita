@@ -174,6 +174,34 @@
     padding: 0;
     line-height: 1.2;
   }
+
+  /* ---------- day mode (paper atlas) ---------- */
+  body.day {
+    --ink: #ece5d6;
+    --ink-soft: #e3dac7;
+    --raised: #f5efe1;
+    --line: #c9bda1;
+    --sea: #d5dfe6;
+    --grid: #c3cdd6;
+    --land: #d9cfae;
+    --land-stroke: #b5a988;
+    --brass: #96690f;
+    --brass-soft: #96690f26;
+    --teal: #0f766e;
+    --red: #b91c1c;
+    --parchment: #262c3a;
+    --muted: #6a7180;
+  }
+  body.day .reveal .card { background: #f5efe1ee; }
+  body.day .stage .credit { background: #f5efe1cc; color: #262c3ab0; }
+  body.day .maphint { background: #f5efe1d9; }
+  body.day .ministand { background: #f5efe1ee; }
+  body.day .searchrow .results { box-shadow: 0 10px 30px #00000030; }
+  body.day .roomcode span {
+    box-shadow: 0 0 22px #96690f30, inset 0 0 12px #96690f10;
+    text-shadow: none;
+  }
+  body.day button.primary { color: #fff8ec; }
   .ministand {
     position: absolute;
     left: 50%;
@@ -487,7 +515,7 @@
   .lbtable td, .lbtable th { padding: 7px 6px; border-top: 1px solid var(--line); text-align: left; }
   .lbtable th { font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); border-top: none; }
   .lbtable td:last-child, .lbtable th:last-child { text-align: right; }
-  .lbtable td.score { font-family: var(--mono); color: var(--brass); }
+  .lbtable td.score { font-family: var(--mono); color: var(--brass); text-align: right; }
   .modal .subhead {
     font-size: 0.72rem;
     letter-spacing: 0.18em;
@@ -561,6 +589,7 @@
     <div><span class="label">Time</span><span class="value" id="timerLabel">1:00</span></div>
     <div><span class="label">Score</span><span class="value"><span class="accent" id="scoreLabel">0</span></span></div>
     <div><span class="label">Sound</span><button id="muteBtn" class="mutebtn" aria-label="Toggle sound">🔊</button></div>
+    <div><span class="label">Theme</span><button id="themeBtn" class="mutebtn" aria-label="Toggle day or night mode">🌙</button></div>
   </div>
 </header>
 
@@ -1558,6 +1587,12 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
     { featureType: "administrative.locality", elementType: "labels.text.fill", stylers: [{ color: "#98a2b8" }] },
   ];
 
+  const GMAP_DAY_STYLE = [
+    { featureType: "poi", stylers: [{ visibility: "off" }] },
+    { featureType: "transit", stylers: [{ visibility: "off" }] },
+  ];
+  const currentGmapStyle = () => document.body.classList.contains("day") ? GMAP_DAY_STYLE : GMAP_STYLE;
+
   const gIcon = (color, scale) => ({
     path: google.maps.SymbolPath.CIRCLE,
     scale: scale || 6,
@@ -1581,7 +1616,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
         center: { lat: 25, lng: 0 },
         zoom: 2,
         minZoom: 2,
-        styles: GMAP_STYLE,
+        styles: currentGmapStyle(),
         disableDefaultUI: true,
         zoomControl: true,
         clickableIcons: false,
@@ -1697,9 +1732,10 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
 
   function weeklyRows(top, highlightName) {
     if (!top.length) return '<tr><td style="color:var(--muted)">Nobody has played yet — be first!</td></tr>';
+    const medals = ["🥇", "🥈", "🥉"];
     return "<tr><th>#</th><th>Navigator</th><th>Score</th></tr>" + top.map((r, i) => {
       const me = r.name.toLowerCase() === (highlightName || "").toLowerCase();
-      return `<tr${me ? ' style="color:var(--brass)"' : ""}><td>${i + 1}</td><td>${r.name}</td><td class="score">${r.score.toLocaleString()}</td></tr>`;
+      return `<tr${me ? ' style="color:var(--brass)"' : ""}><td>${medals[i] || i + 1}</td><td>${r.name}</td><td class="score">${r.score.toLocaleString()}</td></tr>`;
     }).join("");
   }
 
@@ -2042,10 +2078,17 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
   }
 
   function lbRows(top) {
-    return "<tr><th>#</th><th>Navigator</th><th>Location</th><th>Score</th></tr>" +
-      top.map((r, i) =>
-        `<tr><td>${i + 1}</td><td>${r.name}</td><td>${r.deck || "—"}</td><td class="score">${r.score.toLocaleString()}</td></tr>`
-      ).join("");
+    const me = ($("joinName").value.trim() || localStorage.getItem("terra-name") || "").toLowerCase();
+    const medals = ["🥇", "🥈", "🥉"];
+    const fmtDate = (iso) => iso
+      ? new Date(iso).toLocaleDateString(undefined, { month: "short", day: "numeric" }) : "";
+    return "<tr><th>#</th><th>Navigator</th><th>Location</th><th>Score</th><th>When</th></tr>" +
+      top.map((r, i) => {
+        const hl = me && r.name.toLowerCase() === me ? ' style="color:var(--brass)"' : "";
+        return `<tr${hl}><td>${medals[i] || i + 1}</td><td>${r.name}</td><td>${r.deck || "Classic"}</td>` +
+          `<td class="score">${r.score.toLocaleString()}</td>` +
+          `<td style="color:var(--muted);font-size:0.75rem">${fmtDate(r.playedAt)}</td></tr>`;
+      }).join("");
   }
 
   async function renderFinalStandings(st) {
@@ -2131,6 +2174,15 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
   const muteBtn = $("muteBtn");
   muteBtn.textContent = sfx.muted ? "🔇" : "🔊";
   muteBtn.addEventListener("click", () => { muteBtn.textContent = sfx.toggle() ? "🔇" : "🔊"; });
+  const themeBtn = $("themeBtn");
+  function applyTheme(day) {
+    document.body.classList.toggle("day", day);
+    themeBtn.textContent = day ? "☀️" : "🌙";
+    localStorage.setItem("terra-theme", day ? "day" : "night");
+    if (gmap) gmap.setOptions({ styles: currentGmapStyle() });
+  }
+  themeBtn.addEventListener("click", () => applyTheme(!document.body.classList.contains("day")));
+  applyTheme(localStorage.getItem("terra-theme") === "day");
   function syncDeckUI() {
     const random = $("deckSelect").value === "random";
     if (random) $("svToggle").checked = true;

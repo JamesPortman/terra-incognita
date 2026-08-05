@@ -12,6 +12,19 @@ test.describe('menu', () => {
     await expect(page.locator('#timerLabel')).toHaveText('1:00');
   });
 
+  test('day/night toggle flips the theme and persists', async ({ page }) => {
+    await page.goto('/');
+    const theme = page.locator('#themeBtn');
+    await expect(theme).toHaveText('🌙');
+    await theme.click();
+    await expect(theme).toHaveText('☀️');
+    await expect(page.locator('body')).toHaveClass(/day/);
+    await page.reload();
+    await expect(page.locator('body')).toHaveClass(/day/);
+    await page.locator('#themeBtn').click(); // back to night for other specs
+    await expect(page.locator('body')).not.toHaveClass(/day/);
+  });
+
   test('mute toggle flips and persists', async ({ page }) => {
     await page.goto('/');
     const mute = page.locator('#muteBtn');
