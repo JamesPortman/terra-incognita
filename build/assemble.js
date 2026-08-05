@@ -22,5 +22,8 @@ html = html.replace('__SEARCH_DATA__', () => searchData);
 html = html.replace('__DECKS__', () => 'const DECKS=' + JSON.stringify(DECKS) + ';');
 const locsJson = JSON.stringify(locs).replace(/[\u007f-\uffff]/g, (c) => '\\u' + c.charCodeAt(0).toString(16).padStart(4, '0'));
 html = html.replace('__LOCATIONS__', () => locsJson);
+const buildId = new Date().toISOString().replace(/[-:T]/g, '').slice(0, 14);
+html = html.replace('__BUILD_ID__', buildId);
+fs.writeFileSync(path.join(dir, '..', 'version.txt'), buildId + '\n');
 fs.writeFileSync(path.join(dir, 'terra-incognita.html'), html);
 console.log('wrote terra-incognita.html', (html.length / 1024 / 1024).toFixed(2) + 'MB');

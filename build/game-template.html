@@ -531,6 +531,23 @@
   .pod .pname { font-weight: 600; margin-top: 2px; }
   .pod .pscore { font-family: var(--mono); color: var(--brass); margin-top: 2px; }
   .pod .pdeck { font-size: 0.66rem; color: var(--muted); margin-top: 4px; }
+  .updatebanner {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 18px;
+    z-index: 100;
+    background: var(--raised);
+    border: 1px solid var(--brass);
+    border-radius: 999px;
+    padding: 10px 20px;
+    font-size: 0.85rem;
+    color: var(--parchment);
+    cursor: pointer;
+    box-shadow: 0 6px 24px #00000060;
+    display: none;
+  }
+  .updatebanner.show { display: block; }
   .lbfilter {
     font-family: var(--sans);
     font-size: 0.85rem;
@@ -780,6 +797,7 @@
       </div>
     </div>
   </div>
+  <button class="updatebanner" id="updateBanner">A new version is available &mdash; tap to refresh</button>
 </main>
 
 <script>
@@ -2387,6 +2405,30 @@ const LOCATIONS = __LOCATIONS__;
   $("lobbyLeave").addEventListener("click", backToMenu);
   $("standMenu").addEventListener("click", backToMenu);
   $("finalMenuBtn").addEventListener("click", backToMenu);
+
+  // ---- stale-tab update banner ----
+  const BUILD_ID = "__BUILD_ID__";
+  let updateAvailable = false;
+  function maybeShowUpdate() {
+    // suppress only during an active round; the menu (mode null) is always safe
+    const midRound = mode !== null &&
+      (state === "guessing" || (lastState && lastState.state === "question"));
+    $("updateBanner").classList.toggle("show", updateAvailable && !midRound);
+  }
+  async function checkVersion() {
+    try {
+      const r = await fetch("/version.txt?t=" + Date.now(), { cache: "no-store" });
+      if (!r.ok) return;
+      const v = (await r.text()).trim();
+      if (v && v !== BUILD_ID) updateAvailable = true;
+      maybeShowUpdate();
+    } catch {}
+  }
+  setInterval(checkVersion, 4 * 60 * 1000);
+  setInterval(maybeShowUpdate, 5000);
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) checkVersion(); });
+  checkVersion(); // also catches a cache-served stale page at load
+  $("updateBanner").addEventListener("click", () => location.reload());
 
   applyView();
   (function init() {
