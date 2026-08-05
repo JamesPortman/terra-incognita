@@ -1480,6 +1480,10 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
 
   // ---- multiplayer: live rooms ----
   const $ = (id) => document.getElementById(id);
+  // names and labels are sanitized at the API, but escape at render too so a
+  // missed write path can never become stored XSS
+  const esc = (s) => String(s).replace(/[&<>"']/g, (c) =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const menuScreen = $("menuScreen"), lobbyScreen = $("lobbyScreen"),
         standingsScreen = $("standingsScreen"), lbScreen = $("lbScreen"),
         weeklyScreen = $("weeklyScreen");
@@ -1818,7 +1822,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
     return "<tr><th>#</th><th>Navigator</th><th>Score</th></tr>" + top.map((r, i) => {
       const me = r.name.toLowerCase() === (highlightName || "").toLowerCase();
       const peek = (r.awayMs || 0) >= 3000 ? `<span class="peek">👀${Math.round(r.awayMs / 1000)}s</span>` : "";
-      return `<tr${me ? ' style="color:var(--brass)"' : ""}><td>${medals[i] || i + 1}</td><td>${r.name}${peek}</td><td class="score">${r.score.toLocaleString()}</td></tr>`;
+      return `<tr${me ? ' style="color:var(--brass)"' : ""}><td>${medals[i] || i + 1}</td><td>${esc(r.name)}${peek}</td><td class="score">${r.score.toLocaleString()}</td></tr>`;
     }).join("");
   }
 
@@ -1860,7 +1864,9 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
       roundSeconds = d.roundSec;
       ROUNDS = d.rounds;
       hideAllModals();
-      newGame(d.deck.map((i) => LOCATIONS[i]));
+      // the server reveals locations one round at a time; later rounds are
+      // appended to the deck as each guess comes back
+      newGame([LOCATIONS[d.locIdx]]);
     } catch (err) {
       if (/already played/.test(String(err.message))) showWeeklyBoard();
       else menuErr.textContent = String(err.message);
@@ -1907,6 +1913,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
       weeklyFinal = resp;
       goBtn.textContent = "See weekly standings";
     } else {
+      if (resp.nextLocIdx != null) deck.push(LOCATIONS[resp.nextLocIdx]);
       goBtn.textContent = "Next round";
     }
   }
@@ -2045,7 +2052,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
   function renderLobbyState(st) {
     show(lobbyScreen);
     $("lobbyPlayers").innerHTML = st.players.length
-      ? st.players.map((p) => `<span class="chip">${p.name}</span>`).join("")
+      ? st.players.map((p) => `<span class="chip">${esc(p.name)}</span>`).join("")
       : '<span style="color:var(--muted);font-size:0.85rem">No players yet</span>';
     if (mode === "host") {
       const btn = $("lobbyStart");
@@ -2095,7 +2102,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
         : delta < 0 ? `<span class="dn">▼${-delta}</span>` : `<span class="fl">–</span>`;
       const me = mode === "player" && r.id === party.playerId ? " me" : "";
       const peek = (awayBy[r.id] || 0) >= 3000 ? `<span class="peek">👀${Math.round(awayBy[r.id] / 1000)}s</span>` : "";
-      return `<div class="msrow${me}"><span class="msrank">${i + 1}</span><span class="msname">${r.name}${peek}</span>` +
+      return `<div class="msrow${me}"><span class="msrank">${i + 1}</span><span class="msname">${esc(r.name)}${peek}</span>` +
         `<span class="msgain">+${r.gained.toLocaleString()}</span><span class="mstotal">${r.score.toLocaleString()}</span>${arrow}</div>`;
     }).join("");
     $("miniStand").classList.add("show");
@@ -2172,7 +2179,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
       top.map((r, i) => {
         const rank = startRank + i;
         const hl = me && r.name.toLowerCase() === me ? ' style="color:var(--brass)"' : "";
-        return `<tr${hl}><td>${medals[rank] || rank + 1}</td><td>${r.name}</td><td class="deckcell">${r.deck || "Classic"}</td>` +
+        return `<tr${hl}><td>${medals[rank] || rank + 1}</td><td>${esc(r.name)}</td><td class="deckcell">${esc(r.deck || "Classic")}</td>` +
           `<td class="score">${r.score.toLocaleString()}</td>` +
           `<td style="color:var(--muted);font-size:0.75rem">${fmtDate(r.playedAt)}</td></tr>`;
       }).join("");
@@ -2187,7 +2194,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
     const ranked = st.players;
     $("standWinner").textContent = ranked.length ? `${ranked[0].name} takes it` : "Game over";
     $("standList").innerHTML = ranked.map((p, i) =>
-      `<li><span>${i + 1}. ${p.name}</span><span class="pts">${(p.score ?? 0).toLocaleString()}</span></li>`
+      `<li><span>${i + 1}. ${esc(p.name)}</span><span class="pts">${(p.score ?? 0).toLocaleString()}</span></li>`
     ).join("");
     show(standingsScreen);
     try {
@@ -2256,17 +2263,17 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
         .map((i) => {
           const r = lb.top[i];
           return `<div class="pod p${i + 1}"><div class="pmedal">${medals[i]}</div>` +
-            `<div class="pname">${r.name}</div><div class="pscore">${r.score.toLocaleString()}</div>` +
-            `<div class="pdeck">${r.deck || "Classic"}</div></div>`;
+            `<div class="pname">${esc(r.name)}</div><div class="pscore">${r.score.toLocaleString()}</div>` +
+            `<div class="pdeck">${esc(r.deck || "Classic")}</div></div>`;
         }).join("");
       $("lbTable").innerHTML = lb.top.length > 3 ? lbRows(lb.top.slice(3), 3)
         : lb.top.length ? "" : '<tr><td style="color:var(--muted)">No games recorded yet — host a live room!</td></tr>';
       const seasons = lb.pastSeasons || [];
       $("seasonsHead").style.display = seasons.length ? "" : "none";
       $("seasonsList").innerHTML = seasons.map((s) =>
-        `${s.season} — 🏆 ${s.name} (${s.score.toLocaleString()})`).join("<br>");
+        `${esc(s.season)} — 🏆 ${esc(s.name)} (${s.score.toLocaleString()})`).join("<br>");
     } catch (err) {
-      $("lbTable").innerHTML = `<tr><td style="color:var(--red)">${err.message}</td></tr>`;
+      $("lbTable").innerHTML = `<tr><td style="color:var(--red)">${esc(err.message)}</td></tr>`;
     }
   }
   $("lbDeckFilter").addEventListener("change", showLeaderboard);
@@ -2413,7 +2420,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
   $("finalMenuBtn").addEventListener("click", backToMenu);
 
   // ---- stale-tab update banner ----
-  const BUILD_ID = "20260805182542";
+  const BUILD_ID = "20260805184249";
   let updateAvailable = false;
   function maybeShowUpdate() {
     // suppress only during an active round; the menu (mode null) is always safe

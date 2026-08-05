@@ -1,9 +1,11 @@
 const crypto = require('crypto');
 const { getStore } = require('./_lib/store.js');
 const { loadRoom, playersKey, MAX_PLAYERS, TTL_SEC, sendJSON } = require('./_lib/rooms.js');
+const { rateLimit } = require('./_lib/ratelimit.js');
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return sendJSON(res, 405, { error: 'method not allowed' });
+  if (!(await rateLimit(req, res, 'join', 60, 600))) return;
   const code = String(req.body?.code || '').toUpperCase().trim();
   let name = String(req.body?.name || '').trim().slice(0, 20).replace(/[<>&"']/g, '');
   if (!name) return sendJSON(res, 400, { error: 'name required' });

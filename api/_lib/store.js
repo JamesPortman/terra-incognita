@@ -30,6 +30,11 @@ function redisStore() {
     async hgetallJSON(key) {
       return (await redis.hgetall(key)) || {};
     },
+    async incr(key, ttlSec) {
+      const n = await redis.incr(key);
+      if (n === 1 && ttlSec) await redis.expire(key, ttlSec);
+      return n;
+    },
     async del(...keys) { await redis.del(...keys); },
   };
 }
@@ -61,6 +66,14 @@ function fileStore() {
       return true;
     },
     async hgetallJSON(key) { return read(key) || {}; },
+    async incr(key, ttlSec) {
+      const now = Date.now();
+      let o = read(key);
+      if (!o || (o.exp && o.exp < now)) o = { n: 0, exp: ttlSec ? now + ttlSec * 1000 : null };
+      o.n += 1;
+      write(key, o);
+      return o.n;
+    },
     async del(...keys) {
       const fs2 = require('fs');
       for (const k of keys) { try { fs2.unlinkSync(fileFor(k)); } catch {} }

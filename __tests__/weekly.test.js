@@ -16,9 +16,12 @@ function mockRes() {
     json(b) { this.body = b; },
   };
 }
+// unique IP per run so rate-limit counters in the persistent file store
+// never accumulate across test runs
+const RUN_IP = 'vitest-' + Math.random().toString(36).slice(2);
 const call = async (method, body = {}, query = {}) => {
   const res = mockRes();
-  await weekly({ method, body, query }, res);
+  await weekly({ method, body, query, headers: { 'x-forwarded-for': RUN_IP } }, res);
   return res;
 };
 
@@ -58,8 +61,11 @@ describe('weekly attempt flow (E2E- name, no database)', () => {
     const name = 'E2E-WkUnit';
     const start = await call('POST', { action: 'start', name });
     expect(start.code).toBe(200);
-    expect(start.body.deck).toHaveLength(WEEKLY_ROUNDS);
-    const { token, deck } = start.body;
+    // only round 1 ships at start — later rounds arrive one per guess
+    const deck = weeklyDeck(start.body.week);
+    expect(start.body.deck).toBeUndefined();
+    expect(start.body.locIdx).toBe(deck[0]);
+    const { token } = start.body;
 
     expect((await call('POST', { action: 'guess', name, token: 'wrong', lat: 0, lon: 0 })).code).toBe(403);
 
@@ -69,6 +75,7 @@ describe('weekly attempt flow (E2E- name, no database)', () => {
     expect(g1.code).toBe(200);
     expect(g1.body.pts).toBe(5000);
     expect(g1.body.locIdx).toBe(deck[0]);
+    expect(g1.body.nextLocIdx).toBe(deck[1]);
     expect(g1.body.roundIdx).toBe(1);
 
     // a skipped round scores zero

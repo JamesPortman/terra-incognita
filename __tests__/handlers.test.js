@@ -20,9 +20,15 @@ function mockRes() {
   };
 }
 
+// unique IP per call so this suite's ~30 room creates never trip the per-IP
+// rate limits (the limiter has its own dedicated tests in admin.test.js)
+const RUN_IP = 'vitest-' + Math.random().toString(36).slice(2);
+let callSeq = 0;
+
 async function call(handler, { method = 'POST', body = {}, query = {} } = {}) {
   const res = mockRes();
-  await handler({ method, body, query }, res);
+  const headers = { 'x-forwarded-for': `${RUN_IP}-${callSeq++}` };
+  await handler({ method, body, query, headers }, res);
   return res;
 }
 

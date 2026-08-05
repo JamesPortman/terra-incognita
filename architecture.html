@@ -406,6 +406,8 @@
         <li>The Maps key is public by design, defended by referrer + API restrictions and a monthly quota cap.</li>
         <li>An <code>ADMIN_TOKEN</code>-gated endpoint (<code>/api/admin</code>, UI under the leaderboard) can clear the all-time leaderboard; E2E test players (<code>E2E-*</code> names) are filtered out server-side and never reach it.</li>
         <li>Time spent off the tab mid-round (visibility + focus events) shows as a social &#128064; badge — on solo reveals and the final table, and next to names in live-room reveals and weekly boards. Informational, never punitive; multiplayer values are clamped server-side.</li>
+        <li>Write endpoints are rate-limited per IP over Redis (room create/join, weekly starts, admin — fixed windows, fail-open); the admin token compares in constant time.</li>
+        <li>The weekly deck is revealed one round at a time — the console can't preview upcoming locations. Names and labels are sanitized at the API <em>and</em> escaped at render, and every response ships with <code>nosniff</code> / <code>frame</code> / referrer security headers.</li>
       </ul>
     </div>
     <div>

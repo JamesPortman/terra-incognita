@@ -29,6 +29,14 @@ describe('kv store', () => {
     await store.del(key);
   });
 
+  it('incr counts up per key', async () => {
+    const key = uniq();
+    expect(await store.incr(key, 60)).toBe(1);
+    expect(await store.incr(key, 60)).toBe(2);
+    expect(await store.incr(uniq(), 60)).toBe(1); // other keys independent
+    await store.del(key);
+  });
+
   it('hsetnx refuses to overwrite an existing field', async () => {
     const key = uniq();
     expect(await store.hsetnxJSON(key, 'g', { pts: 100 })).toBe(true);

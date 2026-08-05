@@ -12,9 +12,13 @@ function mockRes() {
   };
 }
 
-async function call(body, method = 'POST') {
+// unique IP per run so rate-limit counters in the persistent file store
+// never accumulate across test runs
+const RUN_IP = 'vitest-' + Math.random().toString(36).slice(2);
+
+async function call(body, method = 'POST', ip = RUN_IP) {
   const res = mockRes();
-  await admin({ method, body }, res);
+  await admin({ method, body, headers: { 'x-forwarded-for': ip } }, res);
   return res;
 }
 
@@ -38,5 +42,15 @@ describe('admin', () => {
 
   it('rejects unknown actions even with the right token', async () => {
     expect((await call({ token: 'test-secret', action: 'dropEverything' })).code).toBe(400);
+  });
+
+  it('rate-limits repeated attempts from one IP', async () => {
+    const ip = RUN_IP + '-brute';
+    for (let i = 0; i < 20; i++) {
+      expect((await call({ token: 'wrong' }, 'POST', ip)).code).toBe(403);
+    }
+    expect((await call({ token: 'wrong' }, 'POST', ip)).code).toBe(429);
+    // even the right token is throttled once the window is exhausted
+    expect((await call({ token: 'test-secret', action: 'dropEverything' }, 'POST', ip)).code).toBe(429);
   });
 });

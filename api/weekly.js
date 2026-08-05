@@ -7,6 +7,7 @@ const { getStore } = require('./_lib/store.js');
 const { getSql, ensureWeeklyTable } = require('./_lib/db.js');
 const { haversineKm, pointsFor, sendJSON, LOCATIONS } = require('./_lib/rooms.js');
 const { WEEKLY_ROUNDS, WEEKLY_ROUND_SEC, isoWeek, weeklyDeck, isTestName } = require('./_lib/weekly.js');
+const { rateLimit } = require('./_lib/ratelimit.js');
 
 const GRACE_MS = 5000;
 const ATTEMPT_TTL = 6 * 3600;
@@ -46,6 +47,7 @@ module.exports = async (req, res) => {
   if (!name) return sendJSON(res, 400, { error: 'name required' });
 
   if (req.body?.action === 'start') {
+    if (!(await rateLimit(req, res, 'weekly', 20, 600))) return;
     if (!isTestName(name)) {
       await ensureWeeklyTable();
       const existing = await getSql()`
@@ -63,8 +65,10 @@ module.exports = async (req, res) => {
       roundStartAt: Date.now(),
     };
     await store.setJSON(attemptKey(week, name), attempt, ATTEMPT_TTL);
+    // only the first round's location ships — the rest arrive one per guess,
+    // so the console can't preview upcoming rounds
     return sendJSON(res, 200, {
-      week, token: attempt.token, deck, rounds: WEEKLY_ROUNDS, roundSec: WEEKLY_ROUND_SEC,
+      week, token: attempt.token, locIdx: deck[0], rounds: WEEKLY_ROUNDS, roundSec: WEEKLY_ROUND_SEC,
     });
   }
 
@@ -94,6 +98,7 @@ module.exports = async (req, res) => {
     await store.setJSON(attemptKey(week, name), attempt, ATTEMPT_TTL);
 
     const out = { km, pts, locIdx, roundIdx: attempt.roundIdx, total: attempt.total };
+    if (attempt.roundIdx < WEEKLY_ROUNDS) out.nextLocIdx = deck[attempt.roundIdx];
     if (attempt.roundIdx >= WEEKLY_ROUNDS) {
       out.done = true;
       if (!isTestName(name)) {

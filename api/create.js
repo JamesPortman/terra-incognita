@@ -1,14 +1,17 @@
 const crypto = require('crypto');
 const { newCode, newDeck, saveRoom, loadRoom, ROUNDS, ROUND_MS, sendJSON } = require('./_lib/rooms.js');
+const { rateLimit } = require('./_lib/ratelimit.js');
 const { DECKS } = require('../shared/decks.js');
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return sendJSON(res, 405, { error: 'method not allowed' });
-  let code;
-  for (let tries = 0; tries < 5; tries++) {
-    code = newCode();
-    if (!(await loadRoom(code))) break;
+  if (!(await rateLimit(req, res, 'create', 20, 600))) return;
+  let code = null;
+  for (let tries = 0; tries < 5 && !code; tries++) {
+    const c = newCode();
+    if (!(await loadRoom(c))) code = c;
   }
+  if (!code) return sendJSON(res, 503, { error: 'could not allocate a room code — try again' });
   const roundSec = Math.min(300, Math.max(10, parseInt(req.body?.roundSec, 10) || 60));
   const rounds = Math.min(10, Math.max(1, parseInt(req.body?.rounds, 10) || 5));
 
