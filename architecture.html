@@ -394,33 +394,71 @@
     </p>
   </section>
 
-  <section class="cards cols2" style="display:grid">
-    <div>
-      <h2>6 · Security &amp; sessions</h2>
-      <ul class="notes">
-        <li>No accounts. A room is a capability: the 4-letter code admits you in the lobby window; a per-player UUID token authorizes every later call.</li>
-        <li>The host token is a separate secret — only its holder can start rounds, end them early, or advance the game.</li>
-        <li>Guess coordinates are validated and scored server-side; state responses omit scores and answers during open questions.</li>
-        <li>Player names are length-capped and stripped of markup; duplicates get numbered.</li>
-        <li>Session tokens live in per-tab <code>sessionStorage</code> — refresh rejoins, but tabs are independent participants.</li>
-        <li>The Maps key is public by design, defended by referrer + API restrictions and a monthly quota cap.</li>
-        <li>An <code>ADMIN_TOKEN</code>-gated endpoint (<code>/api/admin</code>, UI under the leaderboard) can clear the all-time leaderboard; E2E test players (<code>E2E-*</code> names) are filtered out server-side and never reach it.</li>
-        <li>Time spent off the tab mid-round (visibility + focus events) shows as a social &#128064; badge — on solo reveals and the final table, and next to names in live-room reveals and weekly boards. Informational, never punitive; multiplayer values are clamped server-side.</li>
-        <li>Write endpoints are rate-limited per IP over Redis (room create/join, weekly starts, admin — fixed windows, fail-open); the admin token compares in constant time.</li>
-        <li>The weekly deck is revealed one round at a time — the console can't preview upcoming locations. Names and labels are sanitized at the API <em>and</em> escaped at render, and every response ships with <code>nosniff</code> / <code>frame</code> / referrer security headers.</li>
-      </ul>
+  <section>
+    <h2>6 · Security</h2>
+    <p class="lede">
+      Organized by what each control defends against. There are no accounts and
+      no PII — the whole durable footprint is names and scores.
+    </p>
+    <div class="cards cols2">
+      <div class="card">
+        <h3 style="color:var(--brass)">Access control</h3>
+        <ul>
+          <li>A room is a capability: the 4-letter code admits you during the lobby window; a per-player UUID token authorizes every later call.</li>
+          <li>The host token is a separate secret — only its holder can start rounds, end them early, or advance the game.</li>
+          <li>Session tokens live in per-tab <code>sessionStorage</code> — refresh rejoins, but tabs are independent participants.</li>
+          <li>Admin actions (clear / archive the leaderboard) sit behind an <code>ADMIN_TOKEN</code>-gated endpoint; the token compares in constant time (hashed <code>timingSafeEqual</code>).</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 style="color:var(--teal)">Cheating &amp; fairness</h3>
+        <ul>
+          <li>All scoring is server-side (haversine + exponential decay); coordinates are validated before scoring.</li>
+          <li>State responses omit scores and answers during open questions; random-world rounds send only a pano id, coordinates at reveal.</li>
+          <li>The weekly deck is revealed one round per guess — the console can't preview upcoming locations.</li>
+          <li>Round timing is enforced server-side (late guesses score zero, small grace window) and a first guess is final (<code>HSETNX</code>).</li>
+          <li>Time spent off the tab mid-round shows as a social &#128064; badge — solo reveals and the final table, live-room reveals, weekly boards. Informational, never punitive; values are clamped server-side.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 style="color:var(--red)">Abuse &amp; input</h3>
+        <ul>
+          <li>Per-IP fixed-window rate limits over Redis on the write endpoints: room create and join, weekly starts, and admin attempts. Fail-open — a store hiccup never locks players out.</li>
+          <li>Names and labels are length-capped and markup-stripped at the API, then HTML-escaped again at render — two independent layers against stored XSS. Duplicate names get numbered.</li>
+          <li>E2E test players (<code>E2E-*</code> names) are filtered server-side and never reach a leaderboard.</li>
+          <li>Room-code allocation returns 503 if the code space is momentarily exhausted rather than overwriting a live room.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 style="color:var(--parchment)">Platform</h3>
+        <ul>
+          <li>Every response carries <code>X-Content-Type-Options: nosniff</code>, <code>X-Frame-Options: DENY</code>, and a strict referrer policy.</li>
+          <li>The Maps key is public by design, defended by referrer + API restrictions and a monthly quota cap.</li>
+          <li>GitHub Actions is the only path to production, using a dedicated scoped Vercel token — a red test means the deploy never starts.</li>
+          <li>Room state expires after 4 hours (Redis TTL); the season archive moves rows in a single atomic statement, so a mid-flight failure can't duplicate or lose them.</li>
+        </ul>
+      </div>
     </div>
-    <div>
-      <h2>7 · Build pipeline (assets)</h2>
-      <ul class="notes">
-        <li><code>build/game-template.html</code> is the source of truth; <code>build/assemble.js</code> injects data and writes <code>index.html</code>.</li>
-        <li>World map: Natural-Earth-derived GeoJSON &#8594; simplified SVG paths (~110&#8201;KB, 179 countries) by <code>build/build-map.js</code>.</li>
-        <li>Photos: Wikipedia lead images, downscaled by <code>build/build-photos.sh</code> (idempotent) and served statically from <code>/photos</code>.</li>
-        <li>Search gazetteer: GeoNames cities &#8805;200k + country bounding boxes (~160&#8201;KB) by <code>build/build-search.js</code>.</li>
-        <li>Locations live once in <code>shared/locations.js</code> — embedded into the client <em>and</em> imported by the scoring API; order is the contract.</li>
-        <li>Rebuild = <code>node build/assemble.js</code>, prepend doctype, commit.</li>
-      </ul>
-    </div>
+    <p class="lede" style="margin-top:14px">
+      <strong>Accepted risks:</strong> the current round's location is knowable
+      client-side (the photo URL names it) — inherent to a client-rendered game,
+      and the &#128064; badge is the social answer. Off-tab time is
+      client-reported and suppressible by a motivated cheater. Weekly names are
+      first-come — no accounts means no identity. Room codes are guessable in
+      principle; the short TTL, rate limits, and token-gated calls bound the blast radius.
+    </p>
+  </section>
+
+  <section>
+    <h2>7 · Build pipeline (assets)</h2>
+    <ul class="notes">
+      <li><code>build/game-template.html</code> is the source of truth; <code>build/assemble.js</code> injects data and writes <code>index.html</code>.</li>
+      <li>World map: Natural-Earth-derived GeoJSON &#8594; simplified SVG paths (~110&#8201;KB, 179 countries) by <code>build/build-map.js</code>.</li>
+      <li>Photos: Wikipedia lead images, downscaled by <code>build/build-photos.sh</code> (idempotent) and served statically from <code>/photos</code>.</li>
+      <li>Search gazetteer: GeoNames cities &#8805;200k + country bounding boxes (~160&#8201;KB) by <code>build/build-search.js</code>.</li>
+      <li>Locations live once in <code>shared/locations.js</code> — embedded into the client <em>and</em> imported by the scoring API; order is the contract.</li>
+      <li>Rebuild = <code>node build/assemble.js</code>, prepend doctype, commit.</li>
+    </ul>
   </section>
 
   <section>
