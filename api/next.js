@@ -30,10 +30,13 @@ module.exports = async (req, res) => {
         await ensureTable();
         const sql = getSql();
         const DECK_LABELS = {
-          world: 'World', na: 'North America', sa: 'South America',
-          us: 'USA', random: 'Random world',
+          world: 'World — Famous Places',
+          na: 'North America — Famous Places',
+          sa: 'South America — Famous Places',
+          us: 'USA — Famous Places',
+          random: 'Random world (Street View)',
         };
-        const deckLabel = DECK_LABELS[meta.deckId] || 'World';
+        const deckLabel = DECK_LABELS[meta.deckId] || 'World — Famous Places';
         for (const p of players) {
           await sql`INSERT INTO leaderboard (room_code, player_name, score, rounds, deck)
                     VALUES (${code}, ${p.name}, ${p.score}, ${rounds}, ${deckLabel})`;

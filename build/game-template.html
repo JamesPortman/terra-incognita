@@ -516,6 +516,8 @@
   .lbtable th { font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); border-top: none; }
   .lbtable td:last-child, .lbtable th:last-child { text-align: right; }
   .lbtable td.score { font-family: var(--mono); color: var(--brass); text-align: right; }
+  .lbtable td.deckcell { font-size: 0.76rem; color: var(--muted); }
+  #lbScreen .sheet, #standingsScreen .sheet { max-width: 560px; }
   .modal .subhead {
     font-size: 0.72rem;
     letter-spacing: 0.18em;
@@ -2085,7 +2087,7 @@ const LOCATIONS = __LOCATIONS__;
     return "<tr><th>#</th><th>Navigator</th><th>Location</th><th>Score</th><th>When</th></tr>" +
       top.map((r, i) => {
         const hl = me && r.name.toLowerCase() === me ? ' style="color:var(--brass)"' : "";
-        return `<tr${hl}><td>${medals[i] || i + 1}</td><td>${r.name}</td><td>${r.deck || "Classic"}</td>` +
+        return `<tr${hl}><td>${medals[i] || i + 1}</td><td>${r.name}</td><td class="deckcell">${r.deck || "Classic"}</td>` +
           `<td class="score">${r.score.toLocaleString()}</td>` +
           `<td style="color:var(--muted);font-size:0.75rem">${fmtDate(r.playedAt)}</td></tr>`;
       }).join("");
