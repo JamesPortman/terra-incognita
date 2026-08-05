@@ -2042,7 +2042,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
   }
 
   function lbRows(top) {
-    return "<tr><th>#</th><th>Navigator</th><th>Locations</th><th>Score</th></tr>" +
+    return "<tr><th>#</th><th>Navigator</th><th>Location</th><th>Score</th></tr>" +
       top.map((r, i) =>
         `<tr><td>${i + 1}</td><td>${r.name}</td><td>${r.deck || "—"}</td><td class="score">${r.score.toLocaleString()}</td></tr>`
       ).join("");
