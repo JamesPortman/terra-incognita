@@ -517,6 +517,31 @@
   .lbtable td:last-child, .lbtable th:last-child { text-align: right; }
   .lbtable td.score { font-family: var(--mono); color: var(--brass); text-align: right; }
   .lbtable td.deckcell { font-size: 0.76rem; color: var(--muted); }
+  .peek { color: var(--muted); font-size: 0.72rem; margin-left: 6px; white-space: nowrap; }
+  .podium { display: flex; gap: 12px; justify-content: center; align-items: flex-end; margin-bottom: 18px; }
+  .pod {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px 16px;
+    background: var(--raised);
+    min-width: 118px;
+  }
+  .pod.p1 { padding: 20px 20px; border-color: var(--brass); box-shadow: 0 0 22px #d9a44122; }
+  .pod .pmedal { font-size: 1.5rem; }
+  .pod .pname { font-weight: 600; margin-top: 2px; }
+  .pod .pscore { font-family: var(--mono); color: var(--brass); margin-top: 2px; }
+  .pod .pdeck { font-size: 0.66rem; color: var(--muted); margin-top: 4px; }
+  .lbfilter {
+    font-family: var(--sans);
+    font-size: 0.85rem;
+    color: var(--parchment);
+    background: var(--sea);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 7px 10px;
+    outline: none;
+    margin-bottom: 14px;
+  }
   #lbScreen .sheet, #standingsScreen .sheet { max-width: 560px; }
   .modal .subhead {
     font-size: 0.72rem;
@@ -721,6 +746,7 @@
       <div class="stack">
         <button class="primary" id="weeklyPlay" style="display:none">Play this week's expedition</button>
         <button class="primary" id="weeklyMenu">Back to menu</button>
+        <button class="ghost" id="weeklyCopy">Copy board</button>
       </div>
     </div>
   </div>
@@ -729,13 +755,26 @@
     <div class="sheet">
       <div class="kicker">All-time leaderboard</div>
       <h2>Hall of Navigators</h2>
+      <select id="lbDeckFilter" class="lbfilter" aria-label="Filter by location deck">
+        <option value="">All decks</option>
+        <option>North America &mdash; Famous Places</option>
+        <option>Random world (Street View)</option>
+        <option>South America &mdash; Famous Places</option>
+        <option>USA &mdash; Famous Places</option>
+        <option>World &mdash; Famous Places</option>
+      </select>
+      <div class="podium" id="lbPodium"></div>
       <table class="lbtable" id="lbTable"></table>
+      <div class="subhead" id="seasonsHead" style="display:none">Past seasons</div>
+      <div id="seasonsList" style="font-size:0.85rem;color:var(--muted);margin-bottom:16px"></div>
       <div class="stack">
         <button class="primary" id="lbBack">Back</button>
+        <button class="ghost" id="lbCopy">Copy board</button>
         <button class="ghost" id="lbAdminToggle">Admin</button>
         <div class="joinrow" id="lbAdminRow" style="display:none">
           <input id="adminToken" type="password" placeholder="Admin token" autocomplete="off" aria-label="Admin token" style="flex:1" />
           <button class="primary" id="adminClear">Clear leaderboard</button>
+          <button class="primary" id="adminArchive">Archive season</button>
         </div>
         <div class="menuerr" id="adminMsg"></div>
       </div>
@@ -1398,6 +1437,23 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
     if (e.key === "Enter" && !goBtn.disabled && tag !== "BUTTON" && tag !== "INPUT") goBtn.click();
   });
 
+  // ---- tab-away tracking (party + weekly questions; social, not punitive) ----
+  let awaySince = null, awayMsRound = 0;
+  const awayActive = () => state === "guessing" && (mode === "player" || mode === "weekly");
+  const awayStart = () => { if (awayActive() && awaySince == null) awaySince = performance.now(); };
+  const awayStop = () => {
+    if (awaySince != null) { awayMsRound += performance.now() - awaySince; awaySince = null; }
+  };
+  document.addEventListener("visibilitychange", () => { document.hidden ? awayStart() : awayStop(); });
+  window.addEventListener("blur", awayStart);
+  window.addEventListener("focus", awayStop);
+  function takeAwayMs() {
+    awayStop();
+    const v = Math.round(awayMsRound);
+    awayMsRound = 0;
+    return v;
+  }
+
   // ---- multiplayer: live rooms ----
   const $ = (id) => document.getElementById(id);
   const menuScreen = $("menuScreen"), lobbyScreen = $("lobbyScreen"),
@@ -1737,7 +1793,8 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
     const medals = ["🥇", "🥈", "🥉"];
     return "<tr><th>#</th><th>Navigator</th><th>Score</th></tr>" + top.map((r, i) => {
       const me = r.name.toLowerCase() === (highlightName || "").toLowerCase();
-      return `<tr${me ? ' style="color:var(--brass)"' : ""}><td>${medals[i] || i + 1}</td><td>${r.name}</td><td class="score">${r.score.toLocaleString()}</td></tr>`;
+      const peek = (r.awayMs || 0) >= 3000 ? `<span class="peek">👀${Math.round(r.awayMs / 1000)}s</span>` : "";
+      return `<tr${me ? ' style="color:var(--brass)"' : ""}><td>${medals[i] || i + 1}</td><td>${r.name}${peek}</td><td class="score">${r.score.toLocaleString()}</td></tr>`;
     }).join("");
   }
 
@@ -1796,7 +1853,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
     try {
       resp = await api("weekly", {
         action: "guess", name: weekly.name, token: weekly.token,
-        lat: glat, lon: glon, skip: !hasPin,
+        lat: glat, lon: glon, skip: !hasPin, awayMs: takeAwayMs(),
       });
     } catch (err) {
       distReadout.textContent = String(err.message) + " — tap to retry";
@@ -1948,6 +2005,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
     lastRoundShown = st.roundIdx;
     myGuessSubmitted = false;
     guessPt = null; actualPt = null; showLine = false; partyGuesses = null;
+    awaySince = null; awayMsRound = 0;
     $("miniStand").classList.remove("show");
     if (st.pano) presentLocation({ panoId: st.pano.id }, true);
     else presentLocation(LOCATIONS[st.locIdx], st.mode === "street");
@@ -1998,8 +2056,8 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
   }
 
   function renderMiniStand(st) {
-    const ptsBy = {};
-    for (const g of st.reveal) ptsBy[g.id] = g.pts;
+    const ptsBy = {}, awayBy = {};
+    for (const g of st.reveal) { ptsBy[g.id] = g.pts; awayBy[g.id] = g.awayMs || 0; }
     const rows = st.players.map((p) => ({
       id: p.id, name: p.name, score: p.score ?? 0, gained: ptsBy[p.id] ?? 0,
     }));
@@ -2012,7 +2070,8 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
       const arrow = delta > 0 ? `<span class="up">▲${delta}</span>`
         : delta < 0 ? `<span class="dn">▼${-delta}</span>` : `<span class="fl">–</span>`;
       const me = mode === "player" && r.id === party.playerId ? " me" : "";
-      return `<div class="msrow${me}"><span class="msrank">${i + 1}</span><span class="msname">${r.name}</span>` +
+      const peek = (awayBy[r.id] || 0) >= 3000 ? `<span class="peek">👀${Math.round(awayBy[r.id] / 1000)}s</span>` : "";
+      return `<div class="msrow${me}"><span class="msrank">${i + 1}</span><span class="msname">${r.name}${peek}</span>` +
         `<span class="msgain">+${r.gained.toLocaleString()}</span><span class="mstotal">${r.score.toLocaleString()}</span>${arrow}</div>`;
     }).join("");
     $("miniStand").classList.add("show");
@@ -2084,10 +2143,12 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
     const medals = ["🥇", "🥈", "🥉"];
     const fmtDate = (iso) => iso
       ? new Date(iso).toLocaleDateString(undefined, { month: "short", day: "numeric" }) : "";
+    const startRank = arguments.length > 1 && typeof arguments[1] === "number" ? arguments[1] : 0;
     return "<tr><th>#</th><th>Navigator</th><th>Location</th><th>Score</th><th>When</th></tr>" +
       top.map((r, i) => {
+        const rank = startRank + i;
         const hl = me && r.name.toLowerCase() === me ? ' style="color:var(--brass)"' : "";
-        return `<tr${hl}><td>${medals[i] || i + 1}</td><td>${r.name}</td><td class="deckcell">${r.deck || "Classic"}</td>` +
+        return `<tr${hl}><td>${medals[rank] || rank + 1}</td><td>${r.name}</td><td class="deckcell">${r.deck || "Classic"}</td>` +
           `<td class="score">${r.score.toLocaleString()}</td>` +
           `<td style="color:var(--muted);font-size:0.75rem">${fmtDate(r.playedAt)}</td></tr>`;
       }).join("");
@@ -2138,7 +2199,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
       distReadout.textContent = "locked in — waiting for the others";
       state = "spectate";
       try {
-        await api("guess", { code: party.code, playerId: party.playerId, token: party.token, lat: glat, lon: glon });
+        await api("guess", { code: party.code, playerId: party.playerId, token: party.token, lat: glat, lon: glon, awayMs: takeAwayMs() });
       } catch (err) {
         // rejected (too late, out of range, ...) — let the player try again
         distReadout.textContent = String(err.message);
@@ -2155,18 +2216,59 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
     }
   }
 
+  let lastHallTop = [];
   async function showLeaderboard() {
     hideAllModals();
     show(lbScreen);
+    $("lbPodium").innerHTML = "";
     $("lbTable").innerHTML = '<tr><td style="color:var(--muted)">Loading…</td></tr>';
     try {
-      const lb = await api("leaderboard");
-      $("lbTable").innerHTML = lb.top.length ? lbRows(lb.top)
-        : '<tr><td style="color:var(--muted)">No games recorded yet — host a live room!</td></tr>';
+      const deck = $("lbDeckFilter").value;
+      const lb = await api("leaderboard" + (deck ? "?deck=" + encodeURIComponent(deck) : ""));
+      lastHallTop = lb.top;
+      const medals = ["🥇", "🥈", "🥉"];
+      $("lbPodium").innerHTML = [1, 0, 2]
+        .filter((i) => lb.top[i])
+        .map((i) => {
+          const r = lb.top[i];
+          return `<div class="pod p${i + 1}"><div class="pmedal">${medals[i]}</div>` +
+            `<div class="pname">${r.name}</div><div class="pscore">${r.score.toLocaleString()}</div>` +
+            `<div class="pdeck">${r.deck || "Classic"}</div></div>`;
+        }).join("");
+      $("lbTable").innerHTML = lb.top.length > 3 ? lbRows(lb.top.slice(3), 3)
+        : lb.top.length ? "" : '<tr><td style="color:var(--muted)">No games recorded yet — host a live room!</td></tr>';
+      const seasons = lb.pastSeasons || [];
+      $("seasonsHead").style.display = seasons.length ? "" : "none";
+      $("seasonsList").innerHTML = seasons.map((s) =>
+        `${s.season} — 🏆 ${s.name} (${s.score.toLocaleString()})`).join("<br>");
     } catch (err) {
       $("lbTable").innerHTML = `<tr><td style="color:var(--red)">${err.message}</td></tr>`;
     }
   }
+  $("lbDeckFilter").addEventListener("change", showLeaderboard);
+
+  async function copyBoard(btn, title, lines) {
+    try {
+      await navigator.clipboard.writeText(title + "\n" + lines.join("\n"));
+      btn.textContent = "Copied!";
+    } catch {
+      btn.textContent = "Copy failed";
+    }
+    setTimeout(() => { btn.textContent = "Copy board"; }, 2000);
+  }
+  $("lbCopy").addEventListener("click", () => {
+    const medals = ["🥇", "🥈", "🥉"];
+    copyBoard($("lbCopy"), "Terra Incognita — Hall of Navigators",
+      lastHallTop.map((r, i) => `${medals[i] || (i + 1) + "."} ${r.name} — ${r.score.toLocaleString()} (${r.deck || "Classic"})`));
+  });
+  $("weeklyCopy").addEventListener("click", () => {
+    const medals = ["🥇", "🥈", "🥉"];
+    const rows = [...$("weeklyTable").querySelectorAll("tr")].slice(1).map((tr, i) => {
+      const cells = [...tr.querySelectorAll("td")].map((td) => td.textContent.trim());
+      return `${medals[i] || (i + 1) + "."} ${cells[1]} — ${cells[2]}`;
+    });
+    copyBoard($("weeklyCopy"), "Terra Incognita — " + $("weeklyKicker").textContent, rows);
+  });
 
   const menuErr = $("menuErr");
   const busyGuard = (fn) => async () => {
@@ -2217,6 +2319,37 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
     row.style.display = row.style.display === "none" ? "" : "none";
     $("adminMsg").textContent = "";
   });
+  let archiveConfirmTimer = null;
+  $("adminArchive").addEventListener("click", async () => {
+    const btn = $("adminArchive");
+    const msg = $("adminMsg");
+    if (!$("adminToken").value.trim()) {
+      msg.style.color = "var(--red)";
+      msg.textContent = "enter the admin token";
+      return;
+    }
+    if (!archiveConfirmTimer) {
+      btn.textContent = "Really archive & reset?";
+      archiveConfirmTimer = setTimeout(() => {
+        archiveConfirmTimer = null;
+        btn.textContent = "Archive season";
+      }, 4000);
+      return;
+    }
+    clearTimeout(archiveConfirmTimer);
+    archiveConfirmTimer = null;
+    btn.textContent = "Archive season";
+    try {
+      const r = await api("admin", { token: $("adminToken").value.trim(), action: "archiveSeason" });
+      msg.style.color = "var(--teal)";
+      msg.textContent = `Archived ${r.archived} records as ${r.season}`;
+      showLeaderboard();
+    } catch (err) {
+      msg.style.color = "var(--red)";
+      msg.textContent = String(err.message);
+    }
+  });
+
   let adminConfirmTimer = null;
   $("adminClear").addEventListener("click", async () => {
     const btn = $("adminClear");

@@ -17,11 +17,11 @@ const cleanName = (raw) => String(raw || '').trim().slice(0, 20).replace(/[<>&"'
 async function topRows(week) {
   await ensureWeeklyTable();
   const rows = await getSql()`
-    SELECT player_name, score, played_at FROM weekly_scores
+    SELECT player_name, score, away_ms, played_at FROM weekly_scores
     WHERE week = ${week}
     ORDER BY score DESC, played_at ASC
     LIMIT 20`;
-  return rows.map((r) => ({ name: r.player_name, score: r.score, playedAt: r.played_at }));
+  return rows.map((r) => ({ name: r.player_name, score: r.score, awayMs: r.away_ms || 0, playedAt: r.played_at }));
 }
 
 module.exports = async (req, res) => {
@@ -85,6 +85,8 @@ module.exports = async (req, res) => {
       km = haversineKm(lat, lon, loc.lat, loc.lon);
       pts = pointsFor(km);
     }
+    attempt.awayMs = (attempt.awayMs || 0) +
+      Math.min(600000, Math.max(0, Math.round(Number(req.body?.awayMs) || 0)));
     attempt.results.push({ locIdx, km, pts });
     attempt.total += pts;
     attempt.roundIdx += 1;
@@ -97,8 +99,8 @@ module.exports = async (req, res) => {
       if (!isTestName(name)) {
         await ensureWeeklyTable();
         await getSql()`
-          INSERT INTO weekly_scores (week, player_name, score, rounds)
-          VALUES (${week}, ${name}, ${attempt.total}, ${WEEKLY_ROUNDS})
+          INSERT INTO weekly_scores (week, player_name, score, rounds, away_ms)
+          VALUES (${week}, ${name}, ${attempt.total}, ${WEEKLY_ROUNDS}, ${attempt.awayMs || 0})
           ON CONFLICT (week, player_name) DO NOTHING`;
       }
       out.top = await topRows(week);

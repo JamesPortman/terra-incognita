@@ -41,8 +41,28 @@ async function ensureWeeklyTable() {
         played_at timestamptz NOT NULL DEFAULT now(),
         UNIQUE (week, player_name)
       )`;
+    weeklyReady = weeklyReady.then(() =>
+      getSql()`ALTER TABLE weekly_scores ADD COLUMN IF NOT EXISTS away_ms int`);
   }
   await weeklyReady;
 }
 
-module.exports = { getSql, ensureTable, ensureWeeklyTable };
+let archiveReady = null;
+async function ensureArchiveTable() {
+  if (!archiveReady) {
+    archiveReady = getSql()`
+      CREATE TABLE IF NOT EXISTS leaderboard_archive (
+        id serial PRIMARY KEY,
+        season text NOT NULL,
+        player_name text NOT NULL,
+        score int NOT NULL,
+        rounds int NOT NULL,
+        deck text,
+        played_at timestamptz,
+        archived_at timestamptz NOT NULL DEFAULT now()
+      )`;
+  }
+  await archiveReady;
+}
+
+module.exports = { getSql, ensureTable, ensureWeeklyTable, ensureArchiveTable };

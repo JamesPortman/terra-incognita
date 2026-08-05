@@ -53,7 +53,7 @@ module.exports = async (req, res) => {
     out.reveal = Object.entries(guesses).map(([pid, g]) => ({
       id: pid,
       name: players[pid]?.name || '?',
-      lat: g.lat, lon: g.lon, km: g.km, pts: g.pts,
+      lat: g.lat, lon: g.lon, km: g.km, pts: g.pts, awayMs: g.awayMs || 0,
     }));
     if (isPlayer && guesses[playerId]) out.you = guesses[playerId];
   }

@@ -29,8 +29,9 @@ module.exports = async (req, res) => {
   const km = haversineKm(lat, lon, loc.lat, loc.lon);
   const pts = pointsFor(km);
   const ms = Date.now() - meta.roundStartAt;
+  const awayMs = Math.min(600000, Math.max(0, Math.round(Number(req.body?.awayMs) || 0)));
 
-  const fresh = await store.hsetnxJSON(guessesKey(code, meta.roundIdx), playerId, { lat, lon, km, pts, ms }, TTL_SEC);
+  const fresh = await store.hsetnxJSON(guessesKey(code, meta.roundIdx), playerId, { lat, lon, km, pts, ms, awayMs }, TTL_SEC);
   if (!fresh) return sendJSON(res, 409, { error: 'already guessed this round' });
 
   player.ptsByRound = { ...(player.ptsByRound || {}), [meta.roundIdx]: pts };

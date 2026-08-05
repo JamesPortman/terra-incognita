@@ -136,6 +136,26 @@ describe('guess', () => {
   });
 });
 
+describe('tab-away reporting', () => {
+  it('stores clamped awayMs with the guess and reveals it', async () => {
+    const { code, hostToken } = await newRoom();
+    const p = (await joinAs(code, 'Alice')).body;
+    await call(next, { body: { code, hostToken } });
+    await call(guess, { body: { code, playerId: p.playerId, token: p.token, lat: 10, lon: 10, awayMs: 18400 } });
+    const st = await call(state, { method: 'GET', query: { code, hostToken } });
+    expect(st.body.reveal[0].awayMs).toBe(18400);
+  });
+
+  it('clamps nonsense values', async () => {
+    const { code, hostToken } = await newRoom();
+    const p = (await joinAs(code, 'Bob')).body;
+    await call(next, { body: { code, hostToken } });
+    await call(guess, { body: { code, playerId: p.playerId, token: p.token, lat: 10, lon: 10, awayMs: -500 } });
+    const st = await call(state, { method: 'GET', query: { code, hostToken } });
+    expect(st.body.reveal[0].awayMs).toBe(0);
+  });
+});
+
 describe('best-five scoring in long games', () => {
   it('caps a six-round perfect game at 25,000', async () => {
     const { code, hostToken } = await newRoom({ rounds: 6 });
