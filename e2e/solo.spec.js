@@ -51,6 +51,24 @@ test.describe('solo game', () => {
     await expect(page.locator('#goBtn')).toHaveText(/Next round/i);
   });
 
+  test('shows time spent off-tab on the reveal and final table', async ({ page }) => {
+    await startSolo(page);
+    await expect(page.locator('#roundLabel')).toHaveText('1 / 5');
+    // simulate switching away for ~3.5s during the first round
+    await page.evaluate(() => window.dispatchEvent(new Event('blur')));
+    await page.waitForTimeout(3500);
+    await page.evaluate(() => window.dispatchEvent(new Event('focus')));
+    await page.locator('#map').click();
+    await page.locator('#goBtn').click();
+    await expect(page.locator('#distReadout')).toHaveText(/👀 \d+s off-tab/);
+    await page.locator('#goBtn').click();
+    // stay on the tab for the remaining rounds — no badge on those
+    for (let round = 2; round <= 5; round++) await guessAndAdvance(page);
+    await expect(page.locator('#finalScreen')).toBeVisible();
+    await expect(page.locator('#finalTable .peek')).toHaveCount(1);
+    await expect(page.locator('#finalTable .peek')).toHaveText(/👀\d+s/);
+  });
+
   test('back to menu from the final screen', async ({ page }) => {
     await startSolo(page);
     for (let round = 1; round <= 5; round++) await guessAndAdvance(page);

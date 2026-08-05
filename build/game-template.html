@@ -1204,10 +1204,11 @@ const LOCATIONS = __LOCATIONS__;
     if (guessPt) { submitGuess(); return; }
     // no pin placed: zero-point round
     state = "result";
+    const away = takeAwayMs();
     const loc = deck[round];
     actualPt = lonLatToMap(loc.lon, loc.lat);
     showLine = false;
-    results.push({ name: loc.name, km: null, pts: 0, gPt: null, aPt: actualPt.slice() });
+    results.push({ name: loc.name, km: null, pts: 0, away, gPt: null, aPt: actualPt.slice() });
     total = bestFiveTotal(results.map((r) => r.pts));
     drawMarkers();
     if (gmap) gmapShowActualOnly(loc);
@@ -1215,7 +1216,8 @@ const LOCATIONS = __LOCATIONS__;
     revealName.textContent = loc.name;
     revealPlace.textContent = loc.place;
     revealCard.classList.add("show");
-    distReadout.textContent = "time's up — no pin placed";
+    distReadout.textContent = "time's up — no pin placed" +
+      (away >= 3000 ? ` · 👀 ${Math.round(away / 1000)}s off-tab` : "");
     ptsReadout.textContent = "+0 pts";
     scoreFill.style.width = "0%";
     sfx.womp();
@@ -1314,6 +1316,7 @@ const LOCATIONS = __LOCATIONS__;
   function newGame(customDeck) {
     deck = customDeck || shuffle([...LOCATIONS]).slice(0, ROUNDS);
     round = 0; total = 0; results = [];
+    awaySince = null; awayMsRound = 0;
     if (finalConfirmTimer) { clearTimeout(finalConfirmTimer); finalConfirmTimer = null; }
     finalScreen.classList.remove("show");
     stopCount(scoreLabel);
@@ -1346,12 +1349,13 @@ const LOCATIONS = __LOCATIONS__;
   function submitGuess() {
     state = "result";
     stopTimer();
+    const away = takeAwayMs();
     const loc = deck[round];
     const [glon, glat] = mapToLonLat(guessPt[0], guessPt[1]);
     const km = haversine(glat, glon, loc.lat, loc.lon);
     const pts = Math.round(5000 * Math.exp(-km / 2000));
     actualPt = lonLatToMap(loc.lon, loc.lat);
-    results.push({ name: loc.name, km, pts, gPt: guessPt.slice(), aPt: actualPt.slice() });
+    results.push({ name: loc.name, km, pts, away, gPt: guessPt.slice(), aPt: actualPt.slice() });
     total = bestFiveTotal(results.map((r) => r.pts));
     showLine = true;
     if (gmap) gmapReveal([{ lat: glat, lng: glon, isMe: true }], loc);
@@ -1360,7 +1364,8 @@ const LOCATIONS = __LOCATIONS__;
     revealName.textContent = loc.name;
     revealPlace.textContent = loc.place;
     revealCard.classList.add("show");
-    distReadout.textContent = `your pin landed ${fmtKm(km)} away`;
+    distReadout.textContent = `your pin landed ${fmtKm(km)} away` +
+      (away >= 3000 ? ` · 👀 ${Math.round(away / 1000)}s off-tab` : "");
     animateCount(ptsReadout, pts, (v) => `+${v.toLocaleString()} pts`);
     requestAnimationFrame(() => { scoreFill.style.width = (pts / 5000) * 100 + "%"; });
     animateCount(scoreLabel, total, (v) => v.toLocaleString());
@@ -1414,7 +1419,8 @@ const LOCATIONS = __LOCATIONS__;
       .sort((a, b) => b[0] - a[0] || a[1] - b[1]).slice(0, 5).map(([, i]) => i));
     finalTable.innerHTML = results.map((r, i) => {
       const dropped = ROUNDS > 5 && !counted.has(i);
-      return `<tr${dropped ? ' style="opacity:0.4"' : ""}><td>${r.name}${dropped ? " (dropped)" : ""}</td><td class="dist">${fmtKm(r.km)}</td><td>+${r.pts.toLocaleString()}</td></tr>`;
+      const peek = (r.away || 0) >= 3000 ? `<span class="peek">👀${Math.round(r.away / 1000)}s</span>` : "";
+      return `<tr${dropped ? ' style="opacity:0.4"' : ""}><td>${r.name}${peek}${dropped ? " (dropped)" : ""}</td><td class="dist">${fmtKm(r.km)}</td><td>+${r.pts.toLocaleString()}</td></tr>`;
     }).join("");
     finalScreen.classList.add("show");
     goBtn.disabled = false;
@@ -1455,9 +1461,9 @@ const LOCATIONS = __LOCATIONS__;
     if (e.key === "Enter" && !goBtn.disabled && tag !== "BUTTON" && tag !== "INPUT") goBtn.click();
   });
 
-  // ---- tab-away tracking (party + weekly questions; social, not punitive) ----
+  // ---- tab-away tracking (solo, party + weekly questions; social, not punitive) ----
   let awaySince = null, awayMsRound = 0;
-  const awayActive = () => state === "guessing" && (mode === "player" || mode === "weekly");
+  const awayActive = () => state === "guessing" && (mode === "solo" || mode === "player" || mode === "weekly");
   const awayStart = () => { if (awayActive() && awaySince == null) awaySince = performance.now(); };
   const awayStop = () => {
     if (awaySince != null) { awayMsRound += performance.now() - awaySince; awaySince = null; }

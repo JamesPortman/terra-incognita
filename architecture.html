@@ -405,6 +405,7 @@
         <li>Session tokens live in per-tab <code>sessionStorage</code> — refresh rejoins, but tabs are independent participants.</li>
         <li>The Maps key is public by design, defended by referrer + API restrictions and a monthly quota cap.</li>
         <li>An <code>ADMIN_TOKEN</code>-gated endpoint (<code>/api/admin</code>, UI under the leaderboard) can clear the all-time leaderboard; E2E test players (<code>E2E-*</code> names) are filtered out server-side and never reach it.</li>
+        <li>Time spent off the tab mid-round (visibility + focus events) shows as a social &#128064; badge — on solo reveals and the final table, and next to names in live-room reveals and weekly boards. Informational, never punitive; multiplayer values are clamped server-side.</li>
       </ul>
     </div>
     <div>
