@@ -1010,21 +1010,24 @@ const LOCATIONS = __LOCATIONS__;
   const searchBox = document.getElementById("searchBox");
   const searchResults = document.getElementById("searchResults");
   const norm = (s) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  // expand country-name indexes and normalize every name once, not per keystroke
+  for (const c of SEARCH_COUNTRIES) c.q = norm(c.n);
+  for (const r of SEARCH_REGIONS) { r.s = SEARCH_CC[r.s]; r.q = norm(r.n); }
+  for (const c of SEARCH_CITIES) { c.s = SEARCH_CC[c.s]; c.q = norm(c.n); }
   let matches = [], activeIdx = -1;
 
   function findMatches(q) {
     const starts = [], contains = [];
-    for (const c of SEARCH_COUNTRIES) {
-      const n = norm(c.n);
-      if (n.startsWith(q)) starts.push({ ...c, kind: "country" });
-      else if (n.includes(q)) contains.push({ ...c, kind: "country" });
-    }
-    for (const c of SEARCH_CITIES) {
-      if (starts.length + contains.length > 40) break;
-      const n = norm(c.n);
-      if (n.startsWith(q)) starts.push({ ...c, kind: "city" });
-      else if (n.includes(q)) contains.push({ ...c, kind: "city" });
-    }
+    const scan = (list, kind) => {
+      for (const c of list) {
+        if (starts.length > 40) return;
+        if (c.q.startsWith(q)) starts.push({ ...c, kind });
+        else if (contains.length <= 40 && c.q.includes(q)) contains.push({ ...c, kind });
+      }
+    };
+    scan(SEARCH_COUNTRIES, "country");
+    scan(SEARCH_REGIONS, "region");
+    scan(SEARCH_CITIES, "city");
     return starts.concat(contains).slice(0, 8);
   }
 
@@ -1032,7 +1035,7 @@ const LOCATIONS = __LOCATIONS__;
     if (!matches.length) { searchResults.classList.remove("open"); return; }
     searchResults.innerHTML = matches.map((m, i) =>
       `<div class="item${i === activeIdx ? " active" : ""}" role="option" data-i="${i}">
-         <span>${m.n}${m.kind === "city" ? ` <span class="sub">${m.s}</span>` : ""}</span>
+         <span>${m.n}${m.kind !== "country" ? ` <span class="sub">${m.s}</span>` : ""}</span>
          <span class="sub kind">${m.kind}</span>
        </div>`
     ).join("");
@@ -1043,7 +1046,7 @@ const LOCATIONS = __LOCATIONS__;
     const m = matches[i];
     if (!m) return;
     if (gmap) {
-      if (m.kind === "country") {
+      if (m.b) { // countries and regions carry a bounding box; cities a point
         const [wLon, nLat] = mapToLonLat(m.b[0], m.b[1]);
         const [eLon, sLat] = mapToLonLat(m.b[2], m.b[3]);
         gmap.fitBounds({ north: nLat, south: sLat, west: wLon, east: eLon }, 40);
@@ -1052,7 +1055,7 @@ const LOCATIONS = __LOCATIONS__;
         gmap.panTo({ lat, lng: lon });
         gmap.setZoom(9);
       }
-    } else if (m.kind === "country") flyToBox(m.b);
+    } else if (m.b) flyToBox(m.b);
     else flyToPoint(m.x, m.y, 6);
     searchBox.value = m.n;
     matches = []; activeIdx = -1;

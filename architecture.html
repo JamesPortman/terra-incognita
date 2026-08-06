@@ -156,7 +156,7 @@
       players into a random panorama anywhere on Earth. A
       <em>Weekly Expedition</em> gives everyone the same seeded deck each ISO
       week — one server-scored attempt per name, with its own weekly board.
-      The client is one ~350&#8201;KB HTML file served by Vercel, with a thin
+      The client is one ~0.9&#8201;MB HTML file served by Vercel, with a thin
       set of serverless functions
       adding Kahoot-style live rooms for up to 14 players (room state in
       Upstash Redis, expiring automatically), between-round standings, and a
@@ -216,7 +216,7 @@
         </defs>
         <!-- Browser layer -->
         <rect x="20" y="10" width="720" height="108" rx="10" fill="#7fa8d0" fill-opacity="0.10" stroke="#7fa8d0" stroke-width="1.5"/>
-        <text x="40" y="36" font-size="15" font-weight="700" fill="#7fa8d0">Browser — index.html (~350&#8201;KB) + /photos static files</text>
+        <text x="40" y="36" font-size="15" font-weight="700" fill="#7fa8d0">Browser — index.html (~0.9&#8201;MB, gzipped in transit) + /photos static files</text>
         <text x="40" y="58" font-size="12" fill="currentColor" fill-opacity="0.85">Google guess map (dark-styled, full labels) · SVG atlas fallback + results map · 50 famous places (static photos, prefetched) · gazetteer</text>
         <text x="40" y="76" font-size="12" fill="currentColor" fill-opacity="0.85">Street View panorama · random-deck resolver (free metadata) · solo engine · party polling loop (1.5&#8201;s)</text>
         <text x="40" y="94" font-size="12" fill="currentColor" fill-opacity="0.85">WebAudio sfx (ticks, stings, fanfare; muteable) · count-up + confetti theatrics · sessionStorage per tab</text>
@@ -455,7 +455,7 @@
       <li><code>build/game-template.html</code> is the source of truth; <code>build/assemble.js</code> injects data and writes <code>index.html</code>.</li>
       <li>World map: Natural-Earth-derived GeoJSON &#8594; simplified SVG paths (~110&#8201;KB, 179 countries) by <code>build/build-map.js</code>.</li>
       <li>Photos: Wikipedia lead images, downscaled by <code>build/build-photos.sh</code> (idempotent) and served statically from <code>/photos</code>.</li>
-      <li>Search gazetteer: GeoNames cities &#8805;200k + country bounding boxes (~160&#8201;KB) by <code>build/build-search.js</code>.</li>
+      <li>Search gazetteer: GeoNames cities &#8805;50k (~12.4k), admin-1 regions (~2.8k, boxes derived from member cities) + country bounding boxes (~700&#8201;KB; country names indexed once) by <code>build/build-search.js</code>. Sources re-downloaded, never committed.</li>
       <li>Locations live once in <code>shared/locations.js</code> — embedded into the client <em>and</em> imported by the scoring API; order is the contract.</li>
       <li>Rebuild = <code>node build/assemble.js</code>, prepend doctype, commit.</li>
     </ul>

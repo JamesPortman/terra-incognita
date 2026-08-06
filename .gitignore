@@ -3,3 +3,6 @@
 node_modules
 test-results
 playwright-report
+build/cities15000.*
+build/countryInfo.txt
+build/admin1CodesASCII.txt
