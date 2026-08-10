@@ -454,7 +454,7 @@
           <li>All scoring is server-side (haversine + exponential decay); coordinates are validated before scoring.</li>
           <li>State responses omit scores and answers during open questions; random-world rounds send only a pano id, coordinates at reveal.</li>
           <li>The weekly deck is revealed one round per guess — the console can't preview upcoming locations.</li>
-          <li>Solo games recorded to the Hall are server-scored attempts: the deck is built and shuffled server-side, disclosed one round per guess, timing is enforced, and the row is written as <code>room_code 'SOLO'</code>. Random-world solo is client-resolved and never recorded.</li>
+          <li>Solo games recorded to the Hall are server-scored attempts: the deck is built and shuffled server-side, disclosed one round per guess, timing is enforced, and the row is written as <code>room_code 'SOLO'</code>. Solo rows live on their own board (group games are the default Hall view); random-world solo is client-resolved and never recorded.</li>
           <li>Round timing is enforced server-side (late guesses score zero, small grace window) and a first guess is final (<code>HSETNX</code>).</li>
           <li>Time spent off the tab mid-round shows as a social &#128064; badge — solo reveals and the final table, live-room reveals, weekly boards. Informational, never punitive; values are clamped server-side.</li>
         </ul>

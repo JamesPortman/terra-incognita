@@ -716,7 +716,7 @@
         </div>
         <label class="modetoggle">
           <input type="checkbox" id="recToggle" />
-          <span>Record solo games to the Hall of Navigators (needs your name)</span>
+          <span>Record to Hall of Navigators</span>
         </label>
         <button class="primary" id="menuSolo">Play solo</button>
         <button class="primary" id="menuWeekly">Weekly Expedition</button>
@@ -785,6 +785,10 @@
         <option>USA &mdash; Famous Places</option>
         <option>World &mdash; Famous Places</option>
       </select>
+      <label class="modetoggle" style="margin-bottom:12px">
+        <input type="checkbox" id="lbSoloToggle" />
+        <span>Show solo games</span>
+      </label>
       <div class="podium" id="lbPodium"></div>
       <table class="lbtable" id="lbTable"></table>
       <div class="subhead" id="seasonsHead" style="display:none">Past seasons</div>
@@ -1427,8 +1431,8 @@ const LOCATIONS = __LOCATIONS__;
     if (soloRec && soloRec.final) {
       fr.style.display = "";
       fr.textContent = !soloRec.final.recorded ? "Test game — not recorded"
-        : soloRec.final.rank ? `#${soloRec.final.rank} in the Hall of Navigators`
-        : "Recorded to the Hall of Navigators";
+        : soloRec.final.rank ? `#${soloRec.final.rank} on the solo Hall of Navigators`
+        : "Recorded to the solo Hall of Navigators";
     } else {
       fr.style.display = "none";
     }
@@ -2306,7 +2310,12 @@ const LOCATIONS = __LOCATIONS__;
     $("lbTable").innerHTML = '<tr><td style="color:var(--muted)">Loading…</td></tr>';
     try {
       const deck = $("lbDeckFilter").value;
-      const lb = await api("leaderboard" + (deck ? "?deck=" + encodeURIComponent(deck) : ""));
+      const solo = $("lbSoloToggle").checked; // group games are the default board
+      const params = new URLSearchParams();
+      if (deck) params.set("deck", deck);
+      if (solo) params.set("source", "solo");
+      const qs = params.toString();
+      const lb = await api("leaderboard" + (qs ? "?" + qs : ""));
       lastHallTop = lb.top;
       const medals = ["🥇", "🥈", "🥉"];
       $("lbPodium").innerHTML = [1, 0, 2]
@@ -2318,7 +2327,9 @@ const LOCATIONS = __LOCATIONS__;
             `<div class="pdeck">${esc(r.deck || "Classic")}</div></div>`;
         }).join("");
       $("lbTable").innerHTML = lb.top.length > 3 ? lbRows(lb.top.slice(3), 3)
-        : lb.top.length ? "" : '<tr><td style="color:var(--muted)">No games recorded yet — host a live room or record a solo game!</td></tr>';
+        : lb.top.length ? "" : `<tr><td style="color:var(--muted)">${solo
+          ? "No solo games recorded yet — tick Record to Hall of Navigators and play!"
+          : "No group games recorded yet — host a live room!"}</td></tr>`;
       const seasons = lb.pastSeasons || [];
       $("seasonsHead").style.display = seasons.length ? "" : "none";
       $("seasonsList").innerHTML = seasons.map((s) =>
@@ -2328,6 +2339,7 @@ const LOCATIONS = __LOCATIONS__;
     }
   }
   $("lbDeckFilter").addEventListener("change", showLeaderboard);
+  $("lbSoloToggle").addEventListener("change", showLeaderboard);
 
   async function copyBoard(btn, title, lines) {
     try {
@@ -2340,7 +2352,7 @@ const LOCATIONS = __LOCATIONS__;
   }
   $("lbCopy").addEventListener("click", () => {
     const medals = ["🥇", "🥈", "🥉"];
-    copyBoard($("lbCopy"), "Terra Incognita — Hall of Navigators",
+    copyBoard($("lbCopy"), "Terra Incognita — Hall of Navigators" + ($("lbSoloToggle").checked ? " (solo)" : ""),
       lastHallTop.map((r, i) => `${medals[i] || (i + 1) + "."} ${r.name} — ${r.score.toLocaleString()} (${r.deck || "Classic"})`));
   });
   $("weeklyCopy").addEventListener("click", () => {

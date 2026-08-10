@@ -5,7 +5,7 @@ const { sendJSON } = require('./_lib/rooms.js');
 module.exports = async (req, res) => {
   await ensureArchiveTable();
   const deck = typeof req.query?.deck === 'string' && req.query.deck ? req.query.deck.slice(0, 60) : null;
-  const top = await hallTop(deck);
+  const top = await hallTop(deck, req.query?.source === 'solo'); // group games are the default board
   const seasons = await getSql()`
     SELECT DISTINCT ON (season) season, player_name, score
     FROM leaderboard_archive

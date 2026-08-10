@@ -155,6 +155,13 @@ test.describe('recorded solo game', () => {
 
     await page.locator('#menuLb').click();
     await expect(page.locator('#lbScreen')).toBeVisible();
+    // group board is the default view
+    await expect(page.locator('#lbSoloToggle')).not.toBeChecked();
+    await expect(page.locator('#lbTable')).not.toContainText('E2E-SoloRec');
+    await expect(page.locator('#lbPodium')).not.toContainText('E2E-SoloRec');
+    // the solo board is clean of test agents too
+    await page.locator('#lbSoloToggle').check();
+    await expect(page.locator('#lbTable')).not.toContainText('Loading');
     await expect(page.locator('#lbTable')).not.toContainText('E2E-SoloRec');
     await expect(page.locator('#lbPodium')).not.toContainText('E2E-SoloRec');
   });

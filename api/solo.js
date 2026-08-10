@@ -25,7 +25,7 @@ const totalFor = (attempt) => attempt.rounds > 5
 
 async function finalPayload(attempt, last) {
   const label = DECK_LABELS[attempt.deckId];
-  const top = await hallTop(label);
+  const top = await hallTop(label, true); // rank within the solo board
   return {
     km: last.km, pts: last.pts, locIdx: last.locIdx,
     roundIdx: attempt.rounds, total: attempt.total,
