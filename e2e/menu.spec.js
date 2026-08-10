@@ -8,7 +8,8 @@ test.describe('menu', () => {
     await expect(page.locator('#menuHost')).toBeVisible();
     await expect(page.locator('#roundSecInput')).toHaveValue('60');
     await expect(page.locator('#roundsInput')).toHaveValue('5');
-    await expect(page.locator('#deckSelect')).toHaveValue('na');
+    await expect(page.locator('#deckSelect')).toHaveValue('random'); // default once config enables it
+    await expect(page.locator('#recToggle')).toBeChecked(); // recording defaults on for random
     await expect(page.locator('#timerLabel')).toHaveText('1:00');
   });
 

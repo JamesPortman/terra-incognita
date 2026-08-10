@@ -102,17 +102,20 @@ test.describe('solo game', () => {
 test.describe('recorded solo game (random world only)', () => {
   // the server-scored happy path lives in gmap.spec.js (it needs Google);
   // these tests cover the menu rules and Hall hygiene without any network
-  test('record toggle is only available for Random world', async ({ page }) => {
+  test('record toggle is only available for Random world and defaults on', async ({ page }) => {
     await page.goto('/?plainmap=1');
     await expect(page.locator('#modeToggleRow')).toBeVisible(); // config loaded
+    // random world is the default deck, with recording on by default
+    await expect(page.locator('#deckSelect')).toHaveValue('random');
+    await expect(page.locator('#recToggle')).toBeEnabled();
+    await expect(page.locator('#recToggle')).toBeChecked();
     // famous decks are casual-only
+    await page.locator('#deckSelect').selectOption('world');
     await expect(page.locator('#recToggle')).toBeDisabled();
     await expect(page.locator('#recToggle')).not.toBeChecked();
     await page.locator('#deckSelect').selectOption('random');
     await expect(page.locator('#recToggle')).toBeEnabled();
-    await page.locator('#deckSelect').selectOption('world');
-    await expect(page.locator('#recToggle')).toBeDisabled();
-    await expect(page.locator('#recToggle')).not.toBeChecked();
+    await expect(page.locator('#recToggle')).toBeChecked();
   });
 
   test('recording requires a name (checked before any Maps lookups)', async ({ page }) => {

@@ -690,8 +690,8 @@
         <label class="timerow">
           <span>Locations</span>
           <select id="deckSelect" aria-label="Location set">
-            <option value="na" selected>North America &mdash; Famous Places</option>
-            <option value="random" id="deckRandomOpt" disabled>Random world (Street View)</option>
+            <option value="na">North America &mdash; Famous Places</option>
+            <option value="random" id="deckRandomOpt" disabled selected>Random world (Street View)</option>
             <option value="sa">South America &mdash; Famous Places</option>
             <option value="us">USA &mdash; Famous Places</option>
             <option value="world">World &mdash; Famous Places</option>
@@ -1541,7 +1541,11 @@ const LOCATIONS = __LOCATIONS__;
     if (mapsKey) {
       $("modeToggleRow").style.display = "";
       $("deckRandomOpt").disabled = false;
+    } else {
+      // random world needs the Maps key — fall back off the default
+      $("deckSelect").value = "na";
     }
+    syncDeckUI();
   }
 
   function ensureMaps() {
@@ -2388,14 +2392,14 @@ const LOCATIONS = __LOCATIONS__;
     $("svToggle").disabled = random; // random rounds are Street View by definition
     // only random-world games are recordable — famous decks are 50
     // memorizable places, so they stay casual
-    $("recToggle").checked = random && localStorage.getItem("terra-record") === "1";
+    $("recToggle").checked = random && localStorage.getItem("terra-record") !== "0"; // default on
     $("recToggle").disabled = !random;
   }
   $("deckSelect").addEventListener("change", syncDeckUI);
   $("recToggle").addEventListener("change", () => {
     localStorage.setItem("terra-record", $("recToggle").checked ? "1" : "0");
   });
-  syncDeckUI(); // default deck is famous -> record toggle starts disabled
+  syncDeckUI(); // random is the default -> record toggle starts enabled + on
   $("roundsInput").addEventListener("input", () => {
     $("bestFiveNote").style.display = parseInt($("roundsInput").value, 10) > 5 ? "" : "none";
   });

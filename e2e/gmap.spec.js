@@ -51,6 +51,7 @@ test.describe('google guess map', () => {
     await page.goto('/');
     await expect(page.locator('#modeToggleRow')).toBeVisible();
     await page.locator('#deckSelect').selectOption('random');
+    await page.locator('#recToggle').uncheck(); // casual unrecorded game
     await page.locator('#roundsInput').fill('1');
     await page.locator('#menuSolo').click();
     // deck resolution can take a few seconds of metadata lookups
