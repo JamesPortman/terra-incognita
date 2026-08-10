@@ -267,7 +267,7 @@
         <!-- Functions layer -->
         <rect x="20" y="168" width="500" height="118" rx="10" fill="#d9a441" fill-opacity="0.10" stroke="#d9a441" stroke-width="1.5"/>
         <text x="40" y="194" font-size="15" font-weight="700" fill="#d9a441">Vercel Functions — api/</text>
-        <text x="40" y="216" font-size="12" fill="currentColor" fill-opacity="0.85">create · join · guess · next · state · weekly · leaderboard · admin · config</text>
+        <text x="40" y="216" font-size="12" fill="currentColor" fill-opacity="0.85">create · join · guess · next · state · weekly · solo · leaderboard · admin · config</text>
         <text x="40" y="234" font-size="12" fill="currentColor" fill-opacity="0.85">All scoring server-side (haversine + exponential decay)</text>
         <text x="40" y="252" font-size="12" fill="currentColor" fill-opacity="0.85">Lazy transitions: any state read can flip question &#8594; reveal</text>
         <text x="40" y="270" font-size="12" fill="currentColor" fill-opacity="0.85">Host token / player tokens checked on every call</text>
@@ -424,8 +424,8 @@
       <tr><td>10,000 km</td><td class="num">34</td><td>Wrong hemisphere</td></tr>
     </table>
     <p class="lede" style="margin-top:12px">
-      Identical for solo and multiplayer; in rooms the formula runs server-side
-      so a modified client cannot inflate scores. Games run 1–10 rounds
+      Identical everywhere; in rooms, the weekly, and recorded solo games the
+      formula runs server-side so a modified client cannot inflate scores. Games run 1–10 rounds
       (default 5); games longer than five rounds score only the best five, so the maximum is min(rounds, 5) &#215; 5,000. Reveals count the
       points up, drop confetti on 4,500+ pins, and — in live rooms — show
       ranked between-round standings with rank-movement arrows.
@@ -454,6 +454,7 @@
           <li>All scoring is server-side (haversine + exponential decay); coordinates are validated before scoring.</li>
           <li>State responses omit scores and answers during open questions; random-world rounds send only a pano id, coordinates at reveal.</li>
           <li>The weekly deck is revealed one round per guess — the console can't preview upcoming locations.</li>
+          <li>Solo games recorded to the Hall are server-scored attempts: the deck is built and shuffled server-side, disclosed one round per guess, timing is enforced, and the row is written as <code>room_code 'SOLO'</code>. Random-world solo is client-resolved and never recorded.</li>
           <li>Round timing is enforced server-side (late guesses score zero, small grace window) and a first guess is final (<code>HSETNX</code>).</li>
           <li>Time spent off the tab mid-round shows as a social &#128064; badge — solo reveals and the final table, live-room reveals, weekly boards. Informational, never punitive; values are clamped server-side.</li>
         </ul>
@@ -461,7 +462,7 @@
       <div class="card">
         <h3 style="color:var(--red)">Abuse &amp; input</h3>
         <ul>
-          <li>Per-IP fixed-window rate limits over Redis on the write endpoints: room create and join, weekly starts, and admin attempts. Fail-open — a store hiccup never locks players out.</li>
+          <li>Per-IP fixed-window rate limits over Redis on the write endpoints: room create and join, weekly and recorded-solo starts, and admin attempts. Fail-open — a store hiccup never locks players out.</li>
           <li>Names and labels are length-capped and markup-stripped at the API, then HTML-escaped again at render — two independent layers against stored XSS. Duplicate names get numbered.</li>
           <li>E2E test players (<code>E2E-*</code> names) are filtered server-side and never reach a leaderboard.</li>
           <li>Room-code allocation returns 503 if the code space is momentarily exhausted rather than overwriting a live room.</li>

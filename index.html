@@ -655,6 +655,7 @@
         <div class="total" id="finalTotal">0</div>
         <div class="outof" id="finalOutOf">out of 25,000</div>
         <div class="verdict" id="finalVerdict"></div>
+        <div id="finalRank" style="display:none;color:var(--brass);font-size:0.85rem;margin-bottom:10px"></div>
         <svg id="finalMap" xmlns="http://www.w3.org/2000/svg" role="img"
              aria-label="Map of all your guesses versus the actual locations"></svg>
         <table id="finalTable"></table>
@@ -713,6 +714,10 @@
         <div class="timerow" id="bestFiveNote" style="display:none;color:var(--brass);font-size:0.78rem">
           longer games score your best 5 rounds
         </div>
+        <label class="modetoggle">
+          <input type="checkbox" id="recToggle" />
+          <span>Record solo games to the Hall of Navigators (needs your name)</span>
+        </label>
         <button class="primary" id="menuSolo">Play solo</button>
         <button class="primary" id="menuWeekly">Weekly Expedition</button>
         <button class="primary" id="menuHost">Host a live room</button>
@@ -1203,7 +1208,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
   function stopTimer() { if (timerId) { clearInterval(timerId); timerId = null; } }
   function timeUp() {
     if (state !== "guessing") return;
-    if (mode === "weekly") { weeklySubmit(); return; }
+    if (mode === "weekly" || soloRec) { serverSubmit(); return; }
     if (guessPt) { submitGuess(); return; }
     // no pin placed: zero-point round
     state = "result";
@@ -1418,6 +1423,15 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
     $("finalOutOf").textContent = `out of ${maxScore().toLocaleString()}` +
       (ROUNDS > 5 ? " — best 5 rounds count" : "");
     finalVerdict.textContent = verdictFor(total);
+    const fr = $("finalRank");
+    if (soloRec && soloRec.final) {
+      fr.style.display = "";
+      fr.textContent = !soloRec.final.recorded ? "Test game — not recorded"
+        : soloRec.final.rank ? `#${soloRec.final.rank} in the Hall of Navigators`
+        : "Recorded to the Hall of Navigators";
+    } else {
+      fr.style.display = "none";
+    }
     const counted = new Set(results.map((r, i) => [r.pts, i])
       .sort((a, b) => b[0] - a[0] || a[1] - b[1]).slice(0, 5).map(([, i]) => i));
     finalTable.innerHTML = results.map((r, i) => {
@@ -1451,7 +1465,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
       }
       return;
     }
-    if (state === "guessing" && guessPt) submitGuess();
+    if (state === "guessing" && guessPt) (soloRec ? serverSubmit() : submitGuess());
     else if (state === "result") {
       round++;
       if (round < ROUNDS) startRound();
@@ -1793,10 +1807,35 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
   async function startSolo() {
     stopPolling(); stopTimer(); clearSession();
     mode = "solo"; party = null; partyGuesses = null;
+    soloRec = null;
     const deckType = $("deckSelect").value;
     soloStreet = deckType === "random" || Boolean(mapsKey && $("svToggle").checked);
     roundSeconds = readRoundSec();
     ROUNDS = readRounds();
+    if ($("recToggle").checked && deckType !== "random") {
+      const name = $("joinName").value.trim();
+      if (!name) {
+        menuErr.textContent = "enter your name (the Join field) to record to the Hall";
+        return;
+      }
+      localStorage.setItem("terra-name", name);
+      try {
+        const d = await api("solo", {
+          action: "start", name, deckId: deckType,
+          rounds: readRounds(), roundSec: readRoundSec(),
+        });
+        soloRec = { token: d.token, name };
+        roundSeconds = d.roundSec;
+        ROUNDS = d.rounds;
+        hideAllModals();
+        // the server reveals locations one round at a time, like the weekly
+        newGame([LOCATIONS[d.locIdx]]);
+        return;
+      } catch (err) {
+        menuErr.textContent = String(err.message) + " — playing unrecorded";
+        // fall through to the local flow so offline play still works
+      }
+    }
     let customDeck = null;
     if (deckType === "random") {
       const btn = $("menuSolo");
@@ -1818,6 +1857,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
 
   // ---- Weekly Expedition (server-scored solo vs the week's shared deck) ----
   let weekly = null, weeklyFinal = null;
+  let soloRec = null; // {token, name, final} when this solo game is server-scored
 
   function weeklyRows(top, highlightName) {
     if (!top.length) return '<tr><td style="color:var(--muted)">Nobody has played yet — be first!</td></tr>';
@@ -1876,18 +1916,20 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
     }
   }
 
-  async function weeklySubmit() {
+  // one server-scored round submit, shared by the weekly and recorded solo
+  async function serverSubmit() {
     state = "result";
     stopTimer();
     const hasPin = Boolean(guessPt);
     const [glon, glat] = hasPin ? mapToLonLat(guessPt[0], guessPt[1]) : [null, null];
+    const away = takeAwayMs();
     goBtn.disabled = true;
     let resp;
     try {
-      resp = await api("weekly", {
-        action: "guess", name: weekly.name, token: weekly.token,
-        lat: glat, lon: glon, skip: !hasPin, awayMs: takeAwayMs(),
-      });
+      const payload = { action: "guess", lat: glat, lon: glon, skip: !hasPin, awayMs: away };
+      resp = mode === "weekly"
+        ? await api("weekly", { ...payload, name: weekly.name, token: weekly.token })
+        : await api("solo", { ...payload, token: soloRec.token });
     } catch (err) {
       distReadout.textContent = String(err.message) + " — tap to retry";
       goBtn.disabled = false;
@@ -1896,7 +1938,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
     }
     const loc = LOCATIONS[resp.locIdx];
     actualPt = lonLatToMap(loc.lon, loc.lat);
-    results.push({ name: loc.name, km: resp.km, pts: resp.pts, gPt: hasPin ? guessPt.slice() : null, aPt: actualPt.slice() });
+    results.push({ name: loc.name, km: resp.km, pts: resp.pts, away, gPt: hasPin ? guessPt.slice() : null, aPt: actualPt.slice() });
     total = resp.total;
     showLine = hasPin;
     if (gmap) gmapReveal(hasPin ? [{ lat: glat, lng: glon, isMe: true }] : [], loc);
@@ -1905,7 +1947,8 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
     revealName.textContent = loc.name;
     revealPlace.textContent = loc.place;
     revealCard.classList.add("show");
-    distReadout.textContent = resp.km == null ? "no pin scored this round" : `your pin landed ${fmtKm(resp.km)} away`;
+    distReadout.textContent = (resp.km == null ? "no pin scored this round" : `your pin landed ${fmtKm(resp.km)} away`) +
+      (away >= 3000 ? ` · 👀 ${Math.round(away / 1000)}s off-tab` : "");
     animateCount(ptsReadout, resp.pts, (v) => `+${v.toLocaleString()} pts`);
     requestAnimationFrame(() => { scoreFill.style.width = (resp.pts / 5000) * 100 + "%"; });
     animateCount(scoreLabel, total, (v) => v.toLocaleString());
@@ -1913,8 +1956,13 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
     if (resp.pts >= 4500) confetti();
     goBtn.disabled = false;
     if (resp.done) {
-      weeklyFinal = resp;
-      goBtn.textContent = "See weekly standings";
+      if (mode === "weekly") {
+        weeklyFinal = resp;
+        goBtn.textContent = "See weekly standings";
+      } else {
+        soloRec.final = resp;
+        goBtn.textContent = "See final score";
+      }
     } else {
       if (resp.nextLocIdx != null) deck.push(LOCATIONS[resp.nextLocIdx]);
       goBtn.textContent = "Next round";
@@ -1923,7 +1971,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
 
   function weeklyGo() {
     if (state === "guessing") {
-      if (guessPt) weeklySubmit();
+      if (guessPt) serverSubmit();
     } else if (state === "result") {
       if (weeklyFinal) {
         sfx.fanfare();
@@ -1947,7 +1995,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
     stopPolling(); stopTimer(); clearSession();
     if (finalConfirmTimer) { clearTimeout(finalConfirmTimer); finalConfirmTimer = null; }
     mode = null; party = null; partyGuesses = null;
-    weekly = null; weeklyFinal = null;
+    weekly = null; weeklyFinal = null; soloRec = null;
     lastState = null; lastRoundShown = null;
     finalScreen.classList.remove("show");
     goBtn.disabled = true;
@@ -2270,7 +2318,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
             `<div class="pdeck">${esc(r.deck || "Classic")}</div></div>`;
         }).join("");
       $("lbTable").innerHTML = lb.top.length > 3 ? lbRows(lb.top.slice(3), 3)
-        : lb.top.length ? "" : '<tr><td style="color:var(--muted)">No games recorded yet — host a live room!</td></tr>';
+        : lb.top.length ? "" : '<tr><td style="color:var(--muted)">No games recorded yet — host a live room or record a solo game!</td></tr>';
       const seasons = lb.pastSeasons || [];
       $("seasonsHead").style.display = seasons.length ? "" : "none";
       $("seasonsList").innerHTML = seasons.map((s) =>
@@ -2325,12 +2373,19 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
     const random = $("deckSelect").value === "random";
     if (random) $("svToggle").checked = true;
     $("svToggle").disabled = random; // random rounds are Street View by definition
+    // random-world games are client-resolved, never recorded
+    $("recToggle").checked = random ? false : localStorage.getItem("terra-record") === "1";
+    $("recToggle").disabled = random;
   }
   $("deckSelect").addEventListener("change", syncDeckUI);
+  $("recToggle").checked = localStorage.getItem("terra-record") === "1";
+  $("recToggle").addEventListener("change", () => {
+    localStorage.setItem("terra-record", $("recToggle").checked ? "1" : "0");
+  });
   $("roundsInput").addEventListener("input", () => {
     $("bestFiveNote").style.display = parseInt($("roundsInput").value, 10) > 5 ? "" : "none";
   });
-  $("menuSolo").addEventListener("click", startSolo);
+  $("menuSolo").addEventListener("click", busyGuard(startSolo));
   $("menuWeekly").addEventListener("click", busyGuard(startWeekly));
   $("menuWeeklyBoard").addEventListener("click", () => showWeeklyBoard());
   $("weeklyPlay").addEventListener("click", busyGuard(startWeekly));
@@ -2408,7 +2463,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
       await api("admin", { token: $("adminToken").value.trim(), action: "clearLeaderboard" });
       msg.style.color = "var(--teal)";
       msg.textContent = "Leaderboard cleared";
-      $("lbTable").innerHTML = '<tr><td style="color:var(--muted)">No games recorded yet — host a live room!</td></tr>';
+      $("lbTable").innerHTML = '<tr><td style="color:var(--muted)">No games recorded yet — host a live room or record a solo game!</td></tr>';
     } catch (err) {
       msg.style.color = "var(--red)";
       msg.textContent = String(err.message);
@@ -2423,7 +2478,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
   $("finalMenuBtn").addEventListener("click", backToMenu);
 
   // ---- stale-tab update banner ----
-  const BUILD_ID = "20260806161853";
+  const BUILD_ID = "20260810151658";
   let updateAvailable = false;
   function maybeShowUpdate() {
     // suppress only during an active round; the menu (mode null) is always safe

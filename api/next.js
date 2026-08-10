@@ -4,6 +4,7 @@
 const { getStore } = require('./_lib/store.js');
 const { getSql, ensureTable } = require('./_lib/db.js');
 const { loadRoom, saveRoom, playersKey, ROUNDS, sendJSON } = require('./_lib/rooms.js');
+const { DECK_LABELS } = require('../shared/decks.js');
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return sendJSON(res, 405, { error: 'method not allowed' });
@@ -29,14 +30,7 @@ module.exports = async (req, res) => {
       if (players.length) {
         await ensureTable();
         const sql = getSql();
-        const DECK_LABELS = {
-          world: 'World — Famous Places',
-          na: 'North America — Famous Places',
-          sa: 'South America — Famous Places',
-          us: 'USA — Famous Places',
-          random: 'Random world (Street View)',
-        };
-        const deckLabel = DECK_LABELS[meta.deckId] || 'World — Famous Places';
+        const deckLabel = DECK_LABELS[meta.deckId] || DECK_LABELS.world;
         for (const p of players) {
           await sql`INSERT INTO leaderboard (room_code, player_name, score, rounds, deck)
                     VALUES (${code}, ${p.name}, ${p.score}, ${rounds}, ${deckLabel})`;

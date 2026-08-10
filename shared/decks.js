@@ -62,4 +62,14 @@ for (const [id, keys] of Object.entries(DECK_KEYS)) {
   });
 }
 
-module.exports = { DECKS, DECK_KEYS };
+// Display labels, stored verbatim in leaderboard rows and byte-matched by the
+// Hall's deck filter — the dashes are U+2014 em-dashes, keep them that way.
+const DECK_LABELS = {
+  world: 'World — Famous Places',
+  na: 'North America — Famous Places',
+  sa: 'South America — Famous Places',
+  us: 'USA — Famous Places',
+  random: 'Random world (Street View)',
+};
+
+module.exports = { DECKS, DECK_KEYS, DECK_LABELS };
