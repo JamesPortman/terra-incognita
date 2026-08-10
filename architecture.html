@@ -17,9 +17,43 @@
     --red: #e2574c;
     --parchment: #ece5d3;
     --muted: #8f99ad;
+    --soft: #c9c2b2;
+    --hairline: #1b2740;
     --serif: "Iowan Old Style", Palatino, "Palatino Linotype", Georgia, serif;
     --mono: ui-monospace, "SF Mono", Menlo, monospace;
     --sans: -apple-system, "Segoe UI", system-ui, sans-serif;
+  }
+  /* day mode — same palette the game applies via its 🌙/☀️ toggle */
+  body.day {
+    --ink: #ece5d6;
+    --ink-soft: #e3dac7;
+    --raised: #f5efe1;
+    --line: #c9bda1;
+    --sea: #d5dfe6;
+    --brass: #96690f;
+    --teal: #0f766e;
+    --blue: #2f5e8f;
+    --red: #b91c1c;
+    --parchment: #262c3a;
+    --muted: #6a7180;
+    --soft: #454d5e;
+    --hairline: #d6cbb0;
+  }
+  /* diagram SVGs use literal accent hexes; remap them onto the theme vars
+     (the CSS fill/stroke property wins over the presentation attribute) */
+  [fill="#7fa8d0"] { fill: var(--blue); }   [stroke="#7fa8d0"] { stroke: var(--blue); }
+  [fill="#d9a441"] { fill: var(--brass); }  [stroke="#d9a441"] { stroke: var(--brass); }
+  [fill="#57c4ad"] { fill: var(--teal); }   [stroke="#57c4ad"] { stroke: var(--teal); }
+  [fill="#e2574c"] { fill: var(--red); }    [stroke="#e2574c"] { stroke: var(--red); }
+  [fill="#8f99ad"] { fill: var(--muted); }  [stroke="#8f99ad"] { stroke: var(--muted); }
+  #themeBtn {
+    background: none;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 3px 10px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    line-height: 1.4;
   }
   * { box-sizing: border-box; }
   body {
@@ -71,7 +105,7 @@
   .cards.cols3 { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
   .card { border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; background: var(--ink-soft); }
   .card .title { font-weight: 600; margin-bottom: 6px; }
-  .card p, .card li { font-size: 0.9rem; color: #c9c2b2; }
+  .card p, .card li { font-size: 0.9rem; color: var(--soft); }
   .card p { margin: 0; }
   .card ol, .card ul { margin: 0; padding-left: 20px; }
   .card li { margin-bottom: 5px; }
@@ -101,7 +135,7 @@
     border-bottom: 1px solid var(--line);
     padding: 8px 10px;
   }
-  table.plain td { padding: 8px 10px; border-bottom: 1px solid #1b2740; }
+  table.plain td { padding: 8px 10px; border-bottom: 1px solid var(--hairline); }
   table.plain td.num { text-align: right; font-family: var(--mono); color: var(--brass); }
   .keys td:first-child { font-family: var(--mono); font-size: 0.82rem; white-space: nowrap; }
   pre.repomap {
@@ -113,7 +147,7 @@
     padding: 18px;
     background: var(--sea);
     overflow-x: auto;
-    color: #c9c2b2;
+    color: var(--soft);
   }
   .formula {
     font-family: var(--mono);
@@ -127,13 +161,17 @@
     margin-bottom: 14px;
   }
   ul.notes { padding-left: 20px; margin: 0; }
-  ul.notes li { font-size: 0.9rem; color: #c9c2b2; margin-bottom: 7px; }
+  ul.notes li { font-size: 0.9rem; color: var(--soft); margin-bottom: 7px; }
 </style>
 </head>
 <body>
+<script>if (localStorage.getItem("terra-theme") === "day") document.body.classList.add("day");</script>
 <header class="top">
   <span class="brand">Terra Incognita</span>
-  <a href="/">&larr; Back to the game</a>
+  <span style="display:flex;gap:14px;align-items:baseline">
+    <button id="themeBtn" aria-label="Toggle day/night mode" title="Day / night">🌙</button>
+    <a href="/">&larr; Back to the game</a>
+  </span>
 </header>
 <main>
   <h1>Architecture</h1>
@@ -531,5 +569,16 @@ e2e/                        playwright: menu · solo · search · live room
 .github/workflows/ci.yml    test gate + production deploy</pre>
   </section>
 </main>
+<script>
+  // shares the game's theme setting — flipping it here flips the game too
+  const themeBtn = document.getElementById("themeBtn");
+  function applyTheme(day) {
+    document.body.classList.toggle("day", day);
+    themeBtn.textContent = day ? "☀️" : "🌙";
+    localStorage.setItem("terra-theme", day ? "day" : "night");
+  }
+  themeBtn.addEventListener("click", () => applyTheme(!document.body.classList.contains("day")));
+  themeBtn.textContent = document.body.classList.contains("day") ? "☀️" : "🌙";
+</script>
 </body>
 </html>

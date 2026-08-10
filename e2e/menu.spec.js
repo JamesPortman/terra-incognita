@@ -25,6 +25,21 @@ test.describe('menu', () => {
     await expect(page.locator('body')).not.toHaveClass(/day/);
   });
 
+  test('architecture page shares the game theme', async ({ page }) => {
+    await page.goto('/architecture');
+    await expect(page.locator('h1')).toHaveText('Architecture');
+    await expect(page.locator('body')).not.toHaveClass(/day/);
+    await page.locator('#themeBtn').click();
+    await expect(page.locator('body')).toHaveClass(/day/);
+    // the game picks up the same setting…
+    await page.goto('/');
+    await expect(page.locator('body')).toHaveClass(/day/);
+    // …and flipping it in the game flips the architecture page back
+    await page.locator('#themeBtn').click();
+    await page.goto('/architecture');
+    await expect(page.locator('body')).not.toHaveClass(/day/);
+  });
+
   test('mute toggle flips and persists', async ({ page }) => {
     await page.goto('/');
     const mute = page.locator('#muteBtn');
