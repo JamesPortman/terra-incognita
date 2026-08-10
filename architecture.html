@@ -425,7 +425,9 @@
     </table>
     <p class="lede" style="margin-top:12px">
       Identical everywhere; in rooms, the weekly, and recorded solo games the
-      formula runs server-side so a modified client cannot inflate scores. Games run 1–10 rounds
+      formula runs server-side so a modified client cannot inflate scores.
+      The solo Hall board ranks by average points per counted round, because
+      solo games vary in length. Games run 1–10 rounds
       (default 5); games longer than five rounds score only the best five, so the maximum is min(rounds, 5) &#215; 5,000. Reveals count the
       points up, drop confetti on 4,500+ pins, and — in live rooms — show
       ranked between-round standings with rank-movement arrows.
@@ -454,7 +456,7 @@
           <li>All scoring is server-side (haversine + exponential decay); coordinates are validated before scoring.</li>
           <li>State responses omit scores and answers during open questions; random-world rounds send only a pano id, coordinates at reveal.</li>
           <li>The weekly deck is revealed one round per guess — the console can't preview upcoming locations.</li>
-          <li>Solo games recorded to the Hall are <em>Random world only</em>: the client resolves and submits the deck (the same trust model as hosting a random room — the submitting browser knows its own deck), and the server validates it, enforces timing and no-rewrites, scores every guess, and writes the row as <code>room_code 'SOLO'</code> on its own board (group games are the default Hall view). Famous-deck solo is casual and never recorded — 50 memorizable places make it a memory test, not a navigation one.</li>
+          <li>Solo games recorded to the Hall are <em>Random world only</em>: the client resolves and submits the deck (the same trust model as hosting a random room — the submitting browser knows its own deck), and the server validates it, enforces timing and no-rewrites, scores every guess, and writes the row as <code>room_code 'SOLO'</code>. The solo board appears only under the Random world deck filter and scores by <em>average points per counted round</em>, since solo games vary in length (1–10 rounds, best five counted); group games are the default Hall view. Famous-deck solo is casual and never recorded — 50 memorizable places make it a memory test, not a navigation one.</li>
           <li>Round timing is enforced server-side (late guesses score zero, small grace window) and a first guess is final (<code>HSETNX</code>).</li>
           <li>Time spent off the tab mid-round shows as a social &#128064; badge — solo reveals and the final table, live-room reveals, weekly boards. Informational, never punitive; values are clamped server-side.</li>
         </ul>

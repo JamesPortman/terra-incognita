@@ -785,10 +785,13 @@
         <option>USA &mdash; Famous Places</option>
         <option>World &mdash; Famous Places</option>
       </select>
-      <label class="modetoggle" style="margin-bottom:12px">
+      <label class="modetoggle" id="lbSoloRow" style="margin-bottom:12px;display:none">
         <input type="checkbox" id="lbSoloToggle" />
-        <span>Show solo games</span>
+        <span>Show solo scores</span>
       </label>
+      <div id="lbSoloNote" style="display:none;color:var(--muted);font-size:0.78rem;margin-bottom:12px">
+        Solo scores are average points per round &mdash; solo games vary in length.
+      </div>
       <div class="podium" id="lbPodium"></div>
       <table class="lbtable" id="lbTable"></table>
       <div class="subhead" id="seasonsHead" style="display:none">Past seasons</div>
@@ -2315,7 +2318,12 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
     $("lbTable").innerHTML = '<tr><td style="color:var(--muted)">Loading…</td></tr>';
     try {
       const deck = $("lbDeckFilter").value;
+      // solo games exist only for Random world — the toggle appears only there
+      const soloAvailable = deck === "Random world (Street View)";
+      $("lbSoloRow").style.display = soloAvailable ? "" : "none";
+      if (!soloAvailable) $("lbSoloToggle").checked = false;
       const solo = $("lbSoloToggle").checked; // group games are the default board
+      $("lbSoloNote").style.display = solo ? "" : "none";
       const params = new URLSearchParams();
       if (deck) params.set("deck", deck);
       if (solo) params.set("source", "solo");
@@ -2333,7 +2341,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
         }).join("");
       $("lbTable").innerHTML = lb.top.length > 3 ? lbRows(lb.top.slice(3), 3)
         : lb.top.length ? "" : `<tr><td style="color:var(--muted)">${solo
-          ? "No solo games recorded yet — pick Random world, tick Record to Hall of Navigators, and play!"
+          ? "No solo games recorded yet — tick Record to Hall of Navigators and play!"
           : "No group games recorded yet — host a live room!"}</td></tr>`;
       const seasons = lb.pastSeasons || [];
       $("seasonsHead").style.display = seasons.length ? "" : "none";
@@ -2357,7 +2365,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
   }
   $("lbCopy").addEventListener("click", () => {
     const medals = ["🥇", "🥈", "🥉"];
-    copyBoard($("lbCopy"), "Terra Incognita — Hall of Navigators" + ($("lbSoloToggle").checked ? " (solo)" : ""),
+    copyBoard($("lbCopy"), "Terra Incognita — Hall of Navigators" + ($("lbSoloToggle").checked ? " (solo — avg points per round)" : ""),
       lastHallTop.map((r, i) => `${medals[i] || (i + 1) + "."} ${r.name} — ${r.score.toLocaleString()} (${r.deck || "Classic"})`));
   });
   $("weeklyCopy").addEventListener("click", () => {
@@ -2496,7 +2504,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
   $("finalMenuBtn").addEventListener("click", backToMenu);
 
   // ---- stale-tab update banner ----
-  const BUILD_ID = "20260810172132";
+  const BUILD_ID = "20260810173735";
   let updateAvailable = false;
   function maybeShowUpdate() {
     // suppress only during an active round; the menu (mode null) is always safe

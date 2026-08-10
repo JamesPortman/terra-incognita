@@ -133,15 +133,24 @@ test.describe('recorded solo game (random world only)', () => {
     await expect(page.locator('#menuLb')).toBeVisible();
     await page.locator('#menuLb').click();
     await expect(page.locator('#lbScreen')).toBeVisible();
-    // group board is the default view
-    await expect(page.locator('#lbSoloToggle')).not.toBeChecked();
+    // the solo toggle only appears under the Random world deck filter
+    await expect(page.locator('#lbSoloRow')).toBeHidden();
     await expect(page.locator('#lbTable')).not.toContainText('E2E-SoloRec');
     await expect(page.locator('#lbPodium')).not.toContainText('E2E-SoloRec');
-    // the solo board is clean of test agents too
+    await page.locator('#lbDeckFilter').selectOption('Random world (Street View)');
+    await expect(page.locator('#lbSoloRow')).toBeVisible();
+    await expect(page.locator('#lbSoloToggle')).not.toBeChecked(); // group is still the default
+    await expect(page.locator('#lbSoloNote')).toBeHidden();
+    // the solo board announces avg-per-round scoring and is clean of test agents
     await page.locator('#lbSoloToggle').check();
+    await expect(page.locator('#lbSoloNote')).toBeVisible();
     await expect(page.locator('#lbTable')).not.toContainText('Loading');
     await expect(page.locator('#lbTable')).not.toContainText('E2E-SoloRec');
     await expect(page.locator('#lbPodium')).not.toContainText('E2E-SoloRec');
+    // leaving the Random world filter hides and resets the toggle
+    await page.locator('#lbDeckFilter').selectOption('');
+    await expect(page.locator('#lbSoloRow')).toBeHidden();
+    await expect(page.locator('#lbSoloNote')).toBeHidden();
   });
 });
 
