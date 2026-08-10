@@ -23,6 +23,30 @@ test.describe('google guess map', () => {
     await expect(page.locator('#ptsReadout')).toHaveText(/\+[\d,]+ pts/);
   });
 
+  test('recorded random solo game reaches the final screen unpersisted', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.locator('#modeToggleRow')).toBeVisible();
+    await page.locator('#deckSelect').selectOption('random');
+    await page.locator('#roundsInput').fill('2');
+    await page.locator('#joinName').fill('E2E-SoloRec');
+    await expect(page.locator('#recToggle')).toBeEnabled();
+    await page.locator('#recToggle').check();
+    await page.locator('#menuSolo').click();
+    await expect(page.locator('#roundLabel')).toHaveText('1 / 2', { timeout: 45_000 });
+    for (let round = 1; round <= 2; round++) {
+      await page.locator('#gmap').click({ position: { x: 210, y: 150 } });
+      await expect(page.locator('#goBtn')).toHaveText(/Make guess/i, { timeout: 10_000 });
+      await page.locator('#goBtn').click();
+      await expect(page.locator('#distReadout')).toHaveText(/your pin landed/);
+      await page.locator('#goBtn').click();
+    }
+    await expect(page.locator('#finalScreen')).toBeVisible();
+    await expect(page.locator('#finalTotal')).toHaveText(/^[\d,]+$/);
+    // asserts the E2E-name server filter end-to-end
+    await expect(page.locator('#finalRank')).toBeVisible();
+    await expect(page.locator('#finalRank')).toHaveText(/Test game — not recorded/);
+  });
+
   test('random world solo round drops into a panorama', async ({ page }) => {
     await page.goto('/');
     await expect(page.locator('#modeToggleRow')).toBeVisible();

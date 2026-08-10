@@ -1816,29 +1816,16 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
     soloStreet = deckType === "random" || Boolean(mapsKey && $("svToggle").checked);
     roundSeconds = readRoundSec();
     ROUNDS = readRounds();
-    if ($("recToggle").checked && deckType !== "random") {
-      const name = $("joinName").value.trim();
-      if (!name) {
+    // only random-world games can be recorded — check the name before
+    // spending Maps quota on resolving a deck
+    let recordName = null;
+    if ($("recToggle").checked && deckType === "random") {
+      recordName = $("joinName").value.trim();
+      if (!recordName) {
         menuErr.textContent = "enter your name (the Join field) to record to the Hall";
         return;
       }
-      localStorage.setItem("terra-name", name);
-      try {
-        const d = await api("solo", {
-          action: "start", name, deckId: deckType,
-          rounds: readRounds(), roundSec: readRoundSec(),
-        });
-        soloRec = { token: d.token, name };
-        roundSeconds = d.roundSec;
-        ROUNDS = d.rounds;
-        hideAllModals();
-        // the server reveals locations one round at a time, like the weekly
-        newGame([LOCATIONS[d.locIdx]]);
-        return;
-      } catch (err) {
-        menuErr.textContent = String(err.message) + " — playing unrecorded";
-        // fall through to the local flow so offline play still works
-      }
+      localStorage.setItem("terra-name", recordName);
     }
     let customDeck = null;
     if (deckType === "random") {
@@ -1853,6 +1840,19 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
       } finally {
         btn.disabled = false;
         btn.textContent = "Play solo";
+      }
+    }
+    if (recordName && customDeck) {
+      try {
+        const d = await api("solo", {
+          action: "start", name: recordName, roundSec: readRoundSec(),
+          deck: customDeck.map((l) => ({ lat: l.lat, lon: l.lon, panoId: l.panoId, label: l.name })),
+        });
+        soloRec = { token: d.token, name: recordName };
+        roundSeconds = d.roundSec;
+      } catch (err) {
+        menuErr.textContent = String(err.message) + " — playing unrecorded";
+        // the game still starts, just without the Hall write
       }
     }
     hideAllModals();
@@ -1940,7 +1940,8 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
       state = "guessing";
       return;
     }
-    const loc = LOCATIONS[resp.locIdx];
+    // weekly discloses locations by index; recorded solo plays its own local deck
+    const loc = resp.locIdx != null ? LOCATIONS[resp.locIdx] : deck[round];
     actualPt = lonLatToMap(loc.lon, loc.lat);
     results.push({ name: loc.name, km: resp.km, pts: resp.pts, away, gPt: hasPin ? guessPt.slice() : null, aPt: actualPt.slice() });
     total = resp.total;
@@ -2328,7 +2329,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
         }).join("");
       $("lbTable").innerHTML = lb.top.length > 3 ? lbRows(lb.top.slice(3), 3)
         : lb.top.length ? "" : `<tr><td style="color:var(--muted)">${solo
-          ? "No solo games recorded yet — tick Record to Hall of Navigators and play!"
+          ? "No solo games recorded yet — pick Random world, tick Record to Hall of Navigators, and play!"
           : "No group games recorded yet — host a live room!"}</td></tr>`;
       const seasons = lb.pastSeasons || [];
       $("seasonsHead").style.display = seasons.length ? "" : "none";
@@ -2385,15 +2386,16 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
     const random = $("deckSelect").value === "random";
     if (random) $("svToggle").checked = true;
     $("svToggle").disabled = random; // random rounds are Street View by definition
-    // random-world games are client-resolved, never recorded
-    $("recToggle").checked = random ? false : localStorage.getItem("terra-record") === "1";
-    $("recToggle").disabled = random;
+    // only random-world games are recordable — famous decks are 50
+    // memorizable places, so they stay casual
+    $("recToggle").checked = random && localStorage.getItem("terra-record") === "1";
+    $("recToggle").disabled = !random;
   }
   $("deckSelect").addEventListener("change", syncDeckUI);
-  $("recToggle").checked = localStorage.getItem("terra-record") === "1";
   $("recToggle").addEventListener("change", () => {
     localStorage.setItem("terra-record", $("recToggle").checked ? "1" : "0");
   });
+  syncDeckUI(); // default deck is famous -> record toggle starts disabled
   $("roundsInput").addEventListener("input", () => {
     $("bestFiveNote").style.display = parseInt($("roundsInput").value, 10) > 5 ? "" : "none";
   });
@@ -2490,7 +2492,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
   $("finalMenuBtn").addEventListener("click", backToMenu);
 
   // ---- stale-tab update banner ----
-  const BUILD_ID = "20260810154400";
+  const BUILD_ID = "20260810170924";
   let updateAvailable = false;
   function maybeShowUpdate() {
     // suppress only during an active round; the menu (mode null) is always safe

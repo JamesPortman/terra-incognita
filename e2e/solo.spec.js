@@ -99,60 +99,35 @@ test.describe('solo game', () => {
   });
 });
 
-test.describe('recorded solo game', () => {
-  // E2E- names are filtered server-side, so these runs never write the Hall
-  async function startRecorded(page, { rounds = 2, roundSec = 60 } = {}) {
+test.describe('recorded solo game (random world only)', () => {
+  // the server-scored happy path lives in gmap.spec.js (it needs Google);
+  // these tests cover the menu rules and Hall hygiene without any network
+  test('record toggle is only available for Random world', async ({ page }) => {
+    await page.goto('/?plainmap=1');
+    await expect(page.locator('#modeToggleRow')).toBeVisible(); // config loaded
+    // famous decks are casual-only
+    await expect(page.locator('#recToggle')).toBeDisabled();
+    await expect(page.locator('#recToggle')).not.toBeChecked();
+    await page.locator('#deckSelect').selectOption('random');
+    await expect(page.locator('#recToggle')).toBeEnabled();
+    await page.locator('#deckSelect').selectOption('world');
+    await expect(page.locator('#recToggle')).toBeDisabled();
+    await expect(page.locator('#recToggle')).not.toBeChecked();
+  });
+
+  test('recording requires a name (checked before any Maps lookups)', async ({ page }) => {
     await page.goto('/?plainmap=1');
     await expect(page.locator('#modeToggleRow')).toBeVisible();
-    await page.locator('#deckSelect').selectOption('world');
-    await page.locator('#svToggle').uncheck();
-    await page.locator('#roundsInput').fill(String(rounds));
-    await page.locator('#roundSecInput').fill(String(roundSec));
-    await page.locator('#joinName').fill('E2E-SoloRec');
+    await page.locator('#deckSelect').selectOption('random');
     await page.locator('#recToggle').check();
-    await page.locator('#menuSolo').click();
-    await expect(page.locator('#roundLabel')).toHaveText(`1 / ${rounds}`);
-  }
-
-  test('plays a server-scored game to the final screen', async ({ page }) => {
-    await startRecorded(page);
-    for (let round = 1; round <= 2; round++) {
-      await expect(page.locator('#roundLabel')).toHaveText(`${round} / 2`);
-      await page.locator('#map').click();
-      await expect(page.locator('#goBtn')).toHaveText(/Make guess/i);
-      await page.locator('#goBtn').click();
-      await expect(page.locator('#distReadout')).toHaveText(/your pin landed/);
-      await expect(page.locator('#ptsReadout')).toHaveText(/\+[\d,]+ pts/);
-      await page.locator('#goBtn').click();
-    }
-    await expect(page.locator('#finalScreen')).toBeVisible();
-    await expect(page.locator('#finalTotal')).toHaveText(/^[\d,]+$/);
-    await expect(page.locator('#finalTable tr')).toHaveCount(2);
-    // asserts the E2E-name server filter end-to-end
-    await expect(page.locator('#finalRank')).toBeVisible();
-    await expect(page.locator('#finalRank')).toHaveText(/Test game — not recorded/);
-
-    // play again starts a fresh server attempt
-    await page.locator('#againBtn').click();
-    await expect(page.locator('#roundLabel')).toHaveText('1 / 2');
-    await expect(page.locator('#scoreLabel')).toHaveText('0');
-  });
-
-  test('a timed-out round scores zero on the server', async ({ page }) => {
-    await startRecorded(page, { roundSec: 10 });
-    await expect(page.locator('#distReadout')).toHaveText(/no pin scored this round/, { timeout: 20_000 });
-    await expect(page.locator('#ptsReadout')).toHaveText('+0 pts');
-  });
-
-  test('requires a name and never shows E2E players on the Hall', async ({ page }) => {
-    await page.goto('/?plainmap=1');
-    await expect(page.locator('#modeToggleRow')).toBeVisible();
-    await page.locator('#deckSelect').selectOption('world');
     await page.locator('#joinName').fill('');
-    await page.locator('#recToggle').check();
     await page.locator('#menuSolo').click();
     await expect(page.locator('#menuErr')).toHaveText(/enter your name/i);
+  });
 
+  test('the Hall defaults to group games and never shows test agents', async ({ page }) => {
+    await page.goto('/?plainmap=1');
+    await expect(page.locator('#menuLb')).toBeVisible();
     await page.locator('#menuLb').click();
     await expect(page.locator('#lbScreen')).toBeVisible();
     // group board is the default view

@@ -1,16 +1,19 @@
-// Recorded solo game: a server-scored attempt against a server-built deck,
-// writing the all-time leaderboard (room_code 'SOLO') when it finishes.
-// POST start -> begin an attempt (famous decks only; random world is
-//               client-resolved and never eligible)
+// Recorded solo game: a server-scored attempt against a client-resolved
+// Random world (Street View) deck, writing the all-time leaderboard
+// (room_code 'SOLO') when it finishes. Famous-deck solo is casual-only.
+// The client resolves the panoramas (the Maps key is referrer-locked) and
+// submits the deck at start — same trust model as hosting a random room.
+// The server validates it and enforces timing, no rewrites, and scoring.
+// POST start -> begin an attempt with a submitted random deck
 // POST guess -> score one round server-side; the final guess writes the row
 const crypto = require('crypto');
 const { getStore } = require('./_lib/store.js');
 const { getSql, ensureTable } = require('./_lib/db.js');
-const { haversineKm, pointsFor, bestFiveTotal, newDeck, sendJSON, LOCATIONS } = require('./_lib/rooms.js');
+const { haversineKm, pointsFor, bestFiveTotal, sendJSON } = require('./_lib/rooms.js');
 const { isTestName } = require('./_lib/weekly.js');
 const { hallTop } = require('./_lib/hall.js');
 const { rateLimit } = require('./_lib/ratelimit.js');
-const { DECKS, DECK_LABELS } = require('../shared/decks.js');
+const { DECK_LABELS } = require('../shared/decks.js');
 
 const GRACE_MS = 5000;
 const ATTEMPT_TTL = 6 * 3600;
@@ -24,10 +27,9 @@ const totalFor = (attempt) => attempt.rounds > 5
   : attempt.results.reduce((s, r) => s + r.pts, 0);
 
 async function finalPayload(attempt, last) {
-  const label = DECK_LABELS[attempt.deckId];
-  const top = await hallTop(label, true); // rank within the solo board
+  const top = await hallTop(DECK_LABELS.random, true); // rank within the solo board
   return {
-    km: last.km, pts: last.pts, locIdx: last.locIdx,
+    km: last.km, pts: last.pts,
     roundIdx: attempt.rounds, total: attempt.total,
     done: true, recorded: Boolean(attempt.recorded),
     top,
@@ -43,18 +45,30 @@ module.exports = async (req, res) => {
     if (!(await rateLimit(req, res, 'solo', 30, 600))) return;
     const name = cleanName(req.body?.name);
     if (!name) return sendJSON(res, 400, { error: 'name required' });
-    const deckId = String(req.body?.deckId || '');
-    if (!Object.hasOwn(DECKS, deckId) || deckId === 'random') {
-      return sendJSON(res, 400, { error: 'deck not eligible for recorded games' });
+    const raw = req.body?.deck;
+    if (!Array.isArray(raw) || raw.length < 1 || raw.length > 10) {
+      return sendJSON(res, 400, { error: 'recorded solo needs a random deck of 1-10 locations' });
     }
-    const rounds = Math.min(10, Math.max(1, parseInt(req.body?.rounds, 10) || 5));
+    // same validation as random-room hosting in create.js
+    const customDeck = [];
+    for (const d of raw) {
+      const lat = Number(d?.lat), lon = Number(d?.lon);
+      const panoId = String(d?.panoId || '').slice(0, 64);
+      if (!Number.isFinite(lat) || !Number.isFinite(lon) ||
+          Math.abs(lat) > 90 || Math.abs(lon) > 180 || !/^[\w-]+$/.test(panoId)) {
+        return sendJSON(res, 400, { error: 'invalid deck entry' });
+      }
+      customDeck.push({
+        lat, lon, panoId,
+        label: String(d?.label || '').slice(0, 80).replace(/[<>&"']/g, ''),
+      });
+    }
     const roundSec = Math.min(300, Math.max(10, parseInt(req.body?.roundSec, 10) || 60));
     const attempt = {
       token: crypto.randomUUID(),
       name,
-      deckId,
-      deck: newDeck(rounds, DECKS[deckId]), // server-shuffled — no cherry-picking
-      rounds,
+      customDeck,
+      rounds: customDeck.length,
       roundSec,
       roundIdx: 0,
       results: [],
@@ -62,8 +76,7 @@ module.exports = async (req, res) => {
       roundStartAt: Date.now(),
     };
     await store.setJSON(attemptKey(attempt.token), attempt, ATTEMPT_TTL);
-    // only the first round's location ships; the rest arrive one per guess
-    return sendJSON(res, 200, { token: attempt.token, locIdx: attempt.deck[0], rounds, roundSec });
+    return sendJSON(res, 200, { token: attempt.token, rounds: attempt.rounds, roundSec });
   }
 
   if (req.body?.action === 'guess') {
@@ -77,8 +90,7 @@ module.exports = async (req, res) => {
       return sendJSON(res, 200, await finalPayload(attempt, attempt.results[attempt.results.length - 1]));
     }
 
-    const locIdx = attempt.deck[attempt.roundIdx];
-    const loc = LOCATIONS[locIdx];
+    const loc = attempt.customDeck[attempt.roundIdx];
     const lat = Number(req.body?.lat), lon = Number(req.body?.lon);
     const hasPin = Number.isFinite(lat) && Number.isFinite(lon) &&
       Math.abs(lat) <= 90 && Math.abs(lon) <= 180 && !req.body?.skip;
@@ -91,17 +103,14 @@ module.exports = async (req, res) => {
     }
     attempt.awayMs = (attempt.awayMs || 0) +
       Math.min(600000, Math.max(0, Math.round(Number(req.body?.awayMs) || 0)));
-    attempt.results.push({ locIdx, km, pts });
+    attempt.results.push({ km, pts });
     attempt.total = totalFor(attempt);
     attempt.roundIdx += 1;
     attempt.roundStartAt = Date.now();
 
     if (attempt.roundIdx < attempt.rounds) {
       await store.setJSON(attemptKey(token), attempt, ATTEMPT_TTL);
-      return sendJSON(res, 200, {
-        km, pts, locIdx, roundIdx: attempt.roundIdx, total: attempt.total,
-        nextLocIdx: attempt.deck[attempt.roundIdx],
-      });
+      return sendJSON(res, 200, { km, pts, roundIdx: attempt.roundIdx, total: attempt.total });
     }
 
     // final round: flag + save BEFORE the insert (mirrors savedToLb ordering)
@@ -112,9 +121,9 @@ module.exports = async (req, res) => {
       await ensureTable();
       await getSql()`
         INSERT INTO leaderboard (room_code, player_name, score, rounds, deck)
-        VALUES ('SOLO', ${attempt.name}, ${attempt.total}, ${attempt.rounds}, ${DECK_LABELS[attempt.deckId]})`;
+        VALUES ('SOLO', ${attempt.name}, ${attempt.total}, ${attempt.rounds}, ${DECK_LABELS.random})`;
     }
-    return sendJSON(res, 200, await finalPayload(attempt, { km, pts, locIdx }));
+    return sendJSON(res, 200, await finalPayload(attempt, { km, pts }));
   }
 
   sendJSON(res, 400, { error: 'unknown action' });
