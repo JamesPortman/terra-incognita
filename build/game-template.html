@@ -643,7 +643,7 @@
       <img id="photo" alt="Mystery location — study the scene and guess where it is" />
     </div>
     <div id="panobox" class="panobox" aria-label="Street View — look around and guess where you are"></div>
-    <div class="credit" id="creditLine">Photo: Wikimedia Commons &middot; scroll to zoom</div>
+    <div class="credit" id="creditLine" data-i18n="credit.photo">Photo: Wikimedia Commons &middot; scroll to zoom</div>
     <div class="reveal"><div class="card" id="revealCard">
       <div class="name" id="revealName"></div>
       <div class="place" id="revealPlace"></div>
@@ -651,7 +651,7 @@
     <div class="ministand" id="miniStand"></div>
     <div class="final" id="finalScreen">
       <div class="sheet">
-        <div class="kicker">Expedition complete</div>
+        <div class="kicker" data-i18n="final.kicker">Expedition complete</div>
         <div class="total" id="finalTotal">0</div>
         <div class="outof" id="finalOutOf">out of 25,000</div>
         <div class="verdict" id="finalVerdict"></div>
@@ -659,76 +659,80 @@
         <svg id="finalMap" xmlns="http://www.w3.org/2000/svg" role="img"
              aria-label="Map of all your guesses versus the actual locations"></svg>
         <table id="finalTable"></table>
-        <button class="primary" id="againBtn">Chart a new expedition</button>
-        <button class="ghost" id="finalMenuBtn">Back to menu</button>
+        <button class="primary" id="againBtn" data-i18n="final.again">Chart a new expedition</button>
+        <button class="ghost" id="finalMenuBtn" data-i18n="ui.backmenu">Back to menu</button>
       </div>
     </div>
   </div>
 
   <div class="mapside">
     <div class="searchrow">
-      <input id="searchBox" type="search" placeholder="Search a country or city&hellip;" autocomplete="off"
+      <input id="searchBox" type="search" placeholder="Search a country or city&hellip;" data-i18n-placeholder="ph.search" autocomplete="off"
              aria-label="Search for a country or city to move the map there" />
       <div class="results" id="searchResults" role="listbox"></div>
     </div>
     <div class="mapwrap">
       <svg id="map" role="application" aria-label="World map — click to place your guess"></svg>
       <div id="gmap" role="application" aria-label="World map — click to place your guess"></div>
-      <div class="maphint" id="mapHint">Click the map to drop your pin &middot; scroll to zoom</div>
+      <div class="maphint" id="mapHint" data-i18n="hint.map">Click the map to drop your pin &middot; scroll to zoom</div>
     </div>
     <div class="actionbar">
       <div class="readout"><span id="distReadout"></span><span class="pts" id="ptsReadout"></span></div>
       <div class="scorebar"><div class="fill" id="scoreFill"></div></div>
-      <button class="primary" id="goBtn" disabled>Place a pin to guess</button>
+      <button class="primary" id="goBtn" disabled data-i18n="btn.place">Place a pin to guess</button>
     </div>
   </div>
   <div class="modal" id="menuScreen">
     <div class="sheet">
-      <div class="kicker">A where-in-the-world game</div>
+      <div class="kicker" data-i18n="menu.kicker">A where-in-the-world game</div>
       <h2>Terra Incognita</h2>
       <div class="stack">
         <label class="timerow">
-          <span>Locations</span>
+          <span data-i18n="menu.locations">Locations</span>
           <select id="deckSelect" aria-label="Location set">
-            <option value="na">North America &mdash; Famous Places</option>
-            <option value="random" id="deckRandomOpt" disabled selected>Random world (Street View)</option>
-            <option value="sa">South America &mdash; Famous Places</option>
-            <option value="us">USA &mdash; Famous Places</option>
-            <option value="world">World &mdash; Famous Places</option>
+            <option value="na" data-i18n="deck.na">North America &mdash; Famous Places</option>
+            <option value="random" id="deckRandomOpt" disabled selected data-i18n="deck.random">Random world (Street View)</option>
+            <option value="sa" data-i18n="deck.sa">South America &mdash; Famous Places</option>
+            <option value="us" data-i18n="deck.us">USA &mdash; Famous Places</option>
+            <option value="world" data-i18n="deck.world">World &mdash; Famous Places</option>
           </select>
         </label>
         <label class="modetoggle" id="modeToggleRow" style="display:none">
           <input type="checkbox" id="svToggle" checked />
-          <span>Street View imagery (look around &amp; explore)</span>
+          <span data-i18n="menu.sv">Street View imagery (look around &amp; explore)</span>
         </label>
         <label class="timerow">
-          <span>Time per round</span>
+          <span data-i18n="menu.timeper">Time per round</span>
           <input type="number" id="roundSecInput" value="60" min="10" max="300" step="5" inputmode="numeric" aria-label="Seconds per round" />
-          <span>seconds</span>
+          <span data-i18n="menu.seconds">seconds</span>
         </label>
         <label class="timerow">
-          <span>Rounds per game</span>
+          <span data-i18n="menu.roundsper">Rounds per game</span>
           <input type="number" id="roundsInput" value="5" min="1" max="10" step="1" inputmode="numeric" aria-label="Rounds per game" />
-          <span>rounds</span>
+          <span data-i18n="menu.rounds">rounds</span>
         </label>
-        <div class="timerow" id="bestFiveNote" style="display:none;color:var(--brass);font-size:0.78rem">
+        <div class="timerow" id="bestFiveNote" style="display:none;color:var(--brass);font-size:0.78rem" data-i18n="menu.best5">
           longer games score your best 5 rounds
         </div>
         <label class="modetoggle">
           <input type="checkbox" id="recToggle" />
-          <span>Record to Hall of Navigators</span>
+          <span data-i18n="menu.record">Record to Hall of Navigators</span>
         </label>
-        <button class="primary" id="menuSolo">Play solo</button>
-        <button class="primary" id="menuWeekly">Weekly Expedition</button>
-        <button class="primary" id="menuHost">Host a live room</button>
+        <button class="primary" id="menuSolo" data-i18n="menu.solo">Play solo</button>
+        <button class="primary" id="menuWeekly" data-i18n="menu.weekly">Weekly Expedition</button>
+        <button class="primary" id="menuHost" data-i18n="menu.host">Host a live room</button>
         <div class="joinrow">
-          <input id="joinCode" placeholder="CODE" maxlength="4" autocomplete="off" aria-label="Room code" />
-          <input id="joinName" placeholder="Your name" maxlength="20" autocomplete="off" aria-label="Your name" />
-          <button class="primary" id="menuJoin">Join</button>
+          <input id="joinCode" placeholder="CODE" data-i18n-placeholder="ph.code" maxlength="4" autocomplete="off" aria-label="Room code" />
+          <input id="joinName" placeholder="Your name" data-i18n-placeholder="ph.name" maxlength="20" autocomplete="off" aria-label="Your name" />
+          <button class="primary" id="menuJoin" data-i18n="menu.join">Join</button>
         </div>
-        <button class="ghost" id="menuLb">All-time leaderboard</button>
-        <button class="ghost" id="menuWeeklyBoard">This week's board</button>
-        <a class="ghost" href="/architecture">Architecture &mdash; how this is built</a>
+        <button class="ghost" id="menuLb" data-i18n="menu.lb">All-time leaderboard</button>
+        <button class="ghost" id="menuWeeklyBoard" data-i18n="menu.weeklyboard">This week's board</button>
+        <a class="ghost" href="/architecture" data-i18n="menu.arch">Architecture &mdash; how this is built</a>
+        <label class="timerow">
+          <span data-i18n="ui.language">Language</span>
+          <select id="langSelect" aria-label="Language"></select>
+        </label>
       </div>
       <div class="menuerr" id="menuErr"></div>
     </div>
@@ -736,80 +740,82 @@
 
   <div class="modal" id="lobbyScreen">
     <div class="sheet">
-      <div class="kicker" id="lobbyRole">Live room</div>
+      <div class="kicker" id="lobbyRole" data-i18n="lobby.role">Live room</div>
       <div class="roomcode" id="lobbyCode"><span>·</span><span>·</span><span>·</span><span>·</span></div>
-      <div class="kicker">join at this site &middot; enter the code</div>
+      <div class="kicker" data-i18n="lobby.joinhint">join at this site &middot; enter the code</div>
       <div class="chips" id="lobbyPlayers"></div>
       <div class="stack">
-        <button class="primary" id="lobbyStart" disabled>Waiting for players&hellip;</button>
-        <div id="lobbyWait" style="color:var(--muted);font-size:0.9rem;">Waiting for the host to start&hellip;</div>
-        <button class="ghost" id="lobbyLeave">Leave</button>
+        <button class="primary" id="lobbyStart" disabled data-i18n="lobby.waiting">Waiting for players&hellip;</button>
+        <div id="lobbyWait" style="color:var(--muted);font-size:0.9rem;" data-i18n="lobby.hostwait">Waiting for the host to start&hellip;</div>
+        <button class="ghost" id="lobbyLeave" data-i18n="lobby.leave">Leave</button>
       </div>
     </div>
   </div>
 
   <div class="modal" id="standingsScreen">
     <div class="sheet">
-      <div class="kicker">Final standings</div>
+      <div class="kicker" data-i18n="stand.kicker">Final standings</div>
       <h2 id="standWinner">&nbsp;</h2>
       <ul class="standlist" id="standList"></ul>
-      <div class="subhead">All-time leaderboard</div>
+      <div class="subhead" data-i18n="lb.kicker">All-time leaderboard</div>
       <table class="lbtable" id="standLbTable"></table>
-      <div class="stack"><button class="primary" id="standMenu">Back to menu</button></div>
+      <div class="stack"><button class="primary" id="standMenu" data-i18n="ui.backmenu">Back to menu</button></div>
     </div>
   </div>
 
   <div class="modal" id="weeklyScreen">
     <div class="sheet">
-      <div class="kicker" id="weeklyKicker">Weekly Expedition</div>
+      <div class="kicker" id="weeklyKicker" data-i18n="weekly.title">Weekly Expedition</div>
       <h2 id="weeklyHead">&nbsp;</h2>
       <div class="menuerr" id="weeklyMsg" style="margin-bottom:10px"></div>
       <table class="lbtable" id="weeklyTable"></table>
       <div class="stack">
-        <button class="primary" id="weeklyPlay" style="display:none">Play this week's expedition</button>
-        <button class="primary" id="weeklyMenu">Back to menu</button>
-        <button class="ghost" id="weeklyCopy">Copy board</button>
+        <button class="primary" id="weeklyPlay" style="display:none" data-i18n="weekly.play">Play this week's expedition</button>
+        <button class="primary" id="weeklyMenu" data-i18n="ui.backmenu">Back to menu</button>
+        <button class="ghost" id="weeklyCopy" data-i18n="copy.board">Copy board</button>
       </div>
     </div>
   </div>
 
   <div class="modal" id="lbScreen">
     <div class="sheet">
-      <div class="kicker">All-time leaderboard</div>
-      <h2>Hall of Navigators</h2>
+      <div class="kicker" data-i18n="lb.kicker">All-time leaderboard</div>
+      <h2 data-i18n="lb.title">Hall of Navigators</h2>
+      <!-- values are the canonical English labels stored in the database;
+           only the visible text localizes -->
       <select id="lbDeckFilter" class="lbfilter" aria-label="Filter by location deck">
-        <option value="">All decks</option>
-        <option>North America &mdash; Famous Places</option>
-        <option>Random world (Street View)</option>
-        <option>South America &mdash; Famous Places</option>
-        <option>USA &mdash; Famous Places</option>
-        <option>World &mdash; Famous Places</option>
+        <option value="" data-i18n="deck.all">All decks</option>
+        <option value="North America &mdash; Famous Places" data-i18n="deck.na">North America &mdash; Famous Places</option>
+        <option value="Random world (Street View)" data-i18n="deck.random">Random world (Street View)</option>
+        <option value="South America &mdash; Famous Places" data-i18n="deck.sa">South America &mdash; Famous Places</option>
+        <option value="USA &mdash; Famous Places" data-i18n="deck.us">USA &mdash; Famous Places</option>
+        <option value="World &mdash; Famous Places" data-i18n="deck.world">World &mdash; Famous Places</option>
       </select>
       <label class="modetoggle" id="lbSoloRow" style="margin-bottom:12px;display:none">
         <input type="checkbox" id="lbSoloToggle" />
-        <span>Show solo scores</span>
+        <span data-i18n="lb.showsolo">Show solo scores</span>
       </label>
-      <div id="lbSoloNote" style="display:none;color:var(--muted);font-size:0.78rem;margin-bottom:12px">
+      <div id="lbSoloNote" style="display:none;color:var(--muted);font-size:0.78rem;margin-bottom:12px" data-i18n="lb.solonote">
         Solo scores are average points per round &mdash; solo games vary in length.
       </div>
       <div class="podium" id="lbPodium"></div>
       <table class="lbtable" id="lbTable"></table>
-      <div class="subhead" id="seasonsHead" style="display:none">Past seasons</div>
+      <div class="subhead" id="seasonsHead" style="display:none" data-i18n="lb.seasons">Past seasons</div>
       <div id="seasonsList" style="font-size:0.85rem;color:var(--muted);margin-bottom:16px"></div>
       <div class="stack">
-        <button class="primary" id="lbBack">Back</button>
-        <button class="ghost" id="lbCopy">Copy board</button>
-        <button class="ghost" id="lbAdminToggle">Admin</button>
+        <button class="primary" id="lbBack" data-i18n="ui.back">Back</button>
+        <button class="ghost" id="lbCopy" data-i18n="copy.board">Copy board</button>
+        <button class="ghost" id="lbAdminToggle" data-i18n="admin.btn">Admin</button>
         <div class="joinrow" id="lbAdminRow" style="display:none">
-          <input id="adminToken" type="password" placeholder="Admin token" autocomplete="off" aria-label="Admin token" style="flex:1" />
-          <button class="primary" id="adminClear">Clear leaderboard</button>
-          <button class="primary" id="adminArchive">Archive season</button>
+          <input id="adminToken" type="password" placeholder="Admin token" data-i18n-placeholder="ph.admintoken" autocomplete="off" aria-label="Admin token" style="flex:1" />
+          <button class="primary" id="adminClear" data-i18n="admin.clear">Clear leaderboard</button>
+          <button class="primary" id="adminArchive" data-i18n="admin.archive">Archive season</button>
         </div>
         <div class="menuerr" id="adminMsg"></div>
       </div>
     </div>
   </div>
-  <button class="updatebanner" id="updateBanner">A new version is available &mdash; tap to refresh</button>
+  <button class="updatebanner" id="updateBanner" data-i18n="update.banner">A new version is available &mdash; tap to refresh</button>
 </main>
 
 <script>
@@ -820,6 +826,241 @@ const LOCATIONS = __LOCATIONS__;
 
 (() => {
   const NS = "http://www.w3.org/2000/svg";
+
+  // ---- interface translations (same pattern as No Exit): location names,
+  // deck content, and server error messages stay in English ----
+  const MESSAGES = {
+    en: {
+      "menu.kicker": "A where-in-the-world game",
+      "menu.locations": "Locations", "menu.sv": "Street View imagery (look around & explore)",
+      "menu.timeper": "Time per round", "menu.seconds": "seconds",
+      "menu.roundsper": "Rounds per game", "menu.rounds": "rounds",
+      "menu.best5": "longer games score your best 5 rounds",
+      "menu.record": "Record to Hall of Navigators",
+      "menu.solo": "Play solo", "menu.weekly": "Weekly Expedition", "menu.host": "Host a live room",
+      "menu.join": "Join", "menu.lb": "All-time leaderboard", "menu.weeklyboard": "This week's board",
+      "menu.arch": "Architecture — how this is built",
+      "ph.code": "CODE", "ph.name": "Your name", "ph.search": "Search a country or city…", "ph.admintoken": "Admin token",
+      "ui.language": "Language", "ui.backmenu": "Back to menu", "ui.back": "Back",
+      "deck.na": "North America — Famous Places", "deck.random": "Random world (Street View)",
+      "deck.sa": "South America — Famous Places", "deck.us": "USA — Famous Places",
+      "deck.world": "World — Famous Places", "deck.all": "All decks", "deck.classic": "Classic",
+      "btn.place": "Place a pin to guess", "btn.guess": "Make guess", "btn.next": "Next round",
+      "btn.finalscore": "See final score", "btn.complete": "Expedition complete",
+      "btn.backconfirm": "Go back to the menu?", "btn.weeklystand": "See weekly standings",
+      "btn.endearly": "End round early", "btn.locked": "Locked in", "btn.waithost": "Waiting for host",
+      "btn.finalstand": "Final standings", "btn.charting": "Charting a course…",
+      "hint.map": "Click the map to drop your pin · scroll to zoom",
+      "credit.photo": "Photo: Wikimedia Commons · scroll to zoom",
+      "dist.landed": "your pin landed {0} away", "dist.timesup": "time's up — no pin placed",
+      "dist.nopin": "no pin placed this round", "dist.nopinscored": "no pin scored this round",
+      "dist.offtab": " · 👀 {0}s off-tab", "dist.noguess": "no guess",
+      "party.locked": "locked in — waiting for the others", "party.answered": "room {0} · {1}/{2} answered",
+      "final.kicker": "Expedition complete", "final.outof": "out of {0}", "final.best5": " — best 5 rounds count",
+      "final.dropped": "(dropped)", "final.again": "Chart a new expedition",
+      "verdict.a": "A master navigator. The map is barely necessary.",
+      "verdict.b": "A seasoned traveller — your compass rarely lies.",
+      "verdict.c": "A promising explorer with a few detours.",
+      "verdict.d": "The journey matters more than the destination. Apparently.",
+      "verdict.e": "You have discovered several places that were not there.",
+      "rank.test": "Test game — not recorded", "rank.n": "#{0} on the solo Hall of Navigators",
+      "rank.rec": "Recorded to the solo Hall of Navigators",
+      "lobby.role": "Live room", "lobby.joinhint": "join at this site · enter the code",
+      "lobby.waiting": "Waiting for players…", "lobby.start1": "Start game (1 player)",
+      "lobby.startN": "Start game ({0} players)", "lobby.hostwait": "Waiting for the host to start…",
+      "lobby.leave": "Leave", "lobby.noplayers": "No players yet",
+      "stand.kicker": "Final standings", "stand.winner": "{0} takes it", "stand.gameover": "Game over",
+      "weekly.kicker": "Weekly Expedition · {0}", "weekly.title": "Weekly Expedition",
+      "weekly.board": "This week's board", "weekly.play": "Play this week's expedition",
+      "weekly.played": "You've already played this week — {0} pts",
+      "weekly.placed": "You placed #{0} — {1} pts", "weekly.mypts": "{0} pts this week",
+      "weekly.empty": "Nobody has played yet — be first!",
+      "lb.kicker": "All-time leaderboard", "lb.title": "Hall of Navigators",
+      "lb.showsolo": "Show solo scores",
+      "lb.solonote": "Solo scores are average points per round — solo games vary in length.",
+      "lb.loading": "Loading…", "lb.seasons": "Past seasons",
+      "lb.emptygroup": "No group games recorded yet — host a live room!",
+      "lb.emptysolo": "No solo games recorded yet — tick Record to Hall of Navigators and play!",
+      "lb.empty": "No games recorded yet — host a live room or record a solo game!",
+      "th.navigator": "Navigator", "th.location": "Location", "th.score": "Score", "th.when": "When",
+      "kind.country": "country", "kind.region": "region", "kind.city": "city",
+      "copy.board": "Copy board", "copy.done": "Copied!", "copy.fail": "Copy failed",
+      "copy.hall": "Terra Incognita — Hall of Navigators", "copy.hallsolo": " (solo — avg points per round)",
+      "admin.btn": "Admin", "admin.clear": "Clear leaderboard", "admin.archive": "Archive season",
+      "admin.token": "enter the admin token", "admin.clearconfirm": "Really clear it?",
+      "admin.archconfirm": "Really archive & reset?", "admin.cleared": "Leaderboard cleared",
+      "admin.archived": "Archived {0} records as {1}",
+      "err.code": "enter the 4-letter room code", "err.name": "enter your name",
+      "err.namerecord": "enter your name (the Join field) to record to the Hall",
+      "err.nameweekly": "enter your name (the Join field) to play the weekly",
+      "err.unrecorded": " — playing unrecorded", "err.retry": " — tap to retry",
+      "update.banner": "A new version is available — tap to refresh",
+    },
+    es: {
+      "menu.kicker": "Un juego de ¿dónde en el mundo?",
+      "menu.locations": "Lugares", "menu.sv": "Imágenes de Street View (mira alrededor y explora)",
+      "menu.timeper": "Tiempo por ronda", "menu.seconds": "segundos",
+      "menu.roundsper": "Rondas por partida", "menu.rounds": "rondas",
+      "menu.best5": "en partidas largas cuentan tus 5 mejores rondas",
+      "menu.record": "Registrar en el Salón de Navegantes",
+      "menu.solo": "Jugar solo", "menu.weekly": "Expedición semanal", "menu.host": "Crear una sala en vivo",
+      "menu.join": "Unirse", "menu.lb": "Clasificación histórica", "menu.weeklyboard": "Tabla de esta semana",
+      "menu.arch": "Arquitectura — cómo está construido",
+      "ph.code": "CÓDIGO", "ph.name": "Tu nombre", "ph.search": "Busca un país o ciudad…", "ph.admintoken": "Clave de administrador",
+      "ui.language": "Idioma", "ui.backmenu": "Volver al menú", "ui.back": "Volver",
+      "deck.na": "Norteamérica — Lugares famosos", "deck.random": "Mundo aleatorio (Street View)",
+      "deck.sa": "Sudamérica — Lugares famosos", "deck.us": "EE. UU. — Lugares famosos",
+      "deck.world": "Mundo — Lugares famosos", "deck.all": "Todos los mazos", "deck.classic": "Clásico",
+      "btn.place": "Coloca un pin para adivinar", "btn.guess": "Adivinar", "btn.next": "Siguiente ronda",
+      "btn.finalscore": "Ver puntuación final", "btn.complete": "Expedición completada",
+      "btn.backconfirm": "¿Volver al menú?", "btn.weeklystand": "Ver tabla semanal",
+      "btn.endearly": "Terminar la ronda ya", "btn.locked": "Respuesta fijada", "btn.waithost": "Esperando al anfitrión",
+      "btn.finalstand": "Clasificación final", "btn.charting": "Trazando el rumbo…",
+      "hint.map": "Haz clic en el mapa para colocar tu pin · rueda para hacer zoom",
+      "credit.photo": "Foto: Wikimedia Commons · rueda para hacer zoom",
+      "dist.landed": "tu pin cayó a {0}", "dist.timesup": "se acabó el tiempo — sin pin",
+      "dist.nopin": "sin pin en esta ronda", "dist.nopinscored": "sin pin puntuado en esta ronda",
+      "dist.offtab": " · 👀 {0}s fuera de la pestaña", "dist.noguess": "sin respuesta",
+      "party.locked": "respuesta fijada — esperando al resto", "party.answered": "sala {0} · {1}/{2} respondieron",
+      "final.kicker": "Expedición completada", "final.outof": "de {0}", "final.best5": " — cuentan las 5 mejores rondas",
+      "final.dropped": "(descartada)", "final.again": "Trazar una nueva expedición",
+      "verdict.a": "Navegante experto. El mapa apenas hace falta.",
+      "verdict.b": "Viajero curtido — tu brújula rara vez miente.",
+      "verdict.c": "Explorador prometedor, con algún desvío.",
+      "verdict.d": "El viaje importa más que el destino. Por lo visto.",
+      "verdict.e": "Has descubierto varios lugares que no existían.",
+      "rank.test": "Partida de prueba — no registrada", "rank.n": "N.º {0} en el Salón de Navegantes en solitario",
+      "rank.rec": "Registrada en el Salón de Navegantes en solitario",
+      "lobby.role": "Sala en vivo", "lobby.joinhint": "entra en este sitio · introduce el código",
+      "lobby.waiting": "Esperando jugadores…", "lobby.start1": "Empezar (1 jugador)",
+      "lobby.startN": "Empezar ({0} jugadores)", "lobby.hostwait": "Esperando a que el anfitrión empiece…",
+      "lobby.leave": "Salir", "lobby.noplayers": "Aún no hay jugadores",
+      "stand.kicker": "Clasificación final", "stand.winner": "{0} se lo lleva", "stand.gameover": "Fin de la partida",
+      "weekly.kicker": "Expedición semanal · {0}", "weekly.title": "Expedición semanal",
+      "weekly.board": "Tabla de esta semana", "weekly.play": "Jugar la expedición de esta semana",
+      "weekly.played": "Ya has jugado esta semana — {0} pts",
+      "weekly.placed": "Quedaste #{0} — {1} pts", "weekly.mypts": "{0} pts esta semana",
+      "weekly.empty": "Nadie ha jugado todavía — ¡sé el primero!",
+      "lb.kicker": "Clasificación histórica", "lb.title": "Salón de Navegantes",
+      "lb.showsolo": "Mostrar puntuaciones en solitario",
+      "lb.solonote": "Las puntuaciones en solitario son el promedio de puntos por ronda — las partidas varían de duración.",
+      "lb.loading": "Cargando…", "lb.seasons": "Temporadas pasadas",
+      "lb.emptygroup": "Aún no hay partidas de grupo — ¡crea una sala en vivo!",
+      "lb.emptysolo": "Aún no hay partidas en solitario — marca Registrar en el Salón de Navegantes y juega.",
+      "lb.empty": "Aún no hay partidas — crea una sala o registra una partida en solitario.",
+      "th.navigator": "Navegante", "th.location": "Lugar", "th.score": "Puntos", "th.when": "Cuándo",
+      "kind.country": "país", "kind.region": "región", "kind.city": "ciudad",
+      "copy.board": "Copiar tabla", "copy.done": "¡Copiada!", "copy.fail": "No se pudo copiar",
+      "copy.hall": "Terra Incognita — Salón de Navegantes", "copy.hallsolo": " (solitario — promedio de puntos por ronda)",
+      "admin.btn": "Admin", "admin.clear": "Borrar clasificación", "admin.archive": "Archivar temporada",
+      "admin.token": "introduce la clave de administrador", "admin.clearconfirm": "¿Borrarla de verdad?",
+      "admin.archconfirm": "¿Archivar y reiniciar de verdad?", "admin.cleared": "Clasificación borrada",
+      "admin.archived": "{0} registros archivados como {1}",
+      "err.code": "introduce el código de 4 letras", "err.name": "introduce tu nombre",
+      "err.namerecord": "introduce tu nombre (el campo de Unirse) para registrar en el Salón",
+      "err.nameweekly": "introduce tu nombre (el campo de Unirse) para jugar la semanal",
+      "err.unrecorded": " — jugando sin registro", "err.retry": " — toca para reintentar",
+      "update.banner": "Hay una versión nueva — toca para actualizar",
+    },
+    pt: {
+      "menu.kicker": "Um jogo de onde-no-mundo",
+      "menu.locations": "Lugares", "menu.sv": "Imagens do Street View (olhe ao redor e explore)",
+      "menu.timeper": "Tempo por rodada", "menu.seconds": "segundos",
+      "menu.roundsper": "Rodadas por partida", "menu.rounds": "rodadas",
+      "menu.best5": "em partidas longas contam suas 5 melhores rodadas",
+      "menu.record": "Registrar no Salão dos Navegantes",
+      "menu.solo": "Jogar sozinho", "menu.weekly": "Expedição semanal", "menu.host": "Criar uma sala ao vivo",
+      "menu.join": "Entrar", "menu.lb": "Classificação geral", "menu.weeklyboard": "Quadro desta semana",
+      "menu.arch": "Arquitetura — como foi construído",
+      "ph.code": "CÓDIGO", "ph.name": "Seu nome", "ph.search": "Busque um país ou cidade…", "ph.admintoken": "Chave de administrador",
+      "ui.language": "Idioma", "ui.backmenu": "Voltar ao menu", "ui.back": "Voltar",
+      "deck.na": "América do Norte — Lugares famosos", "deck.random": "Mundo aleatório (Street View)",
+      "deck.sa": "América do Sul — Lugares famosos", "deck.us": "EUA — Lugares famosos",
+      "deck.world": "Mundo — Lugares famosos", "deck.all": "Todos os baralhos", "deck.classic": "Clássico",
+      "btn.place": "Coloque um pino para palpitar", "btn.guess": "Palpitar", "btn.next": "Próxima rodada",
+      "btn.finalscore": "Ver pontuação final", "btn.complete": "Expedição concluída",
+      "btn.backconfirm": "Voltar ao menu?", "btn.weeklystand": "Ver quadro semanal",
+      "btn.endearly": "Encerrar a rodada", "btn.locked": "Palpite travado", "btn.waithost": "Aguardando o anfitrião",
+      "btn.finalstand": "Classificação final", "btn.charting": "Traçando a rota…",
+      "hint.map": "Clique no mapa para colocar seu pino · role para dar zoom",
+      "credit.photo": "Foto: Wikimedia Commons · role para dar zoom",
+      "dist.landed": "seu pino caiu a {0}", "dist.timesup": "tempo esgotado — sem pino",
+      "dist.nopin": "sem pino nesta rodada", "dist.nopinscored": "sem pino pontuado nesta rodada",
+      "dist.offtab": " · 👀 {0}s fora da aba", "dist.noguess": "sem palpite",
+      "party.locked": "palpite travado — aguardando os outros", "party.answered": "sala {0} · {1}/{2} responderam",
+      "final.kicker": "Expedição concluída", "final.outof": "de {0}", "final.best5": " — contam as 5 melhores rodadas",
+      "final.dropped": "(descartada)", "final.again": "Traçar uma nova expedição",
+      "verdict.a": "Navegante mestre. O mapa é quase desnecessário.",
+      "verdict.b": "Viajante experiente — sua bússola raramente mente.",
+      "verdict.c": "Explorador promissor, com alguns desvios.",
+      "verdict.d": "A jornada importa mais que o destino. Pelo visto.",
+      "verdict.e": "Você descobriu vários lugares que não existiam.",
+      "rank.test": "Partida de teste — não registrada", "rank.n": "Nº {0} no Salão dos Navegantes solo",
+      "rank.rec": "Registrada no Salão dos Navegantes solo",
+      "lobby.role": "Sala ao vivo", "lobby.joinhint": "entre neste site · digite o código",
+      "lobby.waiting": "Aguardando jogadores…", "lobby.start1": "Começar (1 jogador)",
+      "lobby.startN": "Começar ({0} jogadores)", "lobby.hostwait": "Aguardando o anfitrião começar…",
+      "lobby.leave": "Sair", "lobby.noplayers": "Ainda não há jogadores",
+      "stand.kicker": "Classificação final", "stand.winner": "{0} leva a melhor", "stand.gameover": "Fim de jogo",
+      "weekly.kicker": "Expedição semanal · {0}", "weekly.title": "Expedição semanal",
+      "weekly.board": "Quadro desta semana", "weekly.play": "Jogar a expedição desta semana",
+      "weekly.played": "Você já jogou esta semana — {0} pts",
+      "weekly.placed": "Você ficou em #{0} — {1} pts", "weekly.mypts": "{0} pts esta semana",
+      "weekly.empty": "Ninguém jogou ainda — seja o primeiro!",
+      "lb.kicker": "Classificação geral", "lb.title": "Salão dos Navegantes",
+      "lb.showsolo": "Mostrar pontuações solo",
+      "lb.solonote": "Pontuações solo são a média de pontos por rodada — as partidas variam de duração.",
+      "lb.loading": "Carregando…", "lb.seasons": "Temporadas passadas",
+      "lb.emptygroup": "Ainda não há partidas em grupo — crie uma sala ao vivo!",
+      "lb.emptysolo": "Ainda não há partidas solo — marque Registrar no Salão dos Navegantes e jogue.",
+      "lb.empty": "Ainda não há partidas — crie uma sala ou registre uma partida solo.",
+      "th.navigator": "Navegante", "th.location": "Lugar", "th.score": "Pontos", "th.when": "Quando",
+      "kind.country": "país", "kind.region": "região", "kind.city": "cidade",
+      "copy.board": "Copiar quadro", "copy.done": "Copiado!", "copy.fail": "Falha ao copiar",
+      "copy.hall": "Terra Incognita — Salão dos Navegantes", "copy.hallsolo": " (solo — média de pontos por rodada)",
+      "admin.btn": "Admin", "admin.clear": "Limpar classificação", "admin.archive": "Arquivar temporada",
+      "admin.token": "digite a chave de administrador", "admin.clearconfirm": "Limpar mesmo?",
+      "admin.archconfirm": "Arquivar e reiniciar mesmo?", "admin.cleared": "Classificação limpa",
+      "admin.archived": "{0} registros arquivados como {1}",
+      "err.code": "digite o código de 4 letras", "err.name": "digite seu nome",
+      "err.namerecord": "digite seu nome (o campo de Entrar) para registrar no Salão",
+      "err.nameweekly": "digite seu nome (o campo de Entrar) para jogar a semanal",
+      "err.unrecorded": " — jogando sem registro", "err.retry": " — toque para tentar de novo",
+      "update.banner": "Há uma nova versão — toque para atualizar",
+    },
+  };
+  const LANGS = { en: "English", es: "Español", pt: "Português" };
+  function detectLang() {
+    const saved = localStorage.getItem("terra-lang");
+    if (saved && MESSAGES[saved]) return saved;
+    const nav = (navigator.language || "en").slice(0, 2).toLowerCase();
+    return MESSAGES[nav] ? nav : "en";
+  }
+  let LANG = detectLang();
+  function t(key, ...args) {
+    let s = (MESSAGES[LANG] && MESSAGES[LANG][key]) ?? MESSAGES.en[key] ?? key;
+    args.forEach((a, i) => { s = s.replaceAll(`{${i}}`, a); });
+    return s;
+  }
+  // deck labels are stored/queried in canonical English; translate at render
+  const CANONICAL_DECK = {
+    "North America — Famous Places": "deck.na", "Random world (Street View)": "deck.random",
+    "South America — Famous Places": "deck.sa", "USA — Famous Places": "deck.us",
+    "World — Famous Places": "deck.world",
+  };
+  const deckDisplay = (label) => CANONICAL_DECK[label] ? t(CANONICAL_DECK[label]) : (label || t("deck.classic"));
+  function applyI18n() {
+    document.documentElement.lang = LANG;
+    for (const el of document.querySelectorAll("[data-i18n]")) el.textContent = t(el.dataset.i18n);
+    for (const el of document.querySelectorAll("[data-i18n-placeholder]")) el.placeholder = t(el.dataset.i18nPlaceholder);
+  }
+  function setLang(l) {
+    if (!MESSAGES[l]) return;
+    LANG = l;
+    localStorage.setItem("terra-lang", l);
+    applyI18n();
+  }
+
   let ROUNDS = 5; // solo rounds; set from the menu input when a game starts
   const svg = document.getElementById("map");
   svg.setAttribute("viewBox", `0 0 ${MAP_W} ${MAP_H}`);
@@ -979,7 +1220,7 @@ const LOCATIONS = __LOCATIONS__;
         guessPt = pt;
         drawMarkers();
         goBtn.disabled = false;
-        goBtn.textContent = "Make guess";
+        goBtn.textContent = t("btn.guess");
         mapHint.style.display = "none";
       }
     }
@@ -1048,7 +1289,7 @@ const LOCATIONS = __LOCATIONS__;
     searchResults.innerHTML = matches.map((m, i) =>
       `<div class="item${i === activeIdx ? " active" : ""}" role="option" data-i="${i}">
          <span>${m.n}${m.kind !== "country" ? ` <span class="sub">${m.s}</span>` : ""}</span>
-         <span class="sub kind">${m.kind}</span>
+         <span class="sub kind">${t("kind." + m.kind)}</span>
        </div>`
     ).join("");
     searchResults.classList.add("open");
@@ -1231,14 +1472,14 @@ const LOCATIONS = __LOCATIONS__;
     revealName.textContent = loc.name;
     revealPlace.textContent = loc.place;
     revealCard.classList.add("show");
-    distReadout.textContent = "time's up — no pin placed" +
-      (away >= 3000 ? ` · 👀 ${Math.round(away / 1000)}s off-tab` : "");
+    distReadout.textContent = t("dist.timesup") +
+      (away >= 3000 ? t("dist.offtab", Math.round(away / 1000)) : "");
     ptsReadout.textContent = "+0 pts";
     scoreFill.style.width = "0%";
     sfx.womp();
     mapHint.style.display = "none";
     goBtn.disabled = false;
-    goBtn.textContent = round + 1 < ROUNDS ? "Next round" : "See final score";
+    goBtn.textContent = round + 1 < ROUNDS ? t("btn.next") : t("btn.finalscore");
   }
 
   // ---- photo zoom ----
@@ -1323,7 +1564,7 @@ const LOCATIONS = __LOCATIONS__;
     return 2 * R * Math.asin(Math.sqrt(s));
   }
 
-  const fmtKm = (km) => km == null ? "no guess" : km < 10 ? km.toFixed(1) + " km" : Math.round(km).toLocaleString() + " km";
+  const fmtKm = (km) => km == null ? t("dist.noguess") : km < 10 ? km.toFixed(1) + " km" : Math.round(km).toLocaleString() + " km";
   // games longer than five rounds score only the best five
   const bestFiveTotal = (ptsList) => [...ptsList].sort((a, b) => b - a).slice(0, 5).reduce((s, v) => s + v, 0);
   const maxScore = () => Math.min(ROUNDS, 5) * 5000;
@@ -1353,7 +1594,7 @@ const LOCATIONS = __LOCATIONS__;
     ptsReadout.textContent = "";
     scoreFill.style.width = "0%";
     goBtn.disabled = true;
-    goBtn.textContent = "Place a pin to guess";
+    goBtn.textContent = t("btn.place");
     mapHint.style.display = "";
     document.getElementById("miniStand").classList.remove("show");
     resetGuessMap();
@@ -1379,24 +1620,24 @@ const LOCATIONS = __LOCATIONS__;
     revealName.textContent = loc.name;
     revealPlace.textContent = loc.place;
     revealCard.classList.add("show");
-    distReadout.textContent = `your pin landed ${fmtKm(km)} away` +
-      (away >= 3000 ? ` · 👀 ${Math.round(away / 1000)}s off-tab` : "");
+    distReadout.textContent = t("dist.landed", fmtKm(km)) +
+      (away >= 3000 ? t("dist.offtab", Math.round(away / 1000)) : "");
     animateCount(ptsReadout, pts, (v) => `+${v.toLocaleString()} pts`);
     requestAnimationFrame(() => { scoreFill.style.width = (pts / 5000) * 100 + "%"; });
     animateCount(scoreLabel, total, (v) => v.toLocaleString());
     sfx.reveal(pts >= 4000);
     if (pts >= 4500) confetti();
     goBtn.disabled = false;
-    goBtn.textContent = round + 1 < ROUNDS ? "Next round" : "See final score";
+    goBtn.textContent = round + 1 < ROUNDS ? t("btn.next") : t("btn.finalscore");
   }
 
-  function verdictFor(t) {
+  function verdictFor(score) { // don't shadow t()
     const max = maxScore();
-    if (t >= max * 0.9) return "A master navigator. The map is barely necessary.";
-    if (t >= max * 0.7) return "A seasoned traveller — your compass rarely lies.";
-    if (t >= max * 0.48) return "A promising explorer with a few detours.";
-    if (t >= max * 0.24) return "The journey matters more than the destination. Apparently.";
-    return "You have discovered several places that were not there.";
+    if (score >= max * 0.9) return t("verdict.a");
+    if (score >= max * 0.7) return t("verdict.b");
+    if (score >= max * 0.48) return t("verdict.c");
+    if (score >= max * 0.24) return t("verdict.d");
+    return t("verdict.e");
   }
 
   function renderFinalMap() {
@@ -1427,15 +1668,15 @@ const LOCATIONS = __LOCATIONS__;
   function showFinal() {
     renderFinalMap();
     finalTotal.textContent = total.toLocaleString();
-    $("finalOutOf").textContent = `out of ${maxScore().toLocaleString()}` +
-      (ROUNDS > 5 ? " — best 5 rounds count" : "");
+    $("finalOutOf").textContent = t("final.outof", maxScore().toLocaleString()) +
+      (ROUNDS > 5 ? t("final.best5") : "");
     finalVerdict.textContent = verdictFor(total);
     const fr = $("finalRank");
     if (soloRec && soloRec.final) {
       fr.style.display = "";
-      fr.textContent = !soloRec.final.recorded ? "Test game — not recorded"
-        : soloRec.final.rank ? `#${soloRec.final.rank} on the solo Hall of Navigators`
-        : "Recorded to the solo Hall of Navigators";
+      fr.textContent = !soloRec.final.recorded ? t("rank.test")
+        : soloRec.final.rank ? t("rank.n", soloRec.final.rank)
+        : t("rank.rec");
     } else {
       fr.style.display = "none";
     }
@@ -1444,11 +1685,11 @@ const LOCATIONS = __LOCATIONS__;
     finalTable.innerHTML = results.map((r, i) => {
       const dropped = ROUNDS > 5 && !counted.has(i);
       const peek = (r.away || 0) >= 3000 ? `<span class="peek">👀${Math.round(r.away / 1000)}s</span>` : "";
-      return `<tr${dropped ? ' style="opacity:0.4"' : ""}><td>${r.name}${peek}${dropped ? " (dropped)" : ""}</td><td class="dist">${fmtKm(r.km)}</td><td>+${r.pts.toLocaleString()}</td></tr>`;
+      return `<tr${dropped ? ' style="opacity:0.4"' : ""}><td>${r.name}${peek}${dropped ? " " + t("final.dropped") : ""}</td><td class="dist">${fmtKm(r.km)}</td><td>+${r.pts.toLocaleString()}</td></tr>`;
     }).join("");
     finalScreen.classList.add("show");
     goBtn.disabled = false;
-    goBtn.textContent = "Expedition complete";
+    goBtn.textContent = t("btn.complete");
     sfx.fanfare();
     if (total >= ROUNDS * 5000 * 0.7) confetti();
   }
@@ -1464,10 +1705,10 @@ const LOCATIONS = __LOCATIONS__;
         finalConfirmTimer = null;
         backToMenu();
       } else {
-        goBtn.textContent = "Go back to the menu?";
+        goBtn.textContent = t("btn.backconfirm");
         finalConfirmTimer = setTimeout(() => {
           finalConfirmTimer = null;
-          goBtn.textContent = "Expedition complete";
+          goBtn.textContent = t("btn.complete");
         }, 4000);
       }
       return;
@@ -1747,7 +1988,7 @@ const LOCATIONS = __LOCATIONS__;
         gGuessMarker.setPosition(e.latLng);
         gGuessMarker.setMap(gmap);
         goBtn.disabled = false;
-        goBtn.textContent = "Make guess";
+        goBtn.textContent = t("btn.guess");
         mapHint.style.display = "none";
       });
     }
@@ -1829,7 +2070,7 @@ const LOCATIONS = __LOCATIONS__;
     if ($("recToggle").checked && deckType === "random") {
       recordName = $("joinName").value.trim();
       if (!recordName) {
-        menuErr.textContent = "enter your name (the Join field) to record to the Hall";
+        menuErr.textContent = t("err.namerecord");
         return;
       }
       localStorage.setItem("terra-name", recordName);
@@ -1838,7 +2079,7 @@ const LOCATIONS = __LOCATIONS__;
     if (deckType === "random") {
       const btn = $("menuSolo");
       btn.disabled = true;
-      btn.textContent = "Charting a course…";
+      btn.textContent = t("btn.charting");
       try {
         customDeck = await buildRandomDeck(ROUNDS);
       } catch (err) {
@@ -1846,7 +2087,7 @@ const LOCATIONS = __LOCATIONS__;
         return;
       } finally {
         btn.disabled = false;
-        btn.textContent = "Play solo";
+        btn.textContent = t("menu.solo");
       }
     }
     if (recordName && customDeck) {
@@ -1858,7 +2099,7 @@ const LOCATIONS = __LOCATIONS__;
         soloRec = { token: d.token, name: recordName };
         roundSeconds = d.roundSec;
       } catch (err) {
-        menuErr.textContent = String(err.message) + " — playing unrecorded";
+        menuErr.textContent = String(err.message) + t("err.unrecorded");
         // the game still starts, just without the Hall write
       }
     }
@@ -1871,9 +2112,9 @@ const LOCATIONS = __LOCATIONS__;
   let soloRec = null; // {token, name, final} when this solo game is server-scored
 
   function weeklyRows(top, highlightName) {
-    if (!top.length) return '<tr><td style="color:var(--muted)">Nobody has played yet — be first!</td></tr>';
+    if (!top.length) return `<tr><td style="color:var(--muted)">${t("weekly.empty")}</td></tr>`;
     const medals = ["🥇", "🥈", "🥉"];
-    return "<tr><th>#</th><th>Navigator</th><th>Score</th></tr>" + top.map((r, i) => {
+    return `<tr><th>#</th><th>${t("th.navigator")}</th><th>${t("th.score")}</th></tr>` + top.map((r, i) => {
       const me = r.name.toLowerCase() === (highlightName || "").toLowerCase();
       const peek = (r.awayMs || 0) >= 3000 ? `<span class="peek">👀${Math.round(r.awayMs / 1000)}s</span>` : "";
       return `<tr${me ? ' style="color:var(--brass)"' : ""}><td>${medals[i] || i + 1}</td><td>${esc(r.name)}${peek}</td><td class="score">${r.score.toLocaleString()}</td></tr>`;
@@ -1889,11 +2130,11 @@ const LOCATIONS = __LOCATIONS__;
     try {
       const name = $("joinName").value.trim();
       const d = await api("weekly" + (name ? "?name=" + encodeURIComponent(name) : ""));
-      $("weeklyKicker").textContent = `Weekly Expedition · ${d.week}`;
-      $("weeklyHead").textContent = "This week's board";
+      $("weeklyKicker").textContent = t("weekly.kicker", d.week);
+      $("weeklyHead").textContent = t("weekly.board");
       $("weeklyTable").innerHTML = weeklyRows(d.top, name);
       if (message) $("weeklyMsg").textContent = message;
-      else if (d.played) $("weeklyMsg").textContent = `You've already played this week — ${d.yourScore.toLocaleString()} pts`;
+      else if (d.played) $("weeklyMsg").textContent = t("weekly.played", d.yourScore.toLocaleString());
       $("weeklyPlay").style.display = d.played ? "none" : "";
     } catch (err) {
       $("weeklyMsg").textContent = String(err.message);
@@ -1903,7 +2144,7 @@ const LOCATIONS = __LOCATIONS__;
   async function startWeekly() {
     const name = $("joinName").value.trim();
     if (!name) {
-      menuErr.textContent = "enter your name (the Join field) to play the weekly";
+      menuErr.textContent = t("err.nameweekly");
       return;
     }
     localStorage.setItem("terra-name", name);
@@ -1942,7 +2183,7 @@ const LOCATIONS = __LOCATIONS__;
         ? await api("weekly", { ...payload, name: weekly.name, token: weekly.token })
         : await api("solo", { ...payload, token: soloRec.token });
     } catch (err) {
-      distReadout.textContent = String(err.message) + " — tap to retry";
+      distReadout.textContent = String(err.message) + t("err.retry");
       goBtn.disabled = false;
       state = "guessing";
       return;
@@ -1959,8 +2200,8 @@ const LOCATIONS = __LOCATIONS__;
     revealName.textContent = loc.name;
     revealPlace.textContent = loc.place;
     revealCard.classList.add("show");
-    distReadout.textContent = (resp.km == null ? "no pin scored this round" : `your pin landed ${fmtKm(resp.km)} away`) +
-      (away >= 3000 ? ` · 👀 ${Math.round(away / 1000)}s off-tab` : "");
+    distReadout.textContent = (resp.km == null ? t("dist.nopinscored") : t("dist.landed", fmtKm(resp.km))) +
+      (away >= 3000 ? t("dist.offtab", Math.round(away / 1000)) : "");
     animateCount(ptsReadout, resp.pts, (v) => `+${v.toLocaleString()} pts`);
     requestAnimationFrame(() => { scoreFill.style.width = (resp.pts / 5000) * 100 + "%"; });
     animateCount(scoreLabel, total, (v) => v.toLocaleString());
@@ -1970,14 +2211,14 @@ const LOCATIONS = __LOCATIONS__;
     if (resp.done) {
       if (mode === "weekly") {
         weeklyFinal = resp;
-        goBtn.textContent = "See weekly standings";
+        goBtn.textContent = t("btn.weeklystand");
       } else {
         soloRec.final = resp;
-        goBtn.textContent = "See final score";
+        goBtn.textContent = t("btn.finalscore");
       }
     } else {
       if (resp.nextLocIdx != null) deck.push(LOCATIONS[resp.nextLocIdx]);
-      goBtn.textContent = "Next round";
+      goBtn.textContent = t("btn.next");
     }
   }
 
@@ -1989,10 +2230,10 @@ const LOCATIONS = __LOCATIONS__;
         sfx.fanfare();
         hideAllModals();
         show(weeklyScreen);
-        $("weeklyKicker").textContent = `Weekly Expedition · ${weekly.week}`;
+        $("weeklyKicker").textContent = t("weekly.kicker", weekly.week);
         $("weeklyHead").textContent = weeklyFinal.rank
-          ? `You placed #${weeklyFinal.rank} — ${weeklyFinal.total.toLocaleString()} pts`
-          : `${weeklyFinal.total.toLocaleString()} pts this week`;
+          ? t("weekly.placed", weeklyFinal.rank, weeklyFinal.total.toLocaleString())
+          : t("weekly.mypts", weeklyFinal.total.toLocaleString());
         $("weeklyTable").innerHTML = weeklyRows(weeklyFinal.top, weekly.name);
         $("weeklyMsg").textContent = "";
         $("weeklyPlay").style.display = "none";
@@ -2011,7 +2252,7 @@ const LOCATIONS = __LOCATIONS__;
     lastState = null; lastRoundShown = null;
     finalScreen.classList.remove("show");
     goBtn.disabled = true;
-    goBtn.textContent = "Place a pin to guess";
+    goBtn.textContent = t("btn.place");
     hideAllModals();
     show(menuScreen);
   }
@@ -2023,7 +2264,7 @@ const LOCATIONS = __LOCATIONS__;
     if (deckType === "random") {
       const btn = $("menuHost");
       btn.disabled = true;
-      btn.textContent = "Charting a course…";
+      btn.textContent = t("btn.charting");
       try {
         body.deckType = "random";
         body.deck = (await buildRandomDeck(rounds)).map((d) => ({
@@ -2031,7 +2272,7 @@ const LOCATIONS = __LOCATIONS__;
         }));
       } finally {
         btn.disabled = false;
-        btn.textContent = "Host a live room";
+        btn.textContent = t("menu.host");
       }
     } else {
       body.mode = Boolean(mapsKey && $("svToggle").checked) ? "street" : "photo";
@@ -2116,13 +2357,13 @@ const LOCATIONS = __LOCATIONS__;
     show(lobbyScreen);
     $("lobbyPlayers").innerHTML = st.players.length
       ? st.players.map((p) => `<span class="chip">${esc(p.name)}</span>`).join("")
-      : '<span style="color:var(--muted);font-size:0.85rem">No players yet</span>';
+      : `<span style="color:var(--muted);font-size:0.85rem">${t("lobby.noplayers")}</span>`;
     if (mode === "host") {
       const btn = $("lobbyStart");
       btn.disabled = !st.players.length;
       btn.textContent = st.players.length
-        ? `Start game (${st.players.length} player${st.players.length > 1 ? "s" : ""})`
-        : "Waiting for players…";
+        ? (st.players.length === 1 ? t("lobby.start1") : t("lobby.startN", st.players.length))
+        : t("lobby.waiting");
     }
   }
 
@@ -2134,18 +2375,18 @@ const LOCATIONS = __LOCATIONS__;
       (myGuessSubmitted || answered.some((p) => p.id === party.playerId));
     if (mode === "host") {
       state = "spectate";
-      distReadout.textContent = `room ${party.code} · ${answered.length}/${st.players.length} answered`;
+      distReadout.textContent = t("party.answered", party.code, answered.length, st.players.length);
       goBtn.disabled = false;
-      goBtn.textContent = "End round early";
+      goBtn.textContent = t("btn.endearly");
     } else if (meAnswered) {
       state = "spectate";
-      distReadout.textContent = "locked in — waiting for the others";
+      distReadout.textContent = t("party.locked");
       goBtn.disabled = true;
-      goBtn.textContent = "Locked in";
+      goBtn.textContent = t("btn.locked");
     } else {
       state = "guessing";
       goBtn.disabled = !guessPt;
-      goBtn.textContent = guessPt ? "Make guess" : "Place a pin to guess";
+      goBtn.textContent = guessPt ? t("btn.guess") : t("btn.place");
     }
   }
 
@@ -2214,21 +2455,21 @@ const LOCATIONS = __LOCATIONS__;
     }
     if (mode === "player") {
       if (st.you) {
-        distReadout.textContent = `your pin landed ${fmtKm(st.you.km)} away`;
+        distReadout.textContent = t("dist.landed", fmtKm(st.you.km));
         scoreFill.style.width = (st.you.pts / 5000) * 100 + "%";
       } else {
-        distReadout.textContent = "no pin placed this round";
+        distReadout.textContent = t("dist.nopin");
         ptsReadout.textContent = "+0 pts";
       }
       goBtn.disabled = true;
-      goBtn.textContent = "Waiting for host";
+      goBtn.textContent = t("btn.waithost");
     } else {
       const best = [...st.reveal].sort((a, b) => a.km - b.km)[0];
       distReadout.textContent = best
         ? `closest: ${best.name} (${fmtKm(best.km)})` : "nobody guessed this round";
       ptsReadout.textContent = "";
       goBtn.disabled = false;
-      goBtn.textContent = st.roundIdx + 1 < st.rounds ? "Next round" : "Final standings";
+      goBtn.textContent = st.roundIdx + 1 < st.rounds ? t("btn.next") : t("btn.finalstand");
     }
   }
 
@@ -2236,13 +2477,13 @@ const LOCATIONS = __LOCATIONS__;
     const me = ($("joinName").value.trim() || localStorage.getItem("terra-name") || "").toLowerCase();
     const medals = ["🥇", "🥈", "🥉"];
     const fmtDate = (iso) => iso
-      ? new Date(iso).toLocaleDateString(undefined, { month: "short", day: "numeric" }) : "";
+      ? new Date(iso).toLocaleDateString(LANG, { month: "short", day: "numeric" }) : "";
     const startRank = arguments.length > 1 && typeof arguments[1] === "number" ? arguments[1] : 0;
-    return "<tr><th>#</th><th>Navigator</th><th>Location</th><th>Score</th><th>When</th></tr>" +
+    return `<tr><th>#</th><th>${t("th.navigator")}</th><th>${t("th.location")}</th><th>${t("th.score")}</th><th>${t("th.when")}</th></tr>` +
       top.map((r, i) => {
         const rank = startRank + i;
         const hl = me && r.name.toLowerCase() === me ? ' style="color:var(--brass)"' : "";
-        return `<tr${hl}><td>${medals[rank] || rank + 1}</td><td>${esc(r.name)}</td><td class="deckcell">${esc(r.deck || "Classic")}</td>` +
+        return `<tr${hl}><td>${medals[rank] || rank + 1}</td><td>${esc(r.name)}</td><td class="deckcell">${esc(deckDisplay(r.deck))}</td>` +
           `<td class="score">${r.score.toLocaleString()}</td>` +
           `<td style="color:var(--muted);font-size:0.75rem">${fmtDate(r.playedAt)}</td></tr>`;
       }).join("");
@@ -2255,7 +2496,7 @@ const LOCATIONS = __LOCATIONS__;
     $("miniStand").classList.remove("show");
     sfx.fanfare();
     const ranked = st.players;
-    $("standWinner").textContent = ranked.length ? `${ranked[0].name} takes it` : "Game over";
+    $("standWinner").textContent = ranked.length ? t("stand.winner", ranked[0].name) : t("stand.gameover");
     $("standList").innerHTML = ranked.map((p, i) =>
       `<li><span>${i + 1}. ${esc(p.name)}</span><span class="pts">${(p.score ?? 0).toLocaleString()}</span></li>`
     ).join("");
@@ -2289,8 +2530,8 @@ const LOCATIONS = __LOCATIONS__;
       myGuessSubmitted = true;
       const [glon, glat] = mapToLonLat(guessPt[0], guessPt[1]);
       goBtn.disabled = true;
-      goBtn.textContent = "Locked in";
-      distReadout.textContent = "locked in — waiting for the others";
+      goBtn.textContent = t("btn.locked");
+      distReadout.textContent = t("party.locked");
       state = "spectate";
       try {
         await api("guess", { code: party.code, playerId: party.playerId, token: party.token, lat: glat, lon: glon, awayMs: takeAwayMs() });
@@ -2301,7 +2542,7 @@ const LOCATIONS = __LOCATIONS__;
         if (lastState && lastState.state === "question") {
           state = "guessing";
           goBtn.disabled = !guessPt;
-          goBtn.textContent = guessPt ? "Make guess" : "Place a pin to guess";
+          goBtn.textContent = guessPt ? t("btn.guess") : t("btn.place");
         }
       }
     } else if (mode === "host") {
@@ -2315,7 +2556,7 @@ const LOCATIONS = __LOCATIONS__;
     hideAllModals();
     show(lbScreen);
     $("lbPodium").innerHTML = "";
-    $("lbTable").innerHTML = '<tr><td style="color:var(--muted)">Loading…</td></tr>';
+    $("lbTable").innerHTML = `<tr><td style="color:var(--muted)">${t("lb.loading")}</td></tr>`;
     try {
       const deck = $("lbDeckFilter").value;
       // solo games exist only for Random world — the toggle appears only there
@@ -2337,12 +2578,10 @@ const LOCATIONS = __LOCATIONS__;
           const r = lb.top[i];
           return `<div class="pod p${i + 1}"><div class="pmedal">${medals[i]}</div>` +
             `<div class="pname">${esc(r.name)}</div><div class="pscore">${r.score.toLocaleString()}</div>` +
-            `<div class="pdeck">${esc(r.deck || "Classic")}</div></div>`;
+            `<div class="pdeck">${esc(deckDisplay(r.deck))}</div></div>`;
         }).join("");
       $("lbTable").innerHTML = lb.top.length > 3 ? lbRows(lb.top.slice(3), 3)
-        : lb.top.length ? "" : `<tr><td style="color:var(--muted)">${solo
-          ? "No solo games recorded yet — tick Record to Hall of Navigators and play!"
-          : "No group games recorded yet — host a live room!"}</td></tr>`;
+        : lb.top.length ? "" : `<tr><td style="color:var(--muted)">${solo ? t("lb.emptysolo") : t("lb.emptygroup")}</td></tr>`;
       const seasons = lb.pastSeasons || [];
       $("seasonsHead").style.display = seasons.length ? "" : "none";
       $("seasonsList").innerHTML = seasons.map((s) =>
@@ -2357,16 +2596,16 @@ const LOCATIONS = __LOCATIONS__;
   async function copyBoard(btn, title, lines) {
     try {
       await navigator.clipboard.writeText(title + "\n" + lines.join("\n"));
-      btn.textContent = "Copied!";
+      btn.textContent = t("copy.done");
     } catch {
-      btn.textContent = "Copy failed";
+      btn.textContent = t("copy.fail");
     }
-    setTimeout(() => { btn.textContent = "Copy board"; }, 2000);
+    setTimeout(() => { btn.textContent = t("copy.board"); }, 2000);
   }
   $("lbCopy").addEventListener("click", () => {
     const medals = ["🥇", "🥈", "🥉"];
-    copyBoard($("lbCopy"), "Terra Incognita — Hall of Navigators" + ($("lbSoloToggle").checked ? " (solo — avg points per round)" : ""),
-      lastHallTop.map((r, i) => `${medals[i] || (i + 1) + "."} ${r.name} — ${r.score.toLocaleString()} (${r.deck || "Classic"})`));
+    copyBoard($("lbCopy"), t("copy.hall") + ($("lbSoloToggle").checked ? t("copy.hallsolo") : ""),
+      lastHallTop.map((r, i) => `${medals[i] || (i + 1) + "."} ${r.name} — ${r.score.toLocaleString()} (${deckDisplay(r.deck)})`));
   });
   $("weeklyCopy").addEventListener("click", () => {
     const medals = ["🥇", "🥈", "🥉"];
@@ -2408,6 +2647,12 @@ const LOCATIONS = __LOCATIONS__;
     localStorage.setItem("terra-record", $("recToggle").checked ? "1" : "0");
   });
   syncDeckUI(); // random is the default -> record toggle starts enabled + on
+  const langSel = $("langSelect");
+  langSel.innerHTML = Object.entries(LANGS)
+    .map(([code, name]) => `<option value="${code}">${name}</option>`).join("");
+  langSel.value = LANG;
+  langSel.addEventListener("change", () => setLang(langSel.value));
+  applyI18n();
   $("roundsInput").addEventListener("input", () => {
     $("bestFiveNote").style.display = parseInt($("roundsInput").value, 10) > 5 ? "" : "none";
   });
@@ -2420,8 +2665,8 @@ const LOCATIONS = __LOCATIONS__;
   $("menuJoin").addEventListener("click", busyGuard(async () => {
     const code = $("joinCode").value.trim().toUpperCase();
     const name = $("joinName").value.trim();
-    if (code.length !== 4) throw new Error("enter the 4-letter room code");
-    if (!name) throw new Error("enter your name");
+    if (code.length !== 4) throw new Error(t("err.code"));
+    if (!name) throw new Error(t("err.name"));
     await joinRoom(code, name);
   }));
   $("joinName").addEventListener("keydown", (e) => {
@@ -2440,24 +2685,24 @@ const LOCATIONS = __LOCATIONS__;
     const msg = $("adminMsg");
     if (!$("adminToken").value.trim()) {
       msg.style.color = "var(--red)";
-      msg.textContent = "enter the admin token";
+      msg.textContent = t("admin.token");
       return;
     }
     if (!archiveConfirmTimer) {
-      btn.textContent = "Really archive & reset?";
+      btn.textContent = t("admin.archconfirm");
       archiveConfirmTimer = setTimeout(() => {
         archiveConfirmTimer = null;
-        btn.textContent = "Archive season";
+        btn.textContent = t("admin.archive");
       }, 4000);
       return;
     }
     clearTimeout(archiveConfirmTimer);
     archiveConfirmTimer = null;
-    btn.textContent = "Archive season";
+    btn.textContent = t("admin.archive");
     try {
       const r = await api("admin", { token: $("adminToken").value.trim(), action: "archiveSeason" });
       msg.style.color = "var(--teal)";
-      msg.textContent = `Archived ${r.archived} records as ${r.season}`;
+      msg.textContent = t("admin.archived", r.archived, r.season);
       showLeaderboard();
     } catch (err) {
       msg.style.color = "var(--red)";
@@ -2471,25 +2716,25 @@ const LOCATIONS = __LOCATIONS__;
     const msg = $("adminMsg");
     if (!$("adminToken").value.trim()) {
       msg.style.color = "var(--red)";
-      msg.textContent = "enter the admin token";
+      msg.textContent = t("admin.token");
       return;
     }
     if (!adminConfirmTimer) {
-      btn.textContent = "Really clear it?";
+      btn.textContent = t("admin.clearconfirm");
       adminConfirmTimer = setTimeout(() => {
         adminConfirmTimer = null;
-        btn.textContent = "Clear leaderboard";
+        btn.textContent = t("admin.clear");
       }, 4000);
       return;
     }
     clearTimeout(adminConfirmTimer);
     adminConfirmTimer = null;
-    btn.textContent = "Clear leaderboard";
+    btn.textContent = t("admin.clear");
     try {
       await api("admin", { token: $("adminToken").value.trim(), action: "clearLeaderboard" });
       msg.style.color = "var(--teal)";
-      msg.textContent = "Leaderboard cleared";
-      $("lbTable").innerHTML = '<tr><td style="color:var(--muted)">No games recorded yet — host a live room or record a solo game!</td></tr>';
+      msg.textContent = t("admin.cleared");
+      $("lbTable").innerHTML = `<tr><td style="color:var(--muted)">${t("lb.empty")}</td></tr>`;
     } catch (err) {
       msg.style.color = "var(--red)";
       msg.textContent = String(err.message);

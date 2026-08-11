@@ -26,6 +26,21 @@ test.describe('menu', () => {
     await expect(page.locator('body')).not.toHaveClass(/day/);
   });
 
+  test('language dropdown switches the interface and persists', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.locator('#menuSolo')).toHaveText('Play solo'); // default English
+    await page.locator('#langSelect').selectOption('es');
+    await expect(page.locator('#menuSolo')).toHaveText('Jugar solo');
+    await expect(page.locator('#menuWeekly')).toHaveText('Expedición semanal');
+    await expect(page.locator('#joinName')).toHaveAttribute('placeholder', 'Tu nombre');
+    await page.reload();
+    await expect(page.locator('#menuSolo')).toHaveText('Jugar solo'); // persisted
+    await page.locator('#langSelect').selectOption('pt');
+    await expect(page.locator('#menuSolo')).toHaveText('Jogar sozinho');
+    await page.locator('#langSelect').selectOption('en');
+    await expect(page.locator('#menuSolo')).toHaveText('Play solo');
+  });
+
   test('architecture page shares the game theme', async ({ page }) => {
     await page.goto('/architecture');
     await expect(page.locator('h1')).toHaveText('Architecture');
