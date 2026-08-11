@@ -33,6 +33,8 @@ test.describe('menu', () => {
     await expect(page.locator('#menuSolo')).toHaveText('Jugar solo');
     await expect(page.locator('#menuWeekly')).toHaveText('Expedición semanal');
     await expect(page.locator('#joinName')).toHaveAttribute('placeholder', 'Tu nombre');
+    await expect(page.locator('.hud .label').first()).toHaveText('Ronda'); // top bar follows too
+    await expect(page.locator('.tagline')).toHaveText('Adivina dónde en la Tierra');
     await page.reload();
     await expect(page.locator('#menuSolo')).toHaveText('Jugar solo'); // persisted
     await page.locator('#langSelect').selectOption('pt');

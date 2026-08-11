@@ -451,7 +451,7 @@
     min-width: 0;
   }
   .joinrow input:focus { border-color: var(--brass); }
-  #joinCode { width: 86px; text-transform: uppercase; font-family: var(--mono); letter-spacing: 0.15em; }
+  #joinCode { width: 118px; text-transform: uppercase; font-family: var(--mono); letter-spacing: 0.15em; } /* fits the CÓDIGO placeholder */
   #joinName { flex: 1; }
   button.ghost, a.ghost {
     display: inline-block;
@@ -626,14 +626,14 @@
 <header>
   <div class="brand">
     <h1>Terra Incognita</h1>
-    <span class="tagline">Guess where on Earth</span>
+    <span class="tagline" data-i18n="hud.tagline">Guess where on Earth</span>
   </div>
   <div class="hud">
-    <div><span class="label">Round</span><span class="value" id="roundLabel">1 / 5</span></div>
-    <div><span class="label">Time</span><span class="value" id="timerLabel">1:00</span></div>
-    <div><span class="label">Score</span><span class="value"><span class="accent" id="scoreLabel">0</span></span></div>
-    <div><span class="label">Sound</span><button id="muteBtn" class="mutebtn" aria-label="Toggle sound">🔊</button></div>
-    <div><span class="label">Theme</span><button id="themeBtn" class="mutebtn" aria-label="Toggle day or night mode">🌙</button></div>
+    <div><span class="label" data-i18n="hud.round">Round</span><span class="value" id="roundLabel">1 / 5</span></div>
+    <div><span class="label" data-i18n="hud.time">Time</span><span class="value" id="timerLabel">1:00</span></div>
+    <div><span class="label" data-i18n="hud.score">Score</span><span class="value"><span class="accent" id="scoreLabel">0</span></span></div>
+    <div><span class="label" data-i18n="hud.sound">Sound</span><button id="muteBtn" class="mutebtn" aria-label="Toggle sound">🔊</button></div>
+    <div><span class="label" data-i18n="hud.theme">Theme</span><button id="themeBtn" class="mutebtn" aria-label="Toggle day or night mode">🌙</button></div>
   </div>
 </header>
 
@@ -832,6 +832,9 @@ const LOCATIONS = __LOCATIONS__;
   const MESSAGES = {
     en: {
       "menu.kicker": "A where-in-the-world game",
+      "hud.tagline": "Guess where on Earth",
+      "hud.round": "Round", "hud.time": "Time", "hud.score": "Score",
+      "hud.sound": "Sound", "hud.theme": "Theme",
       "menu.locations": "Locations", "menu.sv": "Street View imagery (look around & explore)",
       "menu.timeper": "Time per round", "menu.seconds": "seconds",
       "menu.roundsper": "Rounds per game", "menu.rounds": "rounds",
@@ -898,6 +901,9 @@ const LOCATIONS = __LOCATIONS__;
     },
     es: {
       "menu.kicker": "Un juego de ¿dónde en el mundo?",
+      "hud.tagline": "Adivina dónde en la Tierra",
+      "hud.round": "Ronda", "hud.time": "Tiempo", "hud.score": "Puntos",
+      "hud.sound": "Sonido", "hud.theme": "Tema",
       "menu.locations": "Lugares", "menu.sv": "Imágenes de Street View (mira alrededor y explora)",
       "menu.timeper": "Tiempo por ronda", "menu.seconds": "segundos",
       "menu.roundsper": "Rondas por partida", "menu.rounds": "rondas",
@@ -964,6 +970,9 @@ const LOCATIONS = __LOCATIONS__;
     },
     pt: {
       "menu.kicker": "Um jogo de onde-no-mundo",
+      "hud.tagline": "Adivinhe onde na Terra",
+      "hud.round": "Rodada", "hud.time": "Tempo", "hud.score": "Pontos",
+      "hud.sound": "Som", "hud.theme": "Tema",
       "menu.locations": "Lugares", "menu.sv": "Imagens do Street View (olhe ao redor e explore)",
       "menu.timeper": "Tempo por rodada", "menu.seconds": "segundos",
       "menu.roundsper": "Rodadas por partida", "menu.rounds": "rodadas",
