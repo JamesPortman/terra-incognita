@@ -4,6 +4,9 @@ const { test, expect } = require('@playwright/test');
 // written to weekly_scores — so this spec is repeatable and leaves no rows.
 test.describe('weekly expedition', () => {
   test('plays the week to the standings screen', async ({ page }) => {
+    // random-world weeks need Google panoramas — covered by gmap.spec.js
+    const info = await (await page.request.get('/api/weekly')).json();
+    test.skip(info.mode === 'random', 'random-world week — see the gmap spec');
     await page.goto('/?plainmap=1');
     await expect(page.locator('#modeToggleRow')).toBeVisible();
     await page.locator('#joinName').fill('E2E-Weekly');

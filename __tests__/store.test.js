@@ -37,6 +37,14 @@ describe('kv store', () => {
     await store.del(key);
   });
 
+  it('setJSONnx refuses to overwrite an existing key', async () => {
+    const key = uniq();
+    expect(await store.setJSONnx(key, { a: 1 }, 60)).toBe(true);
+    expect(await store.setJSONnx(key, { a: 2 }, 60)).toBe(false);
+    expect((await store.getJSON(key)).a).toBe(1);
+    await store.del(key);
+  });
+
   it('hsetnx refuses to overwrite an existing field', async () => {
     const key = uniq();
     expect(await store.hsetnxJSON(key, 'g', { pts: 100 })).toBe(true);

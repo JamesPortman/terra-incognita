@@ -47,6 +47,28 @@ test.describe('google guess map', () => {
     await expect(page.locator('#finalRank')).toHaveText(/Test game — not recorded/);
   });
 
+  test('random-world weekly plays panoramas to the standings screen', async ({ page }) => {
+    // only meaningful during a Random-world week (e.g. 2026-W34)
+    const info = await (await page.request.get('/api/weekly')).json();
+    test.skip(info.mode !== 'random', 'famous-deck week — weekly.spec covers it');
+    await page.goto('/');
+    await expect(page.locator('#modeToggleRow')).toBeVisible();
+    await page.locator('#joinName').fill('E2E-Weekly');
+    await page.locator('#menuWeekly').click();
+    // first run of the week may chart the deck (metadata lookups take a while)
+    await expect(page.locator('#roundLabel')).toHaveText('1 / 5', { timeout: 60_000 });
+    for (let round = 1; round <= 5; round++) {
+      await expect(page.locator('#panobox')).toHaveClass(/active/, { timeout: 20_000 });
+      await page.locator('#gmap').click({ position: { x: 210, y: 150 } });
+      await expect(page.locator('#goBtn')).toHaveText(/Make guess/i, { timeout: 10_000 });
+      await page.locator('#goBtn').click();
+      await expect(page.locator('#distReadout')).toHaveText(/your pin landed/);
+      await page.locator('#goBtn').click();
+    }
+    await expect(page.locator('#weeklyScreen')).toBeVisible();
+    await expect(page.locator('#weeklyHead')).toHaveText(/pts/);
+  });
+
   test('random world solo round drops into a panorama', async ({ page }) => {
     await page.goto('/');
     await expect(page.locator('#modeToggleRow')).toBeVisible();

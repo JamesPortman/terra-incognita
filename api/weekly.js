@@ -6,12 +6,33 @@ const crypto = require('crypto');
 const { getStore } = require('./_lib/store.js');
 const { getSql, ensureWeeklyTable } = require('./_lib/db.js');
 const { haversineKm, pointsFor, sendJSON, LOCATIONS } = require('./_lib/rooms.js');
-const { WEEKLY_ROUNDS, WEEKLY_ROUND_SEC, isoWeek, weeklyDeck, isTestName } = require('./_lib/weekly.js');
+const { WEEKLY_ROUNDS, WEEKLY_ROUND_SEC, isoWeek, weeklyDeck, weeklyMode, isTestName } = require('./_lib/weekly.js');
 const { rateLimit } = require('./_lib/ratelimit.js');
 
 const GRACE_MS = 5000;
 const ATTEMPT_TTL = 6 * 3600;
+const RANDOM_DECK_TTL = 14 * 86400; // outlives the week comfortably
 const attemptKey = (week, name) => `weekly:${week}:${name.toLowerCase()}`;
+const randomDeckKey = (week) => `weeklydeck:${week}`;
+
+// same validation as random-room hosting in create.js
+function validateRandomDeck(raw) {
+  if (!Array.isArray(raw) || raw.length !== WEEKLY_ROUNDS) return null;
+  const deck = [];
+  for (const d of raw) {
+    const lat = Number(d?.lat), lon = Number(d?.lon);
+    const panoId = String(d?.panoId || '').slice(0, 64);
+    if (!Number.isFinite(lat) || !Number.isFinite(lon) ||
+        Math.abs(lat) > 90 || Math.abs(lon) > 180 || !/^[\w-]+$/.test(panoId)) {
+      return null;
+    }
+    deck.push({
+      lat, lon, panoId,
+      label: String(d?.label || '').slice(0, 80).replace(/[<>&"']/g, ''),
+    });
+  }
+  return deck;
+}
 
 const cleanName = (raw) => String(raw || '').trim().slice(0, 20).replace(/[<>&"']/g, '');
 
@@ -27,10 +48,11 @@ async function topRows(week) {
 
 module.exports = async (req, res) => {
   const week = isoWeek();
-  const deck = weeklyDeck(week);
+  const mode = weeklyMode(week);
+  const deck = weeklyDeck(week); // famous-mode deck (locIdx list); unused in random weeks
 
   if (req.method === 'GET') {
-    const out = { week, rounds: WEEKLY_ROUNDS, roundSec: WEEKLY_ROUND_SEC, top: await topRows(week) };
+    const out = { week, mode, rounds: WEEKLY_ROUNDS, roundSec: WEEKLY_ROUND_SEC, top: await topRows(week) };
     const name = cleanName(req.query?.name);
     if (name && !isTestName(name)) {
       const mine = out.top.find((r) => r.name.toLowerCase() === name.toLowerCase()) ||
@@ -56,6 +78,19 @@ module.exports = async (req, res) => {
         return sendJSON(res, 409, { error: 'already played this week', yourScore: existing[0].score });
       }
     }
+    // random weeks play a stored panorama deck; the first player's browser
+    // resolves it (referrer-locked Maps key) and submits it here, first wins
+    let randomDeck = null;
+    if (mode === 'random') {
+      randomDeck = await store.getJSON(randomDeckKey(week));
+      if (!randomDeck) {
+        if (req.body?.deck === undefined) return sendJSON(res, 200, { week, mode, needDeck: true });
+        const submitted = validateRandomDeck(req.body.deck);
+        if (!submitted) return sendJSON(res, 400, { error: 'invalid weekly deck' });
+        await store.setJSONnx(randomDeckKey(week), submitted, RANDOM_DECK_TTL);
+        randomDeck = await store.getJSON(randomDeckKey(week)); // a racer may have won
+      }
+    }
     const attempt = {
       token: crypto.randomUUID(),
       name,
@@ -65,10 +100,12 @@ module.exports = async (req, res) => {
       roundStartAt: Date.now(),
     };
     await store.setJSON(attemptKey(week, name), attempt, ATTEMPT_TTL);
-    // only the first round's location ships — the rest arrive one per guess,
-    // so the console can't preview upcoming rounds
+    // only the first round ships — the rest arrive one per guess, so the
+    // console can't preview upcoming rounds (random weeks get a pano id
+    // only; its coordinates would leak the answer)
     return sendJSON(res, 200, {
-      week, token: attempt.token, locIdx: deck[0], rounds: WEEKLY_ROUNDS, roundSec: WEEKLY_ROUND_SEC,
+      week, mode, token: attempt.token, rounds: WEEKLY_ROUNDS, roundSec: WEEKLY_ROUND_SEC,
+      ...(mode === 'random' ? { pano: randomDeck[0].panoId } : { locIdx: deck[0] }),
     });
   }
 
@@ -77,8 +114,15 @@ module.exports = async (req, res) => {
     if (!attempt || attempt.token !== req.body?.token) return sendJSON(res, 403, { error: 'no active attempt' });
     if (attempt.roundIdx >= WEEKLY_ROUNDS) return sendJSON(res, 409, { error: 'attempt is finished' });
 
-    const locIdx = deck[attempt.roundIdx];
-    const loc = LOCATIONS[locIdx];
+    let locIdx = null, randomDeck = null, loc;
+    if (mode === 'random') {
+      randomDeck = await store.getJSON(randomDeckKey(week));
+      if (!randomDeck) return sendJSON(res, 409, { error: 'this week\'s deck is missing' });
+      loc = randomDeck[attempt.roundIdx];
+    } else {
+      locIdx = deck[attempt.roundIdx];
+      loc = LOCATIONS[locIdx];
+    }
     const lat = Number(req.body?.lat), lon = Number(req.body?.lon);
     const hasPin = Number.isFinite(lat) && Number.isFinite(lon) &&
       Math.abs(lat) <= 90 && Math.abs(lon) <= 180 && !req.body?.skip;
@@ -97,8 +141,15 @@ module.exports = async (req, res) => {
     attempt.roundStartAt = Date.now();
     await store.setJSON(attemptKey(week, name), attempt, ATTEMPT_TTL);
 
-    const out = { km, pts, locIdx, roundIdx: attempt.roundIdx, total: attempt.total };
-    if (attempt.roundIdx < WEEKLY_ROUNDS) out.nextLocIdx = deck[attempt.roundIdx];
+    const out = { km, pts, roundIdx: attempt.roundIdx, total: attempt.total };
+    if (mode === 'random') {
+      // coordinates and label only appear at reveal, next round is pano-only
+      out.loc = { lat: loc.lat, lon: loc.lon, label: loc.label || '' };
+      if (attempt.roundIdx < WEEKLY_ROUNDS) out.nextPano = randomDeck[attempt.roundIdx].panoId;
+    } else {
+      out.locIdx = locIdx;
+      if (attempt.roundIdx < WEEKLY_ROUNDS) out.nextLocIdx = deck[attempt.roundIdx];
+    }
     if (attempt.roundIdx >= WEEKLY_ROUNDS) {
       out.done = true;
       if (!isTestName(name)) {

@@ -49,4 +49,13 @@ function weeklyDeck(week, rounds = WEEKLY_ROUNDS) {
 
 const isTestName = (name) => /^E2E-/i.test(name);
 
-module.exports = { WEEKLY_ROUNDS, WEEKLY_ROUND_SEC, isoWeek, weeklyDeck, isTestName };
+// Weeks that play Random world (Street View) instead of the famous-places
+// deck. The first player of such a week resolves the panoramas client-side
+// (the Maps key is referrer-locked) and the server stores them first-write-
+// wins so everyone faces the same five. WEEKLY_FORCE_MODE overrides for
+// tests and as an ops lever ('famous' | 'random').
+const RANDOM_WEEKS = new Set(['2026-W34']);
+const weeklyMode = (week) =>
+  process.env.WEEKLY_FORCE_MODE || (RANDOM_WEEKS.has(week) ? 'random' : 'famous');
+
+module.exports = { WEEKLY_ROUNDS, WEEKLY_ROUND_SEC, isoWeek, weeklyDeck, weeklyMode, isTestName };

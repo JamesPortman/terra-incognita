@@ -35,6 +35,11 @@ function redisStore() {
       if (n === 1 && ttlSec) await redis.expire(key, ttlSec);
       return n;
     },
+    // returns false (and writes nothing) if the key already exists
+    async setJSONnx(key, val, ttlSec) {
+      const r = await redis.set(key, val, { nx: true, ...(ttlSec ? { ex: ttlSec } : {}) });
+      return r === 'OK';
+    },
     async del(...keys) { await redis.del(...keys); },
   };
 }
@@ -73,6 +78,11 @@ function fileStore() {
       o.n += 1;
       write(key, o);
       return o.n;
+    },
+    async setJSONnx(key, val) {
+      if (read(key) != null) return false;
+      write(key, val);
+      return true;
     },
     async del(...keys) {
       const fs2 = require('fs');

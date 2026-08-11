@@ -858,6 +858,7 @@ const LOCATIONS = __LOCATIONS__;
       "dist.landed": "your pin landed {0} away", "dist.timesup": "time's up — no pin placed",
       "dist.nopin": "no pin placed this round", "dist.nopinscored": "no pin scored this round",
       "dist.offtab": " · 👀 {0}s off-tab", "dist.noguess": "no guess",
+      "reveal.mystery": "Mystery location",
       "party.locked": "locked in — waiting for the others", "party.answered": "room {0} · {1}/{2} answered",
       "final.kicker": "Expedition complete", "final.outof": "out of {0}", "final.best5": " — best 5 rounds count",
       "final.dropped": "(dropped)", "final.again": "Chart a new expedition",
@@ -927,6 +928,7 @@ const LOCATIONS = __LOCATIONS__;
       "dist.landed": "tu pin cayó a {0}", "dist.timesup": "se acabó el tiempo — sin pin",
       "dist.nopin": "sin pin en esta ronda", "dist.nopinscored": "sin pin puntuado en esta ronda",
       "dist.offtab": " · 👀 {0}s fuera de la pestaña", "dist.noguess": "sin respuesta",
+      "reveal.mystery": "Lugar misterioso",
       "party.locked": "respuesta fijada — esperando al resto", "party.answered": "sala {0} · {1}/{2} respondieron",
       "final.kicker": "Expedición completada", "final.outof": "de {0}", "final.best5": " — cuentan las 5 mejores rondas",
       "final.dropped": "(descartada)", "final.again": "Trazar una nueva expedición",
@@ -996,6 +998,7 @@ const LOCATIONS = __LOCATIONS__;
       "dist.landed": "seu pino caiu a {0}", "dist.timesup": "tempo esgotado — sem pino",
       "dist.nopin": "sem pino nesta rodada", "dist.nopinscored": "sem pino pontuado nesta rodada",
       "dist.offtab": " · 👀 {0}s fora da aba", "dist.noguess": "sem palpite",
+      "reveal.mystery": "Lugar misterioso",
       "party.locked": "palpite travado — aguardando os outros", "party.answered": "sala {0} · {1}/{2} responderam",
       "final.kicker": "Expedição concluída", "final.outof": "de {0}", "final.best5": " — contam as 5 melhores rodadas",
       "final.dropped": "(descartada)", "final.again": "Traçar uma nova expedição",
@@ -2158,19 +2161,40 @@ const LOCATIONS = __LOCATIONS__;
     }
     localStorage.setItem("terra-name", name);
     try {
-      const d = await api("weekly", { action: "start", name });
+      let d = await api("weekly", { action: "start", name });
+      if (d.needDeck) {
+        // first player of a Random-world week charts the course for everyone
+        const btn = $("menuWeekly");
+        btn.disabled = true;
+        btn.textContent = t("btn.charting");
+        let charted;
+        try {
+          charted = await buildRandomDeck(5);
+        } finally {
+          btn.disabled = false;
+          btn.textContent = t("menu.weekly");
+        }
+        d = await api("weekly", {
+          action: "start", name,
+          deck: charted.map((l) => ({ lat: l.lat, lon: l.lon, panoId: l.panoId, label: l.name })),
+        });
+      }
       stopPolling(); stopTimer(); clearSession();
       mode = "weekly";
       weekly = { token: d.token, name, week: d.week };
       weeklyFinal = null;
       party = null; partyGuesses = null;
-      soloStreet = false; // photo mode for everyone — a level playing field
+      // famous weeks are photo mode for everyone — a level playing field;
+      // Random-world weeks are Street View by definition
+      soloStreet = d.mode === "random";
       roundSeconds = d.roundSec;
       ROUNDS = d.rounds;
       hideAllModals();
       // the server reveals locations one round at a time; later rounds are
       // appended to the deck as each guess comes back
-      newGame([LOCATIONS[d.locIdx]]);
+      newGame(d.mode === "random"
+        ? [{ panoId: d.pano, name: "", place: "" }]
+        : [LOCATIONS[d.locIdx]]);
     } catch (err) {
       if (/already played/.test(String(err.message))) showWeeklyBoard();
       else menuErr.textContent = String(err.message);
@@ -2197,8 +2221,11 @@ const LOCATIONS = __LOCATIONS__;
       state = "guessing";
       return;
     }
-    // weekly discloses locations by index; recorded solo plays its own local deck
-    const loc = resp.locIdx != null ? LOCATIONS[resp.locIdx] : deck[round];
+    // famous weeklies disclose locations by index, random weeklies send
+    // coordinates at reveal, recorded solo plays its own local deck
+    const loc = resp.loc
+      ? { name: resp.loc.label || t("reveal.mystery"), place: "", lat: resp.loc.lat, lon: resp.loc.lon }
+      : resp.locIdx != null ? LOCATIONS[resp.locIdx] : deck[round];
     actualPt = lonLatToMap(loc.lon, loc.lat);
     results.push({ name: loc.name, km: resp.km, pts: resp.pts, away, gPt: hasPin ? guessPt.slice() : null, aPt: actualPt.slice() });
     total = resp.total;
@@ -2226,7 +2253,8 @@ const LOCATIONS = __LOCATIONS__;
         goBtn.textContent = t("btn.finalscore");
       }
     } else {
-      if (resp.nextLocIdx != null) deck.push(LOCATIONS[resp.nextLocIdx]);
+      if (resp.nextPano) deck.push({ panoId: resp.nextPano, name: "", place: "" });
+      else if (resp.nextLocIdx != null) deck.push(LOCATIONS[resp.nextLocIdx]);
       goBtn.textContent = t("btn.next");
     }
   }
@@ -2425,7 +2453,7 @@ const LOCATIONS = __LOCATIONS__;
     hideAllModals();
     setupPartyRound(st);
     const loc = st.loc
-      ? { name: st.loc.label || "Mystery location", place: "", lat: st.loc.lat, lon: st.loc.lon }
+      ? { name: st.loc.label || t("reveal.mystery"), place: "", lat: st.loc.lat, lon: st.loc.lon }
       : LOCATIONS[st.locIdx];
     state = "spectate";
     if (!partyGuesses) {
