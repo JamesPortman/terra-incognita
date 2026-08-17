@@ -38,6 +38,18 @@ const DECK_KEYS = {
     'huacachina', 'colcacanyon', 'sacsayhuaman', 'ollantaytambo', 'banos',
     'quilotoa', 'canaima', 'ushuaia', 'lapaz',
   ],
+  br: [
+    'rio', 'iguazufalls', 'sugarloaf', 'copacabana', 'amazontheatre',
+    'pelourinho', 'lencois', 'brasilia', 'maracana', 'paraty',
+    'fernandodenoronha', 'chapada', 'escadaria', 'ipanema', 'lapa',
+    'niteroi', 'secathedral', 'masp', 'ibirapuera', 'ouropreto',
+    'congonhas', 'inhotim', 'pampulha', 'olinda', 'portodegalinhas',
+    'jericoacoara', 'saoluis', 'alterdochao', 'meetingofwaters', 'pantanal',
+    'bonito', 'chapadaguimaraes', 'veadeiros', 'jalapao', 'pipa',
+    'genipabu', 'canoaquebrada', 'maragogi', 'lacerda', 'trancoso',
+    'curitibabotanic', 'hercilioluz', 'gramado', 'caracol', 'itaimbezinho',
+    'serraorgaos', 'petropolis', 'buzios', 'ilhagrande', 'itaipu',
+  ],
   us: [
     'timessquare', 'goldengate', 'liberty', 'grandcanyon', 'mountrushmore',
     'elcapitan', 'oldfaithful', 'spaceneedle', 'gatewayarch', 'whitehouse',
@@ -66,6 +78,7 @@ for (const [id, keys] of Object.entries(DECK_KEYS)) {
 // Hall's deck filter — the dashes are U+2014 em-dashes, keep them that way.
 const DECK_LABELS = {
   world: 'World — Famous Places',
+  br: 'Brazil — Famous Places',
   na: 'North America — Famous Places',
   sa: 'South America — Famous Places',
   us: 'USA — Famous Places',

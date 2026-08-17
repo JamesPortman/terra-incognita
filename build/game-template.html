@@ -699,6 +699,7 @@
         <label class="timerow">
           <span data-i18n="menu.locations">Locations</span>
           <select id="deckSelect" aria-label="Location set">
+            <option value="br" data-i18n="deck.br">Brazil &mdash; Famous Places</option>
             <option value="na" data-i18n="deck.na">North America &mdash; Famous Places</option>
             <option value="random" id="deckRandomOpt" disabled selected data-i18n="deck.random">Random world (Street View)</option>
             <option value="sa" data-i18n="deck.sa">South America &mdash; Famous Places</option>
@@ -796,6 +797,7 @@
            only the visible text localizes -->
       <select id="lbDeckFilter" class="lbfilter" aria-label="Filter by location deck">
         <option value="" data-i18n="deck.all">All decks</option>
+        <option value="Brazil &mdash; Famous Places" data-i18n="deck.br">Brazil &mdash; Famous Places</option>
         <option value="North America &mdash; Famous Places" data-i18n="deck.na">North America &mdash; Famous Places</option>
         <option value="Random world (Street View)" data-i18n="deck.random">Random world (Street View)</option>
         <option value="South America &mdash; Famous Places" data-i18n="deck.sa">South America &mdash; Famous Places</option>
@@ -856,6 +858,7 @@ const LOCATIONS = __LOCATIONS__;
       "menu.arch": "Architecture — how this is built",
       "ph.code": "CODE", "ph.name": "Your name", "ph.search": "Search a country or city…", "ph.admintoken": "Admin token",
       "ui.language": "Language", "ui.backmenu": "Back to menu", "ui.back": "Back",
+      "deck.br": "Brazil — Famous Places",
       "deck.na": "North America — Famous Places", "deck.random": "Random world (Street View)",
       "deck.sa": "South America — Famous Places", "deck.us": "USA — Famous Places",
       "deck.world": "World — Famous Places", "deck.all": "All decks", "deck.classic": "Classic",
@@ -927,6 +930,7 @@ const LOCATIONS = __LOCATIONS__;
       "menu.arch": "Arquitectura — cómo está construido",
       "ph.code": "CÓDIGO", "ph.name": "Tu nombre", "ph.search": "Busca un país o ciudad…", "ph.admintoken": "Clave de administrador",
       "ui.language": "Idioma", "ui.backmenu": "Volver al menú", "ui.back": "Volver",
+      "deck.br": "Brasil — Lugares famosos",
       "deck.na": "Norteamérica — Lugares famosos", "deck.random": "Mundo aleatorio (Street View)",
       "deck.sa": "Sudamérica — Lugares famosos", "deck.us": "EE. UU. — Lugares famosos",
       "deck.world": "Mundo — Lugares famosos", "deck.all": "Todos los mazos", "deck.classic": "Clásico",
@@ -998,6 +1002,7 @@ const LOCATIONS = __LOCATIONS__;
       "menu.arch": "Arquitetura — como foi construído",
       "ph.code": "CÓDIGO", "ph.name": "Seu nome", "ph.search": "Busque um país ou cidade…", "ph.admintoken": "Chave de administrador",
       "ui.language": "Idioma", "ui.backmenu": "Voltar ao menu", "ui.back": "Voltar",
+      "deck.br": "Brasil — Lugares famosos",
       "deck.na": "América do Norte — Lugares famosos", "deck.random": "Mundo aleatório (Street View)",
       "deck.sa": "América do Sul — Lugares famosos", "deck.us": "EUA — Lugares famosos",
       "deck.world": "Mundo — Lugares famosos", "deck.all": "Todos os baralhos", "deck.classic": "Clássico",
@@ -1070,6 +1075,7 @@ const LOCATIONS = __LOCATIONS__;
   }
   // deck labels are stored/queried in canonical English; translate at render
   const CANONICAL_DECK = {
+    "Brazil — Famous Places": "deck.br",
     "North America — Famous Places": "deck.na", "Random world (Street View)": "deck.random",
     "South America — Famous Places": "deck.sa", "USA — Famous Places": "deck.us",
     "World — Famous Places": "deck.world",

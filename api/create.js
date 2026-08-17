@@ -39,6 +39,8 @@ module.exports = async (req, res) => {
     }
   }
 
+  // any famous deck id is valid; unknown ids fall back to the world deck
+  const deckId = Object.hasOwn(DECKS, String(req.body?.deckId || '')) ? req.body.deckId : 'world';
   const meta = {
     code,
     state: 'lobby',
@@ -47,8 +49,8 @@ module.exports = async (req, res) => {
     rounds,
     roundIdx: -1,
     roundStartAt: 0,
-    deckId: customDeck ? 'random' : (['world', 'na', 'sa', 'us'].includes(req.body?.deckId) ? req.body.deckId : 'world'),
-    deck: newDeck(rounds, DECKS[['world', 'na', 'sa', 'us'].includes(req.body?.deckId) ? req.body.deckId : 'world']),
+    deckId: customDeck ? 'random' : deckId,
+    deck: newDeck(rounds, DECKS[deckId]),
     customDeck,
     hostToken: crypto.randomUUID(),
     createdAt: Date.now(),
