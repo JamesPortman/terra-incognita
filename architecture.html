@@ -187,20 +187,24 @@
     <p>
       Terra Incognita is a GeoGuessr-style geography game: look at a place —
       a Street View panorama or a photo — and drop a pin on a world map;
-      points scale with distance. Games draw from five decks: four curated
-      famous-place decks — North America (the menu default), World, South
-      America, and USA, 50 places each from a 164-location pool
-      with statically served photos — or <em>Random world</em>, which drops
+      points scale with distance. Games draw from six decks: five curated
+      famous-place decks — Brazil, North America, South America, USA, and
+      World, 50 places each from a 202-location pool with statically served
+      photos — or <em>Random world</em> (the menu default), which drops
       players into a random panorama anywhere on Earth. A
-      <em>Weekly Expedition</em> gives everyone the same seeded deck each ISO
-      week — one server-scored attempt per name, with its own weekly board.
+      <em>Weekly Expedition</em> gives everyone the same deck each ISO week —
+      seeded famous places, or Random world on designated weeks — with one
+      server-scored attempt per name and its own weekly board, kept alongside
+      every past week's results.
       The client is one ~0.9&#8201;MB HTML file served by Vercel, with a thin
       set of serverless functions
       adding Kahoot-style live rooms for up to 14 players (room state in
       Upstash Redis, expiring automatically), between-round standings, and a
-      persistent all-time leaderboard (Neon Postgres) with an admin reset.
-      Rounds (1–10) and the round timer (10–300&#8201;s) are configurable per
-      game. Unit and end-to-end suites run in GitHub Actions on every push;
+      persistent all-time leaderboard (Neon Postgres) with an admin reset —
+      separate group and solo boards, each score opening a map replay of the
+      rounds it was earned on. The interface runs in English, Spanish, and
+      Portuguese. Rounds (1–10) and the round timer (10–300&#8201;s) are
+      configurable per game. Unit and end-to-end suites run in GitHub Actions on every push;
       production deploys only when they pass.
     </p>
   </div>
@@ -552,29 +556,33 @@
   <section>
     <h2>9 · Repository map</h2>
     <pre class="repomap">index.html                  the game — built artifact, fully self-contained
+version.txt                 build stamp the page polls for the update banner
 architecture.html           this page
-vercel.json                 git auto-deploy off · /architecture rewrite
+vercel.json                 git auto-deploy off · /architecture rewrite · security headers
 api/
   _lib/store.js             Upstash Redis wrapper + file-store dev fallback
-  _lib/rooms.js             codes · decks · scoring · lazy transitions
-  _lib/db.js                Neon client + leaderboard DDL
+  _lib/rooms.js             codes · decks · scoring · lazy transitions · round detail
+  _lib/db.js                Neon client + leaderboard / weekly / archive DDL
+  _lib/hall.js              personal-best hall query + one game's replay
+  _lib/ratelimit.js         per-IP fixed windows over Redis (fail-open)
   create.js · join.js       room lifecycle
-  guess.js · next.js        server-side scoring · host transitions
-  state.js · leaderboard.js polling endpoint · all-time top 20
-  admin.js                  ADMIN_TOKEN-gated actions (clear leaderboard)
-  weekly.js · _lib/weekly.js  weekly expedition: seeded deck, server-scored attempts
-photos/                     50 famous-place photos, served statically
+  guess.js · next.js        server-side scoring · host transitions · final write
+  state.js · leaderboard.js polling endpoint · hall top 20 + ?detail replay
+  solo.js                   recorded solo attempts (random world, server-scored)
+  admin.js                  ADMIN_TOKEN-gated actions (clear · archive season)
+  weekly.js · _lib/weekly.js  weekly expedition: seeded or random deck, server-scored
   config.js                 serves the referrer-locked Maps key
-shared/locations.js         111 locations — client decks + server answer key (append-only)
-shared/decks.js             world / na / sa famous-deck pools (key lists)
+photos/                     202 famous-place photos, served statically
+shared/locations.js         202 locations — client decks + server answer key (append-only)
+shared/decks.js             world / na / sa / us / br deck pools + display labels
 build/
   game-template.html        client source (edit this, not index.html)
-  assemble.js               embeds map + photos + gazetteer -> index.html
+  assemble.js               embeds map + decks + gazetteer, stamps build id -> index.html
   build-map.js              GeoJSON -> compact SVG paths
-  build-photos.sh           Wikipedia photos -> data URIs
-  build-search.js           GeoNames -> offline search index
-__tests__/                  vitest: scoring, store contract, API handlers
-e2e/                        playwright: menu · solo · search · live room
+  build-photos.sh           Wikipedia lead images -> photos/&lt;key&gt;.jpg (idempotent)
+  build-search.js           GeoNames -> offline search index (cities · regions · countries)
+__tests__/                  vitest: scoring, store contract, API handlers, decks, weekly, solo
+e2e/                        playwright: menu · solo · search · live room · weekly · gmap
 .github/workflows/ci.yml    test gate + production deploy</pre>
   </section>
 </main>
