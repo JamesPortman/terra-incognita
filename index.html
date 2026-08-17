@@ -457,7 +457,8 @@
   tr.rowlink:hover td, tr.rowlink:focus-visible td { background: var(--raised); }
   .pod.rowlink:hover { outline: 1px solid var(--brass); }
   tr.rowlink td:first-child::after { content: " ›"; color: var(--muted); }
-  .maplegend { color: var(--muted); font-size: 0.78rem; margin: -12px 0 16px; }
+  .maplegend { color: var(--muted); font-size: 0.78rem; margin: -12px 0 4px; }
+  .maphint2 { font-size: 0.72rem; opacity: 0.75; margin: 0 0 16px; }
   .pastweek { margin-bottom: 14px; }
   .pastweek .weeklabel {
     font-size: 0.72rem;
@@ -596,7 +597,10 @@
   }
   .final.show { display: flex; }
   .final .sheet { max-width: 560px; width: 100%; text-align: center; }
+  #finalMap.grabbing, #detailMap.grabbing { cursor: grabbing; }
   #finalMap, #detailMap {
+    cursor: grab;
+    touch-action: none; /* drag pans the map instead of scrolling the sheet */
     width: 100%;
     background: var(--sea);
     border: 1px solid var(--line);
@@ -803,6 +807,7 @@
       <svg id="detailMap" xmlns="http://www.w3.org/2000/svg" role="img"
            aria-label="Map of this player's guesses versus the actual locations"></svg>
       <div class="maplegend" id="detailLegend" data-i18n="detail.legend">Numbered pin = the guess &middot; teal dot = the real place</div>
+      <div class="maplegend maphint2" id="detailZoomHint" data-i18n="detail.zoomhint">Scroll to zoom &middot; drag to move &middot; double-click to reset</div>
       <table class="lbtable" id="detailTable"></table>
       <div class="stack"><button class="primary" id="detailBack" data-i18n="ui.back">Back</button></div>
     </div>
@@ -924,6 +929,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
       "th.distance": "Distance",
       "detail.kicker": "Round by round",
       "detail.legend": "Numbered pin = the guess · teal dot = the real place",
+      "detail.zoomhint": "Scroll to zoom · drag to move · double-click to reset",
       "detail.none": "No round detail was kept for this game.",
       "kind.country": "country", "kind.region": "region", "kind.city": "city",
       "copy.board": "Copy board", "copy.done": "Copied!", "copy.fail": "Copy failed",
@@ -1000,6 +1006,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
       "th.distance": "Distancia",
       "detail.kicker": "Ronda a ronda",
       "detail.legend": "Pin numerado = la respuesta · punto turquesa = el lugar real",
+      "detail.zoomhint": "Rueda para acercar · arrastra para mover · doble clic para reiniciar",
       "detail.none": "No se guardó el detalle por rondas de esta partida.",
       "kind.country": "país", "kind.region": "región", "kind.city": "ciudad",
       "copy.board": "Copiar tabla", "copy.done": "¡Copiada!", "copy.fail": "No se pudo copiar",
@@ -1076,6 +1083,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
       "th.distance": "Distância",
       "detail.kicker": "Rodada a rodada",
       "detail.legend": "Pino numerado = o palpite · ponto turquesa = o lugar real",
+      "detail.zoomhint": "Role para ampliar · arraste para mover · duplo clique para reiniciar",
       "detail.none": "O detalhe por rodada não foi guardado nesta partida.",
       "kind.country": "país", "kind.region": "região", "kind.city": "cidade",
       "copy.board": "Copiar quadro", "copy.done": "Copiado!", "copy.fail": "Falha ao copiar",
@@ -1714,10 +1722,26 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
     const padX = Math.max((x1 - x0) * 0.15, 40), padY = Math.max((y1 - y0) * 0.15, 25);
     x0 = Math.max(0, x0 - padX); x1 = Math.min(MAP_W, x1 + padX);
     y0 = Math.max(0, y0 - padY); y1 = Math.min(MAP_H, y1 + padY);
-    const u = Math.max(x1 - x0, y1 - y0) / 220;
     svgEl.setAttribute("viewBox", `${x0} ${y0} ${x1 - x0} ${y1 - y0}`);
+    svgEl.dataset.home = svgEl.getAttribute("viewBox"); // double-click returns here
+    let land = "";
+    for (const d of MAP_PATHS) land += `<path d="${d}" fill="var(--land)" stroke="var(--land-stroke)" stroke-width="0.4"/>`;
+    svgEl.innerHTML = land + '<g class="marks"></g>'; // land is static; marks re-scale
+    mapRows.set(svgEl, rows);
+    drawMarks(svgEl);
+  }
+
+  // Pins and lines are redrawn whenever the view changes, sized from the
+  // current viewBox — so they hold a constant on-screen size at any zoom
+  // instead of ballooning as you zoom in.
+  const mapRows = new WeakMap();
+  function drawMarks(svgEl) {
+    const rows = mapRows.get(svgEl);
+    const marks = svgEl.querySelector(".marks");
+    if (!rows || !marks) return;
+    const [, , vw, vh] = viewOf(svgEl);
+    const u = Math.max(vw, vh) / 220;
     let s = "";
-    for (const d of MAP_PATHS) s += `<path d="${d}" fill="var(--land)" stroke="var(--land-stroke)" stroke-width="0.4"/>`;
     for (const r of rows) {
       if (!r.gPt) continue;
       s += `<line x1="${r.gPt[0]}" y1="${r.gPt[1]}" x2="${r.aPt[0]}" y2="${r.aPt[1]}" stroke="var(--parchment)" stroke-width="${u * 0.6}" stroke-dasharray="${u * 2} ${u * 1.6}" opacity="0.6"/>`;
@@ -1728,10 +1752,89 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
       s += `<circle cx="${p[0]}" cy="${p[1]}" r="${u * 3.2}" fill="${r.gPt ? "var(--brass)" : "var(--red)"}" stroke="var(--ink)" stroke-width="${u * 0.6}"/>` +
         `<text x="${p[0]}" y="${p[1]}" text-anchor="middle" dominant-baseline="central" font-size="${u * 4}" font-family="ui-monospace, Menlo, monospace" font-weight="700" fill="var(--ink)">${i + 1}</text>`;
     });
-    svgEl.innerHTML = s;
+    marks.innerHTML = s;
   }
 
   const renderFinalMap = () => renderGuessMap(finalMap, results);
+
+  // ---- pan + zoom for the replay maps ----
+  // These drive the SVG viewBox directly, so they work on any rendered guess
+  // map without touching the game's own guess-map machinery.
+  const MIN_VIEW_W = 12; // deepest zoom, in map units
+  const viewOf = (el) =>
+    (el.getAttribute("viewBox") || `0 0 ${MAP_W} ${MAP_H}`).split(/\s+/).map(Number);
+  // client -> map coordinates, honouring the letterboxing from preserveAspectRatio
+  const userPt = (el, cx, cy) => new DOMPoint(cx, cy).matrixTransform(el.getScreenCTM().inverse());
+  const resetMapView = (el) => {
+    if (!el.dataset.home) return;
+    el.setAttribute("viewBox", el.dataset.home);
+    drawMarks(el);
+  };
+
+  function setView(el, x, y, w, h) {
+    const shrink = Math.min(MAP_W / w, MAP_H / h, 1); // never wider than the world
+    w *= shrink; h *= shrink;
+    if (w < MIN_VIEW_W) { const g = MIN_VIEW_W / w; w *= g; h *= g; }
+    x = Math.max(0, Math.min(MAP_W - w, x)); // and never off its edges
+    y = Math.max(0, Math.min(MAP_H - h, y));
+    el.setAttribute("viewBox", `${x} ${y} ${w} ${h}`);
+    drawMarks(el);
+  }
+
+  function zoomMapAt(el, cx, cy, factor) {
+    const p = userPt(el, cx, cy);
+    const [x, y, w, h] = viewOf(el);
+    const nw = w / factor, nh = h / factor;
+    setView(el, p.x - (p.x - x) * (nw / w), p.y - (p.y - y) * (nh / h), nw, nh);
+  }
+
+  function attachMapPanZoom(el) {
+    const pointers = new Map();
+    let pinch = 0, last = null;
+    el.addEventListener("wheel", (e) => {
+      e.preventDefault();
+      zoomMapAt(el, e.clientX, e.clientY, Math.exp(-e.deltaY * 0.002));
+    }, { passive: false });
+    el.addEventListener("pointerdown", (e) => {
+      el.setPointerCapture(e.pointerId);
+      pointers.set(e.pointerId, [e.clientX, e.clientY]);
+      if (pointers.size === 2) {
+        const [a, b] = [...pointers.values()];
+        pinch = Math.hypot(a[0] - b[0], a[1] - b[1]);
+      } else {
+        last = [e.clientX, e.clientY];
+        el.classList.add("grabbing");
+      }
+    });
+    el.addEventListener("pointermove", (e) => {
+      if (!pointers.has(e.pointerId)) return;
+      pointers.set(e.pointerId, [e.clientX, e.clientY]);
+      if (pointers.size === 2) {
+        const [a, b] = [...pointers.values()];
+        const d = Math.hypot(a[0] - b[0], a[1] - b[1]);
+        if (pinch > 0) zoomMapAt(el, (a[0] + b[0]) / 2, (a[1] + b[1]) / 2, d / pinch);
+        pinch = d;
+      } else if (last) {
+        // both points read against the same CTM, so the delta is exact
+        const p0 = userPt(el, last[0], last[1]), p1 = userPt(el, e.clientX, e.clientY);
+        const [x, y, w, h] = viewOf(el);
+        setView(el, x - (p1.x - p0.x), y - (p1.y - p0.y), w, h);
+        last = [e.clientX, e.clientY];
+      }
+    });
+    const endPointer = (e) => {
+      pointers.delete(e.pointerId);
+      if (pointers.size < 2) pinch = 0;
+      if (!pointers.size) { last = null; el.classList.remove("grabbing"); }
+    };
+    el.addEventListener("pointerup", endPointer);
+    el.addEventListener("pointercancel", endPointer);
+    el.addEventListener("dblclick", (e) => { e.preventDefault(); resetMapView(el); });
+  }
+
+  // both guess maps get it: the end-of-game one and the leaderboard replay
+  attachMapPanZoom(finalMap);
+  attachMapPanZoom(document.getElementById("detailMap"));
 
   function showFinal() {
     renderFinalMap();
@@ -2913,7 +3016,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
   $("finalMenuBtn").addEventListener("click", backToMenu);
 
   // ---- stale-tab update banner ----
-  const BUILD_ID = "20260817161032";
+  const BUILD_ID = "20260817180353";
   let updateAvailable = false;
   function maybeShowUpdate() {
     // suppress only during an active round; the menu (mode null) is always safe

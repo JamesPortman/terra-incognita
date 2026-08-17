@@ -196,6 +196,62 @@ test.describe('leaderboard replay', () => {
     await expect(page.locator('#lbScreen')).toBeVisible();
   });
 
+  test('the replay map zooms, pans, and resets', async ({ page }) => {
+    await page.route('**/api/leaderboard?*deck=*', (route) => route.fulfill({
+      json: { top: [{ id: 42, name: 'Adham', score: 9439, deck: 'World — Famous Places', hasDetail: true }], pastSeasons: [] },
+    }));
+    await page.route('**/api/leaderboard?detail=42', (route) => route.fulfill({ json: GAME }));
+    await page.goto('/?plainmap=1');
+    await page.locator('#menuLb').click();
+    await page.locator('#lbDeckFilter').selectOption('World — Famous Places');
+    await page.locator('#lbPodium [data-detail="42"]').click();
+    await expect(page.locator('#detailScreen')).toBeVisible();
+
+    const map = page.locator('#detailMap');
+    const view = () => map.getAttribute('viewBox').then((v) => v.split(/\s+/).map(Number));
+    const home = await view();
+
+    // wheel zooms in — the viewport narrows
+    await map.hover();
+    await page.mouse.wheel(0, -400);
+    const zoomed = await view();
+    expect(zoomed[2]).toBeLessThan(home[2]);
+
+    // drag moves the view without changing the zoom level
+    const box = await map.boundingBox();
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(box.x + box.width / 2 - 60, box.y + box.height / 2, { steps: 5 });
+    await page.mouse.up();
+    const panned = await view();
+    expect(panned[0]).not.toBeCloseTo(zoomed[0], 1);
+    expect(panned[2]).toBeCloseTo(zoomed[2], 3);
+
+    // double-click restores the fitted view
+    await map.dblclick();
+    expect(await view()).toEqual(home);
+  });
+
+  test('the replay map never zooms out past the whole world', async ({ page }) => {
+    await page.route('**/api/leaderboard?*deck=*', (route) => route.fulfill({
+      json: { top: [{ id: 42, name: 'Adham', score: 9439, deck: 'World — Famous Places', hasDetail: true }], pastSeasons: [] },
+    }));
+    await page.route('**/api/leaderboard?detail=42', (route) => route.fulfill({ json: GAME }));
+    await page.goto('/?plainmap=1');
+    await page.locator('#menuLb').click();
+    await page.locator('#lbDeckFilter').selectOption('World — Famous Places');
+    await page.locator('#lbPodium [data-detail="42"]').click();
+
+    const map = page.locator('#detailMap');
+    await map.hover();
+    for (let i = 0; i < 12; i++) await page.mouse.wheel(0, 400); // zoom way out
+    const [x, y, w, h] = (await map.getAttribute('viewBox')).split(/\s+/).map(Number);
+    expect(w).toBeLessThanOrEqual(1000);   // MAP_W
+    expect(h).toBeLessThanOrEqual(402.8);  // MAP_H
+    expect(x).toBeGreaterThanOrEqual(0);
+    expect(y).toBeGreaterThanOrEqual(0);
+  });
+
   test('rows without kept detail are not clickable', async ({ page }) => {
     await page.route('**/api/leaderboard?*deck=*', (route) => route.fulfill({
       json: { top: [{ id: 7, name: 'Older', score: 8000, deck: 'World — Famous Places', hasDetail: false }], pastSeasons: [] },
