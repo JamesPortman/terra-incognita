@@ -11,6 +11,9 @@ test.describe('menu', () => {
     await expect(page.locator('#deckSelect')).toHaveValue('random'); // default once config enables it
     await expect(page.locator('#recToggle')).toBeChecked(); // recording defaults on for random
     await expect(page.locator('#timerLabel')).toHaveText('1:00');
+    // no game yet — the round counter must not read like one is in progress,
+    // or every "the game started" assertion in the suite passes vacuously
+    await expect(page.locator('#roundLabel')).toHaveText('–');
   });
 
   test('day/night toggle flips the theme and persists', async ({ page }) => {

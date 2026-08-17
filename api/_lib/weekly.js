@@ -58,4 +58,30 @@ const RANDOM_WEEKS = new Set(['2026-W34']);
 const weeklyMode = (week) =>
   process.env.WEEKLY_FORCE_MODE || (RANDOM_WEEKS.has(week) ? 'random' : 'famous');
 
-module.exports = { WEEKLY_ROUNDS, WEEKLY_ROUND_SEC, isoWeek, weeklyDeck, weeklyMode, isTestName };
+// Fold week-ordered score rows into per-week boards, newest first. Input must
+// already be sorted (week DESC, score DESC); the caps keep the payload small.
+function groupPastWeeks(rows, maxWeeks = 12, perWeek = 5) {
+  const out = [];
+  for (const r of rows) {
+    let w = out[out.length - 1];
+    if (!w || w.week !== r.week) {
+      if (out.length >= maxWeeks) break;
+      w = { week: r.week, top: [] };
+      out.push(w);
+    }
+    if (w.top.length < perWeek) {
+      w.top.push({
+        id: r.id,
+        name: r.player_name,
+        score: r.score,
+        awayMs: r.away_ms || 0,
+        hasDetail: r.has_detail,
+      });
+    }
+  }
+  return out;
+}
+
+module.exports = {
+  WEEKLY_ROUNDS, WEEKLY_ROUND_SEC, isoWeek, weeklyDeck, weeklyMode, isTestName, groupPastWeeks,
+};

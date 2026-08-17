@@ -6,7 +6,9 @@ const crypto = require('crypto');
 const { getStore } = require('./_lib/store.js');
 const { getSql, ensureWeeklyTable } = require('./_lib/db.js');
 const { haversineKm, pointsFor, roundDetail, sendJSON, LOCATIONS } = require('./_lib/rooms.js');
-const { WEEKLY_ROUNDS, WEEKLY_ROUND_SEC, isoWeek, weeklyDeck, weeklyMode, isTestName } = require('./_lib/weekly.js');
+const {
+  WEEKLY_ROUNDS, WEEKLY_ROUND_SEC, isoWeek, weeklyDeck, weeklyMode, isTestName, groupPastWeeks,
+} = require('./_lib/weekly.js');
 const { rateLimit } = require('./_lib/ratelimit.js');
 
 const GRACE_MS = 5000;
@@ -59,22 +61,7 @@ async function pastWeeks(current) {
     WHERE week <> ${current}
     ORDER BY week DESC, score DESC, played_at ASC
     LIMIT 500`;
-  const out = [];
-  for (const r of rows) {
-    let w = out[out.length - 1];
-    if (!w || w.week !== r.week) {
-      if (out.length >= 12) break;
-      w = { week: r.week, top: [] };
-      out.push(w);
-    }
-    if (w.top.length < 5) {
-      w.top.push({
-        id: r.id, name: r.player_name, score: r.score,
-        awayMs: r.away_ms || 0, hasDetail: r.has_detail,
-      });
-    }
-  }
-  return out;
+  return groupPastWeeks(rows);
 }
 
 module.exports = async (req, res) => {

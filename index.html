@@ -644,7 +644,8 @@
     <span class="tagline" data-i18n="hud.tagline">Guess where on Earth</span>
   </div>
   <div class="hud">
-    <div><span class="label" data-i18n="hud.round">Round</span><span class="value" id="roundLabel">1 / 5</span></div>
+    <!-- no game yet: a real round count only appears once one starts -->
+    <div><span class="label" data-i18n="hud.round">Round</span><span class="value" id="roundLabel">&ndash;</span></div>
     <div><span class="label" data-i18n="hud.time">Time</span><span class="value" id="timerLabel">1:00</span></div>
     <div><span class="label" data-i18n="hud.score">Score</span><span class="value"><span class="accent" id="scoreLabel">0</span></span></div>
     <div><span class="label" data-i18n="hud.sound">Sound</span><button id="muteBtn" class="mutebtn" aria-label="Toggle sound">🔊</button></div>
@@ -2363,6 +2364,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
     finalScreen.classList.remove("show");
     goBtn.disabled = true;
     goBtn.textContent = t("btn.place");
+    roundLabel.textContent = "–"; // back to "no game in progress"
     hideAllModals();
     show(menuScreen);
   }
@@ -2911,7 +2913,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
   $("finalMenuBtn").addEventListener("click", backToMenu);
 
   // ---- stale-tab update banner ----
-  const BUILD_ID = "20260817154929";
+  const BUILD_ID = "20260817161032";
   let updateAvailable = false;
   function maybeShowUpdate() {
     // suppress only during an active round; the menu (mode null) is always safe

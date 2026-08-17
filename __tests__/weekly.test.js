@@ -57,6 +57,39 @@ describe('weeklyDeck', () => {
   });
 });
 
+describe('groupPastWeeks', () => {
+  const { groupPastWeeks } = weeklyLib;
+  const row = (week, n) => ({
+    id: n, week, player_name: 'P' + n, score: 1000 - n, away_ms: null, has_detail: true,
+  });
+
+  it('folds sorted rows into per-week boards, newest first', () => {
+    const out = groupPastWeeks([row('2026-W33', 1), row('2026-W33', 2), row('2026-W30', 3)]);
+    expect(out.map((w) => w.week)).toEqual(['2026-W33', '2026-W30']);
+    expect(out[0].top).toHaveLength(2);
+    expect(out[0].top[0]).toEqual({ id: 1, name: 'P1', score: 999, awayMs: 0, hasDetail: true });
+  });
+
+  it('keeps only the top rows of each week', () => {
+    const rows = Array.from({ length: 9 }, (_, i) => row('2026-W33', i));
+    expect(groupPastWeeks(rows, 12, 5)[0].top).toHaveLength(5);
+    expect(groupPastWeeks(rows, 12, 5)[0].top.map((r) => r.name)).toEqual(['P0', 'P1', 'P2', 'P3', 'P4']);
+  });
+
+  it('stops after the week cap without truncating the last week kept', () => {
+    const rows = [];
+    for (let w = 40; w > 20; w--) { rows.push(row('2026-W' + w, 1), row('2026-W' + w, 2)); }
+    const out = groupPastWeeks(rows, 3, 5);
+    expect(out).toHaveLength(3);
+    expect(out.map((w) => w.week)).toEqual(['2026-W40', '2026-W39', '2026-W38']);
+    expect(out[2].top).toHaveLength(2); // the cap must not clip mid-week
+  });
+
+  it('returns nothing for an empty history', () => {
+    expect(groupPastWeeks([])).toEqual([]);
+  });
+});
+
 describe('weeklyMode', () => {
   it('flags 2026-W34 as random world, others famous', () => {
     expect(weeklyLib.weeklyMode('2026-W34')).toBe('random');
