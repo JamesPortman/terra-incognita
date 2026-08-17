@@ -24,6 +24,10 @@ async function ensureTable() {
       )`;
     tableReady = tableReady.then(() =>
       getSql()`ALTER TABLE leaderboard ADD COLUMN IF NOT EXISTS deck text`);
+    // per-round replay: [{lat, lon, label, glat, glon, km, pts}] — null for
+    // games recorded before this column existed
+    tableReady = tableReady.then(() =>
+      getSql()`ALTER TABLE leaderboard ADD COLUMN IF NOT EXISTS detail jsonb`);
   }
   await tableReady;
 }
@@ -43,6 +47,8 @@ async function ensureWeeklyTable() {
       )`;
     weeklyReady = weeklyReady.then(() =>
       getSql()`ALTER TABLE weekly_scores ADD COLUMN IF NOT EXISTS away_ms int`);
+    weeklyReady = weeklyReady.then(() =>
+      getSql()`ALTER TABLE weekly_scores ADD COLUMN IF NOT EXISTS detail jsonb`);
   }
   await weeklyReady;
 }

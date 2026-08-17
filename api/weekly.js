@@ -5,7 +5,7 @@
 const crypto = require('crypto');
 const { getStore } = require('./_lib/store.js');
 const { getSql, ensureWeeklyTable } = require('./_lib/db.js');
-const { haversineKm, pointsFor, sendJSON, LOCATIONS } = require('./_lib/rooms.js');
+const { haversineKm, pointsFor, roundDetail, sendJSON, LOCATIONS } = require('./_lib/rooms.js');
 const { WEEKLY_ROUNDS, WEEKLY_ROUND_SEC, isoWeek, weeklyDeck, weeklyMode, isTestName } = require('./_lib/weekly.js');
 const { rateLimit } = require('./_lib/ratelimit.js');
 
@@ -39,18 +39,23 @@ const cleanName = (raw) => String(raw || '').trim().slice(0, 20).replace(/[<>&"'
 async function topRows(week) {
   await ensureWeeklyTable();
   const rows = await getSql()`
-    SELECT player_name, score, away_ms, played_at FROM weekly_scores
+    SELECT id, player_name, score, away_ms, played_at, (detail IS NOT NULL) AS has_detail
+    FROM weekly_scores
     WHERE week = ${week}
     ORDER BY score DESC, played_at ASC
     LIMIT 20`;
-  return rows.map((r) => ({ name: r.player_name, score: r.score, awayMs: r.away_ms || 0, playedAt: r.played_at }));
+  return rows.map((r) => ({
+    id: r.id, name: r.player_name, score: r.score,
+    awayMs: r.away_ms || 0, playedAt: r.played_at, hasDetail: r.has_detail,
+  }));
 }
 
 // finished weeks, most recent first: up to 12 weeks, top 5 each
 async function pastWeeks(current) {
   await ensureWeeklyTable();
   const rows = await getSql()`
-    SELECT week, player_name, score, away_ms FROM weekly_scores
+    SELECT id, week, player_name, score, away_ms, (detail IS NOT NULL) AS has_detail
+    FROM weekly_scores
     WHERE week <> ${current}
     ORDER BY week DESC, score DESC, played_at ASC
     LIMIT 500`;
@@ -62,7 +67,12 @@ async function pastWeeks(current) {
       w = { week: r.week, top: [] };
       out.push(w);
     }
-    if (w.top.length < 5) w.top.push({ name: r.player_name, score: r.score, awayMs: r.away_ms || 0 });
+    if (w.top.length < 5) {
+      w.top.push({
+        id: r.id, name: r.player_name, score: r.score,
+        awayMs: r.away_ms || 0, hasDetail: r.has_detail,
+      });
+    }
   }
   return out;
 }
@@ -73,6 +83,21 @@ module.exports = async (req, res) => {
   const deck = weeklyDeck(week); // famous-mode deck (locIdx list); unused in random weeks
 
   if (req.method === 'GET') {
+    // ?detail=<row id> — one attempt's round-by-round replay
+    const detailId = parseInt(req.query?.detail, 10);
+    if (Number.isFinite(detailId)) {
+      await ensureWeeklyTable();
+      const rows = await getSql()`
+        SELECT week, player_name, score, rounds, played_at, detail
+        FROM weekly_scores WHERE id = ${detailId}`;
+      if (!rows.length) return sendJSON(res, 404, { error: 'game not found' });
+      const r = rows[0];
+      return sendJSON(res, 200, {
+        name: r.player_name, score: r.score, rounds: r.rounds,
+        week: r.week, playedAt: r.played_at, detail: r.detail || [],
+      });
+    }
+
     const out = {
       week, mode, rounds: WEEKLY_ROUNDS, roundSec: WEEKLY_ROUND_SEC,
       top: await topRows(week),
@@ -160,7 +185,8 @@ module.exports = async (req, res) => {
     }
     attempt.awayMs = (attempt.awayMs || 0) +
       Math.min(600000, Math.max(0, Math.round(Number(req.body?.awayMs) || 0)));
-    attempt.results.push({ locIdx, km, pts });
+    // a late pin still scores zero but is worth keeping for the map replay
+    attempt.results.push(roundDetail(loc, hasPin ? { lat, lon, km, pts } : null));
     attempt.total += pts;
     attempt.roundIdx += 1;
     attempt.roundStartAt = Date.now();
@@ -180,8 +206,9 @@ module.exports = async (req, res) => {
       if (!isTestName(name)) {
         await ensureWeeklyTable();
         await getSql()`
-          INSERT INTO weekly_scores (week, player_name, score, rounds, away_ms)
-          VALUES (${week}, ${name}, ${attempt.total}, ${WEEKLY_ROUNDS}, ${attempt.awayMs || 0})
+          INSERT INTO weekly_scores (week, player_name, score, rounds, away_ms, detail)
+          VALUES (${week}, ${name}, ${attempt.total}, ${WEEKLY_ROUNDS}, ${attempt.awayMs || 0},
+                  ${JSON.stringify(attempt.results)}::jsonb)
           ON CONFLICT (week, player_name) DO NOTHING`;
       }
       out.top = await topRows(week);

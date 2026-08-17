@@ -154,6 +154,60 @@ test.describe('recorded solo game (random world only)', () => {
   });
 });
 
+test.describe('leaderboard replay', () => {
+  // the write path needs a real recorded game; this pins the view itself
+  // against a stubbed row so it stays deterministic
+  const GAME = {
+    name: 'Adham', score: 9439, rounds: 5, deck: 'World — Famous Places', solo: false,
+    detail: [
+      { lat: 48.8584, lon: 2.2945, label: 'Eiffel Tower', glat: 45, glon: 5, km: 481, pts: 3900 },
+      { lat: 35.0394, lon: 135.7292, label: 'Kinkaku-ji', glat: 34, glon: 134, km: 170, pts: 4600 },
+      { lat: -22.9519, lon: -43.2105, label: 'Christ the Redeemer', glat: null, glon: null, km: null, pts: 0 },
+    ],
+  };
+
+  test('opens a score and maps its rounds against the guesses', async ({ page }) => {
+    await page.route('**/api/leaderboard?*deck=*', (route) => route.fulfill({
+      json: { top: [{ id: 42, name: 'Adham', score: 9439, deck: 'World — Famous Places', hasDetail: true, playedAt: '2026-08-04T16:57:42Z' }], pastSeasons: [] },
+    }));
+    await page.route('**/api/leaderboard?detail=42', (route) => route.fulfill({ json: GAME }));
+
+    await page.goto('/?plainmap=1');
+    await expect(page.locator('#menuLb')).toBeVisible();
+    await page.locator('#menuLb').click();
+    await page.locator('#lbDeckFilter').selectOption('World — Famous Places');
+
+    const row = page.locator('#lbPodium [data-detail="42"]');
+    await expect(row).toBeVisible();
+    await row.click();
+
+    await expect(page.locator('#detailScreen')).toBeVisible();
+    await expect(page.locator('#detailHead')).toHaveText('Adham — 9,439');
+    // one map: a real-place dot per round, a numbered pin per round, and a
+    // dashed line only for rounds that were actually guessed
+    await expect(page.locator('#detailMap circle')).toHaveCount(6);
+    await expect(page.locator('#detailMap text')).toHaveCount(3);
+    await expect(page.locator('#detailMap line')).toHaveCount(2);
+    await expect(page.locator('#detailTable tr')).toHaveCount(4); // header + 3 rounds
+    await expect(page.locator('#detailTable')).toContainText('Eiffel Tower');
+    await expect(page.locator('#detailTable')).toContainText('no guess');
+
+    await page.locator('#detailBack').click();
+    await expect(page.locator('#lbScreen')).toBeVisible();
+  });
+
+  test('rows without kept detail are not clickable', async ({ page }) => {
+    await page.route('**/api/leaderboard?*deck=*', (route) => route.fulfill({
+      json: { top: [{ id: 7, name: 'Older', score: 8000, deck: 'World — Famous Places', hasDetail: false }], pastSeasons: [] },
+    }));
+    await page.goto('/?plainmap=1');
+    await page.locator('#menuLb').click();
+    await page.locator('#lbDeckFilter').selectOption('World — Famous Places');
+    await expect(page.locator('#lbPodium')).toContainText('Older');
+    await expect(page.locator('[data-detail]')).toHaveCount(0);
+  });
+});
+
 test.describe('best-five scoring', () => {
   test('a six-round game drops the weakest round and says so', async ({ page }) => {
     await page.goto('/?plainmap=1');

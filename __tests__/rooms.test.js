@@ -2,7 +2,30 @@ import { describe, it, expect } from 'vitest';
 import rooms from '../api/_lib/rooms.js';
 import LOCATIONS from '../shared/locations.js';
 
-const { haversineKm, pointsFor, newCode, newDeck, bestFiveTotal, ROUNDS } = rooms;
+const { haversineKm, pointsFor, newCode, newDeck, bestFiveTotal, roundDetail, ROUNDS } = rooms;
+
+describe('roundDetail', () => {
+  const loc = { name: 'Eiffel Tower', lat: 48.8584, lon: 2.2945 };
+
+  it('pairs the real place with the guess', () => {
+    expect(roundDetail(loc, { lat: 40, lon: -3, km: 1053, pts: 2950 })).toEqual({
+      lat: 48.8584, lon: 2.2945, label: 'Eiffel Tower',
+      glat: 40, glon: -3, km: 1053, pts: 2950,
+    });
+  });
+
+  it('records a skipped round with no guess', () => {
+    expect(roundDetail(loc, undefined)).toMatchObject({ glat: null, glon: null, km: null, pts: 0 });
+  });
+
+  it('uses the custom-deck label and tolerates a partial guess', () => {
+    const pano = { label: 'Somewhere, Brazil', lat: -10, lon: -50 };
+    expect(roundDetail(pano, { lat: -11, lon: -51, km: null, pts: 0 })).toMatchObject({
+      label: 'Somewhere, Brazil', glat: -11, glon: -51, km: null, pts: 0,
+    });
+    expect(roundDetail({ lat: 1, lon: 2 }, {})).toMatchObject({ label: '', glat: null, pts: 0 });
+  });
+});
 
 describe('haversineKm', () => {
   it('is zero for identical points', () => {

@@ -9,7 +9,7 @@
 const crypto = require('crypto');
 const { getStore } = require('./_lib/store.js');
 const { getSql, ensureTable } = require('./_lib/db.js');
-const { haversineKm, pointsFor, bestFiveTotal, sendJSON } = require('./_lib/rooms.js');
+const { haversineKm, pointsFor, bestFiveTotal, roundDetail, sendJSON } = require('./_lib/rooms.js');
 const { isTestName } = require('./_lib/weekly.js');
 const { hallTop } = require('./_lib/hall.js');
 const { rateLimit } = require('./_lib/ratelimit.js');
@@ -103,7 +103,8 @@ module.exports = async (req, res) => {
     }
     attempt.awayMs = (attempt.awayMs || 0) +
       Math.min(600000, Math.max(0, Math.round(Number(req.body?.awayMs) || 0)));
-    attempt.results.push({ km, pts });
+    // a late pin still scores zero but is worth keeping for the map replay
+    attempt.results.push(roundDetail(loc, hasPin ? { lat, lon, km, pts } : null));
     attempt.total = totalFor(attempt);
     attempt.roundIdx += 1;
     attempt.roundStartAt = Date.now();
@@ -120,8 +121,9 @@ module.exports = async (req, res) => {
     if (attempt.recorded) {
       await ensureTable();
       await getSql()`
-        INSERT INTO leaderboard (room_code, player_name, score, rounds, deck)
-        VALUES ('SOLO', ${attempt.name}, ${attempt.total}, ${attempt.rounds}, ${DECK_LABELS.random})`;
+        INSERT INTO leaderboard (room_code, player_name, score, rounds, deck, detail)
+        VALUES ('SOLO', ${attempt.name}, ${attempt.total}, ${attempt.rounds}, ${DECK_LABELS.random},
+                ${JSON.stringify(attempt.results)}::jsonb)`;
     }
     return sendJSON(res, 200, await finalPayload(attempt, { km, pts }));
   }

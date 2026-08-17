@@ -53,6 +53,22 @@ async function saveRoom(meta) {
 
 // Lazy transition: flip question -> reveal when time is up or everyone answered.
 // Called from every state read; benign if two polls race (same outcome).
+// One finished round, shaped for the map replay stored on a leaderboard row.
+// `loc` is a LOCATIONS entry or a custom-deck entry; `g` is the stored guess
+// (absent when the player never pinned).
+function roundDetail(loc, g) {
+  const num = (v) => (Number.isFinite(v) ? v : null);
+  return {
+    lat: loc.lat,
+    lon: loc.lon,
+    label: loc.name || loc.label || '',
+    glat: g ? num(g.lat) : null,
+    glon: g ? num(g.lon) : null,
+    km: g && g.km != null ? g.km : null,
+    pts: g && g.pts ? g.pts : 0,
+  };
+}
+
 async function maybeAdvance(meta) {
   if (meta.state !== 'question') return meta;
   const store = getStore();
@@ -77,6 +93,6 @@ function sendJSON(res, status, body) {
 module.exports = {
   ROUNDS, ROUND_MS, GRACE_MS, MAX_PLAYERS, TTL_SEC, LOCATIONS,
   metaKey, playersKey, guessesKey,
-  newCode, newDeck, haversineKm, pointsFor, bestFiveTotal,
+  newCode, newDeck, haversineKm, pointsFor, bestFiveTotal, roundDetail,
   loadRoom, saveRoom, maybeAdvance, sendJSON,
 };

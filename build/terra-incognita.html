@@ -452,6 +452,12 @@
   }
   .joinrow input:focus { border-color: var(--brass); }
   #joinCode { width: 118px; text-transform: uppercase; font-family: var(--mono); letter-spacing: 0.15em; } /* fits the CÓDIGO placeholder */
+  #detailScreen .sheet { max-width: 560px; }
+  tr.rowlink, .pod.rowlink { cursor: pointer; }
+  tr.rowlink:hover td, tr.rowlink:focus-visible td { background: var(--raised); }
+  .pod.rowlink:hover { outline: 1px solid var(--brass); }
+  tr.rowlink td:first-child::after { content: " ›"; color: var(--muted); }
+  .maplegend { color: var(--muted); font-size: 0.78rem; margin: -12px 0 16px; }
   .pastweek { margin-bottom: 14px; }
   .pastweek .weeklabel {
     font-size: 0.72rem;
@@ -590,7 +596,7 @@
   }
   .final.show { display: flex; }
   .final .sheet { max-width: 560px; width: 100%; text-align: center; }
-  #finalMap {
+  #finalMap, #detailMap {
     width: 100%;
     background: var(--sea);
     border: 1px solid var(--line);
@@ -789,6 +795,18 @@
     </div>
   </div>
 
+  <div class="modal" id="detailScreen">
+    <div class="sheet">
+      <div class="kicker" id="detailKicker">&nbsp;</div>
+      <h2 id="detailHead">&nbsp;</h2>
+      <svg id="detailMap" xmlns="http://www.w3.org/2000/svg" role="img"
+           aria-label="Map of this player's guesses versus the actual locations"></svg>
+      <div class="maplegend" id="detailLegend" data-i18n="detail.legend">Numbered pin = the guess &middot; teal dot = the real place</div>
+      <table class="lbtable" id="detailTable"></table>
+      <div class="stack"><button class="primary" id="detailBack" data-i18n="ui.back">Back</button></div>
+    </div>
+  </div>
+
   <div class="modal" id="lbScreen">
     <div class="sheet">
       <div class="kicker" data-i18n="lb.kicker">All-time leaderboard</div>
@@ -902,6 +920,10 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
       "lb.emptysolo": "No solo games recorded yet — tick Record to Hall of Navigators and play!",
       "lb.empty": "No games recorded yet — host a live room or record a solo game!",
       "th.navigator": "Navigator", "th.location": "Location", "th.score": "Score", "th.when": "When",
+      "th.distance": "Distance",
+      "detail.kicker": "Round by round",
+      "detail.legend": "Numbered pin = the guess · teal dot = the real place",
+      "detail.none": "No round detail was kept for this game.",
       "kind.country": "country", "kind.region": "region", "kind.city": "city",
       "copy.board": "Copy board", "copy.done": "Copied!", "copy.fail": "Copy failed",
       "copy.hall": "Terra Incognita — Hall of Navigators", "copy.hallsolo": " (solo — avg points per round)",
@@ -974,6 +996,10 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
       "lb.emptysolo": "Aún no hay partidas en solitario — marca Registrar en el Salón de Navegantes y juega.",
       "lb.empty": "Aún no hay partidas — crea una sala o registra una partida en solitario.",
       "th.navigator": "Navegante", "th.location": "Lugar", "th.score": "Puntos", "th.when": "Cuándo",
+      "th.distance": "Distancia",
+      "detail.kicker": "Ronda a ronda",
+      "detail.legend": "Pin numerado = la respuesta · punto turquesa = el lugar real",
+      "detail.none": "No se guardó el detalle por rondas de esta partida.",
       "kind.country": "país", "kind.region": "región", "kind.city": "ciudad",
       "copy.board": "Copiar tabla", "copy.done": "¡Copiada!", "copy.fail": "No se pudo copiar",
       "copy.hall": "Terra Incognita — Salón de Navegantes", "copy.hallsolo": " (solitario — promedio de puntos por ronda)",
@@ -1046,6 +1072,10 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
       "lb.emptysolo": "Ainda não há partidas solo — marque Registrar no Salão dos Navegantes e jogue.",
       "lb.empty": "Ainda não há partidas — crie uma sala ou registre uma partida solo.",
       "th.navigator": "Navegante", "th.location": "Lugar", "th.score": "Pontos", "th.when": "Quando",
+      "th.distance": "Distância",
+      "detail.kicker": "Rodada a rodada",
+      "detail.legend": "Pino numerado = o palpite · ponto turquesa = o lugar real",
+      "detail.none": "O detalhe por rodada não foi guardado nesta partida.",
       "kind.country": "país", "kind.region": "região", "kind.city": "cidade",
       "copy.board": "Copiar quadro", "copy.done": "Copiado!", "copy.fail": "Falha ao copiar",
       "copy.hall": "Terra Incognita — Salão dos Navegantes", "copy.hallsolo": " (solo — média de pontos por rodada)",
@@ -1672,30 +1702,35 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
     return t("verdict.e");
   }
 
-  function renderFinalMap() {
+  // One map of the world with every round's real place and the player's pins.
+  // Used by the end-of-game screen and by the leaderboard's replay view.
+  function renderGuessMap(svgEl, rows) {
     const pts = [];
-    for (const r of results) { if (r.gPt) pts.push(r.gPt); pts.push(r.aPt); }
+    for (const r of rows) { if (r.gPt) pts.push(r.gPt); pts.push(r.aPt); }
+    if (!pts.length) { svgEl.innerHTML = ""; return; }
     let x0 = Math.min(...pts.map((p) => p[0])), x1 = Math.max(...pts.map((p) => p[0]));
     let y0 = Math.min(...pts.map((p) => p[1])), y1 = Math.max(...pts.map((p) => p[1]));
     const padX = Math.max((x1 - x0) * 0.15, 40), padY = Math.max((y1 - y0) * 0.15, 25);
     x0 = Math.max(0, x0 - padX); x1 = Math.min(MAP_W, x1 + padX);
     y0 = Math.max(0, y0 - padY); y1 = Math.min(MAP_H, y1 + padY);
     const u = Math.max(x1 - x0, y1 - y0) / 220;
-    finalMap.setAttribute("viewBox", `${x0} ${y0} ${x1 - x0} ${y1 - y0}`);
+    svgEl.setAttribute("viewBox", `${x0} ${y0} ${x1 - x0} ${y1 - y0}`);
     let s = "";
     for (const d of MAP_PATHS) s += `<path d="${d}" fill="var(--land)" stroke="var(--land-stroke)" stroke-width="0.4"/>`;
-    for (const r of results) {
+    for (const r of rows) {
       if (!r.gPt) continue;
       s += `<line x1="${r.gPt[0]}" y1="${r.gPt[1]}" x2="${r.aPt[0]}" y2="${r.aPt[1]}" stroke="var(--parchment)" stroke-width="${u * 0.6}" stroke-dasharray="${u * 2} ${u * 1.6}" opacity="0.6"/>`;
     }
-    results.forEach((r, i) => {
+    rows.forEach((r, i) => {
       s += `<circle cx="${r.aPt[0]}" cy="${r.aPt[1]}" r="${u * 1.6}" fill="var(--teal)" stroke="var(--ink)" stroke-width="${u * 0.5}"/>`;
       const p = r.gPt || r.aPt;
       s += `<circle cx="${p[0]}" cy="${p[1]}" r="${u * 3.2}" fill="${r.gPt ? "var(--brass)" : "var(--red)"}" stroke="var(--ink)" stroke-width="${u * 0.6}"/>` +
         `<text x="${p[0]}" y="${p[1]}" text-anchor="middle" dominant-baseline="central" font-size="${u * 4}" font-family="ui-monospace, Menlo, monospace" font-weight="700" fill="var(--ink)">${i + 1}</text>`;
     });
-    finalMap.innerHTML = s;
+    svgEl.innerHTML = s;
   }
+
+  const renderFinalMap = () => renderGuessMap(finalMap, results);
 
   function showFinal() {
     renderFinalMap();
@@ -1781,16 +1816,21 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
   // missed write path can never become stored XSS
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) =>
     ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  // board rows open their round-by-round replay, when one was kept
+  const linkAttrs = (r, src, isPod) => (r && r.id && r.hasDetail)
+    ? `${isPod ? "" : ' class="rowlink"'} data-detail="${r.id}" data-src="${src}" tabindex="0" role="button"`
+    : "";
   const menuScreen = $("menuScreen"), lobbyScreen = $("lobbyScreen"),
         standingsScreen = $("standingsScreen"), lbScreen = $("lbScreen"),
-        weeklyScreen = $("weeklyScreen");
+        weeklyScreen = $("weeklyScreen"), detailScreen = $("detailScreen");
   let mode = null; // 'solo' | 'host' | 'player'
   let party = null, pollTimer = null, partyTick = null;
   let lastState = null, lastRoundShown = null, myGuessSubmitted = false;
 
   const show = (el) => el.classList.add("show");
   const hide = (el) => el.classList.remove("show");
-  const hideAllModals = () => [menuScreen, lobbyScreen, standingsScreen, lbScreen, weeklyScreen].forEach(hide);
+  const hideAllModals = () =>
+    [menuScreen, lobbyScreen, standingsScreen, lbScreen, weeklyScreen, detailScreen].forEach(hide);
 
   async function api(path, body) {
     const r = await fetch("/api/" + path, body ? {
@@ -2149,7 +2189,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
     return `<tr><th>#</th><th>${t("th.navigator")}</th><th>${t("th.score")}</th></tr>` + top.map((r, i) => {
       const me = r.name.toLowerCase() === (highlightName || "").toLowerCase();
       const peek = (r.awayMs || 0) >= 3000 ? `<span class="peek">👀${Math.round(r.awayMs / 1000)}s</span>` : "";
-      return `<tr${me ? ' style="color:var(--brass)"' : ""}><td>${medals[i] || i + 1}</td><td>${esc(r.name)}${peek}</td><td class="score">${r.score.toLocaleString()}</td></tr>`;
+      return `<tr${me ? ' style="color:var(--brass)"' : ""}${linkAttrs(r, "weekly")}><td>${medals[i] || i + 1}</td><td>${esc(r.name)}${peek}</td><td class="score">${r.score.toLocaleString()}</td></tr>`;
     }).join("");
   }
 
@@ -2171,7 +2211,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
       $("weeklyPast").innerHTML = past.map((w) => {
         const rows = w.top.map((r, i) => {
           const peek = (r.awayMs || 0) >= 3000 ? `<span class="peek">👀${Math.round(r.awayMs / 1000)}s</span>` : "";
-          return `<tr><td>${medals[i] || i + 1}</td><td>${esc(r.name)}${peek}</td><td class="score">${r.score.toLocaleString()}</td></tr>`;
+          return `<tr${linkAttrs(r, "weekly")}><td>${medals[i] || i + 1}</td><td>${esc(r.name)}${peek}</td><td class="score">${r.score.toLocaleString()}</td></tr>`;
         }).join("");
         return `<div class="pastweek"><div class="weeklabel">${esc(w.week)}</div><table class="lbtable">${rows}</table></div>`;
       }).join("");
@@ -2553,7 +2593,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
       top.map((r, i) => {
         const rank = startRank + i;
         const hl = me && r.name.toLowerCase() === me ? ' style="color:var(--brass)"' : "";
-        return `<tr${hl}><td>${medals[rank] || rank + 1}</td><td>${esc(r.name)}</td><td class="deckcell">${esc(deckDisplay(r.deck))}</td>` +
+        return `<tr${hl}${linkAttrs(r, "hall")}><td>${medals[rank] || rank + 1}</td><td>${esc(r.name)}</td><td class="deckcell">${esc(deckDisplay(r.deck))}</td>` +
           `<td class="score">${r.score.toLocaleString()}</td>` +
           `<td style="color:var(--muted);font-size:0.75rem">${fmtDate(r.playedAt)}</td></tr>`;
       }).join("");
@@ -2646,7 +2686,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
         .filter((i) => lb.top[i])
         .map((i) => {
           const r = lb.top[i];
-          return `<div class="pod p${i + 1}"><div class="pmedal">${medals[i]}</div>` +
+          return `<div class="pod p${i + 1}${r.hasDetail && r.id ? " rowlink" : ""}"${linkAttrs(r, "hall", true)}><div class="pmedal">${medals[i]}</div>` +
             `<div class="pname">${esc(r.name)}</div><div class="pscore">${r.score.toLocaleString()}</div>` +
             `<div class="pdeck">${esc(deckDisplay(r.deck))}</div></div>`;
         }).join("");
@@ -2662,6 +2702,58 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
   }
   $("lbDeckFilter").addEventListener("change", showLeaderboard);
   $("lbSoloToggle").addEventListener("change", showLeaderboard);
+
+  // ---- one game's replay: every round's real place and that player's pins ----
+  let detailFrom = "hall";
+  async function showGameDetail(src, id) {
+    detailFrom = src;
+    hideAllModals();
+    show(detailScreen);
+    $("detailKicker").textContent = t("detail.kicker");
+    $("detailHead").textContent = t("lb.loading");
+    $("detailMap").innerHTML = "";
+    $("detailTable").innerHTML = "";
+    $("detailLegend").style.display = "none";
+    try {
+      const d = await api((src === "weekly" ? "weekly" : "leaderboard") + "?detail=" + encodeURIComponent(id));
+      // solo boards rank by average per round — show the same number here
+      const shown = d.solo ? Math.round(d.score / Math.min(d.rounds || 5, 5)) : d.score;
+      $("detailKicker").textContent = d.week ? t("weekly.kicker", d.week) : deckDisplay(d.deck);
+      $("detailHead").textContent = `${d.name} — ${shown.toLocaleString()}`;
+      const rows = (d.detail || []).map((r) => ({
+        gPt: r.glat != null && r.glon != null ? lonLatToMap(r.glon, r.glat) : null,
+        aPt: lonLatToMap(r.lon, r.lat),
+        label: r.label, km: r.km, pts: r.pts,
+      }));
+      if (!rows.length) {
+        $("detailTable").innerHTML = `<tr><td style="color:var(--muted)">${t("detail.none")}</td></tr>`;
+        return;
+      }
+      renderGuessMap($("detailMap"), rows);
+      $("detailLegend").style.display = "";
+      $("detailTable").innerHTML =
+        `<tr><th>#</th><th>${t("th.location")}</th><th>${t("th.distance")}</th><th>${t("th.score")}</th></tr>` +
+        rows.map((r, i) =>
+          `<tr><td>${i + 1}</td><td>${esc(r.label || t("reveal.mystery"))}</td>` +
+          `<td class="dist">${fmtKm(r.km)}</td><td class="score">+${(r.pts || 0).toLocaleString()}</td></tr>`).join("");
+    } catch (err) {
+      $("detailHead").textContent = "";
+      $("detailTable").innerHTML = `<tr><td style="color:var(--red)">${esc(err.message)}</td></tr>`;
+    }
+  }
+  $("detailBack").addEventListener("click", () => {
+    if (detailFrom === "weekly") showWeeklyBoard(); else showLeaderboard();
+  });
+  for (const boardId of ["lbTable", "lbPodium", "weeklyTable", "weeklyPast", "standLbTable"]) {
+    const open = (e) => {
+      const el = e.target.closest("[data-detail]");
+      if (!el) return;
+      e.preventDefault();
+      showGameDetail(el.dataset.src, el.dataset.detail);
+    };
+    $(boardId).addEventListener("click", open);
+    $(boardId).addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") open(e); });
+  }
 
   async function copyBoard(btn, title, lines) {
     try {
@@ -2819,7 +2911,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
   $("finalMenuBtn").addEventListener("click", backToMenu);
 
   // ---- stale-tab update banner ----
-  const BUILD_ID = "20260817151502";
+  const BUILD_ID = "20260817154929";
   let updateAvailable = false;
   function maybeShowUpdate() {
     // suppress only during an active round; the menu (mode null) is always safe
