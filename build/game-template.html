@@ -452,6 +452,15 @@
   }
   .joinrow input:focus { border-color: var(--brass); }
   #joinCode { width: 118px; text-transform: uppercase; font-family: var(--mono); letter-spacing: 0.15em; } /* fits the CÓDIGO placeholder */
+  .pastweek { margin-bottom: 14px; }
+  .pastweek .weeklabel {
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-family: var(--mono);
+    margin-bottom: 2px;
+  }
   #joinName { flex: 1; }
   button.ghost, a.ghost {
     display: inline-block;
@@ -769,6 +778,8 @@
       <h2 id="weeklyHead">&nbsp;</h2>
       <div class="menuerr" id="weeklyMsg" style="margin-bottom:10px"></div>
       <table class="lbtable" id="weeklyTable"></table>
+      <div class="subhead" id="weeklyPastHead" style="display:none" data-i18n="weekly.past">Past expeditions</div>
+      <div id="weeklyPast"></div>
       <div class="stack">
         <button class="primary" id="weeklyPlay" style="display:none" data-i18n="weekly.play">Play this week's expedition</button>
         <button class="primary" id="weeklyMenu" data-i18n="ui.backmenu">Back to menu</button>
@@ -879,6 +890,7 @@ const LOCATIONS = __LOCATIONS__;
       "weekly.played": "You've already played this week — {0} pts",
       "weekly.placed": "You placed #{0} — {1} pts", "weekly.mypts": "{0} pts this week",
       "weekly.empty": "Nobody has played yet — be first!",
+      "weekly.past": "Past expeditions",
       "lb.kicker": "All-time leaderboard", "lb.title": "Hall of Navigators",
       "lb.showsolo": "Show solo scores",
       "lb.solonote": "Solo scores are average points per round — solo games vary in length.",
@@ -949,6 +961,7 @@ const LOCATIONS = __LOCATIONS__;
       "weekly.played": "Ya has jugado esta semana — {0} pts",
       "weekly.placed": "Quedaste #{0} — {1} pts", "weekly.mypts": "{0} pts esta semana",
       "weekly.empty": "Nadie ha jugado todavía — ¡sé el primero!",
+      "weekly.past": "Expediciones pasadas",
       "lb.kicker": "Clasificación histórica", "lb.title": "Salón de Navegantes",
       "lb.showsolo": "Mostrar puntuaciones en solitario",
       "lb.solonote": "Las puntuaciones en solitario son el promedio de puntos por ronda — las partidas varían de duración.",
@@ -1019,6 +1032,7 @@ const LOCATIONS = __LOCATIONS__;
       "weekly.played": "Você já jogou esta semana — {0} pts",
       "weekly.placed": "Você ficou em #{0} — {1} pts", "weekly.mypts": "{0} pts esta semana",
       "weekly.empty": "Ninguém jogou ainda — seja o primeiro!",
+      "weekly.past": "Expedições passadas",
       "lb.kicker": "Classificação geral", "lb.title": "Salão dos Navegantes",
       "lb.showsolo": "Mostrar pontuações solo",
       "lb.solonote": "Pontuações solo são a média de pontos por rodada — as partidas variam de duração.",
@@ -2145,6 +2159,16 @@ const LOCATIONS = __LOCATIONS__;
       $("weeklyKicker").textContent = t("weekly.kicker", d.week);
       $("weeklyHead").textContent = t("weekly.board");
       $("weeklyTable").innerHTML = weeklyRows(d.top, name);
+      const past = d.past || [];
+      $("weeklyPastHead").style.display = past.length ? "" : "none";
+      const medals = ["🥇", "🥈", "🥉"];
+      $("weeklyPast").innerHTML = past.map((w) => {
+        const rows = w.top.map((r, i) => {
+          const peek = (r.awayMs || 0) >= 3000 ? `<span class="peek">👀${Math.round(r.awayMs / 1000)}s</span>` : "";
+          return `<tr><td>${medals[i] || i + 1}</td><td>${esc(r.name)}${peek}</td><td class="score">${r.score.toLocaleString()}</td></tr>`;
+        }).join("");
+        return `<div class="pastweek"><div class="weeklabel">${esc(w.week)}</div><table class="lbtable">${rows}</table></div>`;
+      }).join("");
       if (message) $("weeklyMsg").textContent = message;
       else if (d.played) $("weeklyMsg").textContent = t("weekly.played", d.yourScore.toLocaleString());
       $("weeklyPlay").style.display = d.played ? "none" : "";
@@ -2274,6 +2298,9 @@ const LOCATIONS = __LOCATIONS__;
         $("weeklyTable").innerHTML = weeklyRows(weeklyFinal.top, weekly.name);
         $("weeklyMsg").textContent = "";
         $("weeklyPlay").style.display = "none";
+        // past boards aren't loaded on this path — keep the final view clean
+        $("weeklyPastHead").style.display = "none";
+        $("weeklyPast").innerHTML = "";
       } else {
         round++;
         startRound();

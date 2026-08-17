@@ -40,5 +40,16 @@ test.describe('weekly expedition', () => {
     await page.locator('#menuWeeklyBoard').click();
     await expect(page.locator('#weeklyScreen')).toBeVisible();
     await expect(page.locator('#weeklyKicker')).toHaveText(/Weekly Expedition · \d{4}-W\d{2}/);
+
+    // past expeditions render most-recent-first when any exist
+    const info = await (await page.request.get('/api/weekly')).json();
+    if (info.past && info.past.length) {
+      await expect(page.locator('#weeklyPastHead')).toBeVisible();
+      await expect(page.locator('#weeklyPast .weeklabel').first()).toHaveText(info.past[0].week);
+      const labels = await page.locator('#weeklyPast .weeklabel').allTextContents();
+      expect([...labels].sort().reverse()).toEqual(labels); // descending weeks
+    } else {
+      await expect(page.locator('#weeklyPastHead')).toBeHidden();
+    }
   });
 });

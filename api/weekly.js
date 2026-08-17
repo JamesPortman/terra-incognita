@@ -46,13 +46,38 @@ async function topRows(week) {
   return rows.map((r) => ({ name: r.player_name, score: r.score, awayMs: r.away_ms || 0, playedAt: r.played_at }));
 }
 
+// finished weeks, most recent first: up to 12 weeks, top 5 each
+async function pastWeeks(current) {
+  await ensureWeeklyTable();
+  const rows = await getSql()`
+    SELECT week, player_name, score, away_ms FROM weekly_scores
+    WHERE week <> ${current}
+    ORDER BY week DESC, score DESC, played_at ASC
+    LIMIT 500`;
+  const out = [];
+  for (const r of rows) {
+    let w = out[out.length - 1];
+    if (!w || w.week !== r.week) {
+      if (out.length >= 12) break;
+      w = { week: r.week, top: [] };
+      out.push(w);
+    }
+    if (w.top.length < 5) w.top.push({ name: r.player_name, score: r.score, awayMs: r.away_ms || 0 });
+  }
+  return out;
+}
+
 module.exports = async (req, res) => {
   const week = isoWeek();
   const mode = weeklyMode(week);
   const deck = weeklyDeck(week); // famous-mode deck (locIdx list); unused in random weeks
 
   if (req.method === 'GET') {
-    const out = { week, mode, rounds: WEEKLY_ROUNDS, roundSec: WEEKLY_ROUND_SEC, top: await topRows(week) };
+    const out = {
+      week, mode, rounds: WEEKLY_ROUNDS, roundSec: WEEKLY_ROUND_SEC,
+      top: await topRows(week),
+      past: await pastWeeks(week),
+    };
     const name = cleanName(req.query?.name);
     if (name && !isTestName(name)) {
       const mine = out.top.find((r) => r.name.toLowerCase() === name.toLowerCase()) ||

@@ -114,6 +114,9 @@ describe('random-world weekly (forced mode, E2E- name, no database)', () => {
 });
 
 describe('weekly attempt flow (E2E- name, no database)', () => {
+  // pin the mode so this suite is deterministic during random-world weeks
+  beforeEach(() => { process.env.WEEKLY_FORCE_MODE = 'famous'; });
+  afterEach(() => { delete process.env.WEEKLY_FORCE_MODE; });
   it('starts, scores server-side, and enforces the token', async () => {
     const name = 'E2E-WkUnit';
     const start = await call('POST', { action: 'start', name });
