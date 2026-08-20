@@ -79,6 +79,11 @@ module.exports = async (req, res) => {
         FROM weekly_scores WHERE id = ${detailId}`;
       if (!rows.length) return sendJSON(res, 404, { error: 'game not found' });
       const r = rows[0];
+      // The board is public before you play, so a replay of the week in
+      // progress would hand out its answers. Rounds unlock once it is over.
+      if (r.week === week) {
+        return sendJSON(res, 403, { error: 'this week\'s rounds stay hidden until the week ends' });
+      }
       return sendJSON(res, 200, {
         name: r.player_name, score: r.score, rounds: r.rounds,
         week: r.week, playedAt: r.played_at, detail: r.detail || [],

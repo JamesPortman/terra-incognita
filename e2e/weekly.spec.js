@@ -52,4 +52,31 @@ test.describe('weekly expedition', () => {
       await expect(page.locator('#weeklyPastHead')).toBeHidden();
     }
   });
+
+  test('this week\'s rounds stay hidden, past weeks open', async ({ page }) => {
+    await page.goto('/?plainmap=1');
+    await expect(page.locator('#menuWeeklyBoard')).toBeVisible();
+    await page.locator('#menuWeeklyBoard').click();
+    await expect(page.locator('#weeklyScreen')).toBeVisible();
+    const info = await (await page.request.get('/api/weekly')).json();
+
+    // the board is public before you play, so no row on it may open a replay
+    await expect(page.locator('#weeklyTable [data-detail]')).toHaveCount(0);
+    if (info.top.length) await expect(page.locator('#weeklyLockNote')).toBeVisible();
+
+    // and the API refuses even a hand-crafted request for this week
+    if (info.top.length) {
+      const res = await page.request.get(`/api/weekly?detail=${info.top[0].id}`);
+      expect(res.status()).toBe(403);
+      expect(await res.json()).toMatchObject({ error: /stay hidden/ });
+    }
+
+    // finished weeks are fair game
+    if (info.past && info.past.length && info.past[0].top[0].hasDetail) {
+      await expect(page.locator('#weeklyPast [data-detail]').first()).toBeVisible();
+      const res = await page.request.get(`/api/weekly?detail=${info.past[0].top[0].id}`);
+      expect(res.status()).toBe(200);
+      expect((await res.json()).detail.length).toBeGreaterThan(0);
+    }
+  });
 });

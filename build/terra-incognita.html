@@ -790,6 +790,7 @@
       <h2 id="weeklyHead">&nbsp;</h2>
       <div class="menuerr" id="weeklyMsg" style="margin-bottom:10px"></div>
       <table class="lbtable" id="weeklyTable"></table>
+      <div class="maplegend maphint2" id="weeklyLockNote" style="display:none" data-i18n="weekly.locked">Round details unlock once the week ends.</div>
       <div class="subhead" id="weeklyPastHead" style="display:none" data-i18n="weekly.past">Past expeditions</div>
       <div id="weeklyPast"></div>
       <div class="stack">
@@ -918,6 +919,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
       "weekly.placed": "You placed #{0} — {1} pts", "weekly.mypts": "{0} pts this week",
       "weekly.empty": "Nobody has played yet — be first!",
       "weekly.past": "Past expeditions",
+      "weekly.locked": "Round details unlock once the week ends.",
       "lb.kicker": "All-time leaderboard", "lb.title": "Hall of Navigators",
       "lb.showsolo": "Show solo scores",
       "lb.solonote": "Solo scores are average points per round — solo games vary in length.",
@@ -995,6 +997,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
       "weekly.placed": "Quedaste #{0} — {1} pts", "weekly.mypts": "{0} pts esta semana",
       "weekly.empty": "Nadie ha jugado todavía — ¡sé el primero!",
       "weekly.past": "Expediciones pasadas",
+      "weekly.locked": "El detalle por rondas se desbloquea al terminar la semana.",
       "lb.kicker": "Clasificación histórica", "lb.title": "Salón de Navegantes",
       "lb.showsolo": "Mostrar puntuaciones en solitario",
       "lb.solonote": "Las puntuaciones en solitario son el promedio de puntos por ronda — las partidas varían de duración.",
@@ -1072,6 +1075,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
       "weekly.placed": "Você ficou em #{0} — {1} pts", "weekly.mypts": "{0} pts esta semana",
       "weekly.empty": "Ninguém jogou ainda — seja o primeiro!",
       "weekly.past": "Expedições passadas",
+      "weekly.locked": "O detalhe por rodada é liberado quando a semana termina.",
       "lb.kicker": "Classificação geral", "lb.title": "Salão dos Navegantes",
       "lb.showsolo": "Mostrar pontuações solo",
       "lb.solonote": "Pontuações solo são a média de pontos por rodada — as partidas variam de duração.",
@@ -2293,7 +2297,8 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
     return `<tr><th>#</th><th>${t("th.navigator")}</th><th>${t("th.score")}</th></tr>` + top.map((r, i) => {
       const me = r.name.toLowerCase() === (highlightName || "").toLowerCase();
       const peek = (r.awayMs || 0) >= 3000 ? `<span class="peek">👀${Math.round(r.awayMs / 1000)}s</span>` : "";
-      return `<tr${me ? ' style="color:var(--brass)"' : ""}${linkAttrs(r, "weekly")}><td>${medals[i] || i + 1}</td><td>${esc(r.name)}${peek}</td><td class="score">${r.score.toLocaleString()}</td></tr>`;
+      // no replay link: this board is public before you play (see api/weekly.js)
+      return `<tr${me ? ' style="color:var(--brass)"' : ""}><td>${medals[i] || i + 1}</td><td>${esc(r.name)}${peek}</td><td class="score">${r.score.toLocaleString()}</td></tr>`;
     }).join("");
   }
 
@@ -2309,6 +2314,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
       $("weeklyKicker").textContent = t("weekly.kicker", d.week);
       $("weeklyHead").textContent = t("weekly.board");
       $("weeklyTable").innerHTML = weeklyRows(d.top, name);
+      $("weeklyLockNote").style.display = d.top.length ? "" : "none";
       const past = d.past || [];
       $("weeklyPastHead").style.display = past.length ? "" : "none";
       const medals = ["🥇", "🥈", "🥉"];
@@ -2451,6 +2457,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
         // past boards aren't loaded on this path — keep the final view clean
         $("weeklyPastHead").style.display = "none";
         $("weeklyPast").innerHTML = "";
+        $("weeklyLockNote").style.display = "";
       } else {
         round++;
         startRound();
@@ -3016,7 +3023,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
   $("finalMenuBtn").addEventListener("click", backToMenu);
 
   // ---- stale-tab update banner ----
-  const BUILD_ID = "20260817180353";
+  const BUILD_ID = "20260820160649";
   let updateAvailable = false;
   function maybeShowUpdate() {
     // suppress only during an active round; the menu (mode null) is always safe
