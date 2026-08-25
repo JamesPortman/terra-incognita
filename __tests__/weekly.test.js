@@ -91,15 +91,15 @@ describe('groupPastWeeks', () => {
 });
 
 describe('weeklyMode', () => {
-  it('flags 2026-W34 as random world, others famous', () => {
-    expect(weeklyLib.weeklyMode('2026-W34')).toBe('random');
-    expect(weeklyLib.weeklyMode('2026-W33')).toBe('famous');
-    expect(weeklyLib.weeklyMode('2026-W35')).toBe('famous');
+  it('plays random world by default, every week', () => {
+    for (const w of ['2026-W33', '2026-W34', '2026-W35', '2027-W01']) {
+      expect(weeklyLib.weeklyMode(w)).toBe('random');
+    }
   });
 
   it('honors the WEEKLY_FORCE_MODE override', () => {
     process.env.WEEKLY_FORCE_MODE = 'famous';
-    expect(weeklyLib.weeklyMode('2026-W34')).toBe('famous');
+    expect(weeklyLib.weeklyMode('2026-W35')).toBe('famous');
     delete process.env.WEEKLY_FORCE_MODE;
   });
 });

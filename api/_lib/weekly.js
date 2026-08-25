@@ -49,14 +49,15 @@ function weeklyDeck(week, rounds = WEEKLY_ROUNDS) {
 
 const isTestName = (name) => /^E2E-/i.test(name);
 
-// Weeks that play Random world (Street View) instead of the famous-places
-// deck. The first player of such a week resolves the panoramas client-side
-// (the Maps key is referrer-locked) and the server stores them first-write-
-// wins so everyone faces the same five. WEEKLY_FORCE_MODE overrides for
-// tests and as an ops lever ('famous' | 'random').
-const RANDOM_WEEKS = new Set(['2026-W34']);
+// Every week plays Random world (Street View): the first player of the week
+// resolves the panoramas client-side (the Maps key is referrer-locked) and the
+// server stores them first-write-wins, so everyone faces the same five.
+// List a week below to give it the seeded famous-places deck instead, as an
+// occasional change of pace. WEEKLY_FORCE_MODE overrides both, for tests and
+// as an ops lever ('famous' | 'random').
+const FAMOUS_WEEKS = new Set();
 const weeklyMode = (week) =>
-  process.env.WEEKLY_FORCE_MODE || (RANDOM_WEEKS.has(week) ? 'random' : 'famous');
+  process.env.WEEKLY_FORCE_MODE || (FAMOUS_WEEKS.has(week) ? 'famous' : 'random');
 
 // Fold week-ordered score rows into per-week boards, newest first. Input must
 // already be sorted (week DESC, score DESC); the caps keep the payload small.
