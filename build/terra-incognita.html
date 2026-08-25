@@ -2071,29 +2071,38 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
   // bias) and snap to the nearest outdoor panorama. Metadata lookups are free.
   async function buildRandomDeck(n) {
     if (!(await ensureMaps())) throw new Error("Street View is unavailable right now");
-    const out = [], used = new Set();
-    let attempts = 0;
-    while (out.length < n && attempts < n * 14) {
-      attempts++;
-      const c = SEARCH_CITIES[Math.floor(Math.random() * SEARCH_CITIES.length)];
-      if (used.has(c.n)) continue;
-      const [clon, clat] = mapToLonLat(c.x, c.y);
-      const lat = clat + (Math.random() - 0.5) * 0.3;
-      const lon = clon + (Math.random() - 0.5) * 0.3;
-      try {
-        const res = await svService.getPanorama({
-          location: { lat, lng: lon }, radius: 5000, preference: "nearest", sources: ["outdoor"],
-        });
-        const ll = res.data.location.latLng;
-        used.add(c.n);
-        out.push({
-          name: res.data.location.description || `${c.n}, ${c.s}`,
-          place: "",
-          lat: typeof ll.lat === "function" ? ll.lat() : ll.lat,
-          lon: typeof ll.lng === "function" ? ll.lng() : ll.lng,
-          panoId: res.data.location.pano,
-        });
-      } catch { /* no coverage near this city — try another */ }
+    const out = [], usedCities = new Set(), usedCountries = new Set();
+    // The city pool is weighted by how many cities a country has, so drawing
+    // blind clusters badly (three Indian towns in one five-round deck). Pass
+    // one spreads across countries; pass two tops up without that constraint
+    // if Street View coverage is too thin to fill the deck.
+    for (const spreadAcrossCountries of [true, false]) {
+      let attempts = 0;
+      while (out.length < n && attempts < n * 14) {
+        attempts++;
+        const c = SEARCH_CITIES[Math.floor(Math.random() * SEARCH_CITIES.length)];
+        if (usedCities.has(c.n)) continue;
+        if (spreadAcrossCountries && usedCountries.has(c.s)) continue;
+        const [clon, clat] = mapToLonLat(c.x, c.y);
+        const lat = clat + (Math.random() - 0.5) * 0.3;
+        const lon = clon + (Math.random() - 0.5) * 0.3;
+        try {
+          const res = await svService.getPanorama({
+            location: { lat, lng: lon }, radius: 5000, preference: "nearest", sources: ["outdoor"],
+          });
+          const ll = res.data.location.latLng;
+          usedCities.add(c.n);
+          usedCountries.add(c.s);
+          out.push({
+            name: res.data.location.description || `${c.n}, ${c.s}`,
+            place: "",
+            lat: typeof ll.lat === "function" ? ll.lat() : ll.lat,
+            lon: typeof ll.lng === "function" ? ll.lng() : ll.lng,
+            panoId: res.data.location.pano,
+          });
+        } catch { /* no coverage near this city — try another */ }
+      }
+      if (out.length >= n) break;
     }
     if (out.length < n) throw new Error("couldn't find enough Street View spots — try again");
     return out;
@@ -3023,7 +3032,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
   $("finalMenuBtn").addEventListener("click", backToMenu);
 
   // ---- stale-tab update banner ----
-  const BUILD_ID = "20260820160649";
+  const BUILD_ID = "20260825161903";
   let updateAvailable = false;
   function maybeShowUpdate() {
     // suppress only during an active round; the menu (mode null) is always safe
