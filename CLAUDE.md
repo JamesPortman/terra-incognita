@@ -42,3 +42,6 @@ auto-deploy is off.
   index.html after any change.
 - Local dev uses the real production Neon + Upstash (env from `.env.local`);
   clean up any non-`E2E-` test data you create.
+- The game is served both at a domain root and under `/terra-incognita` (proxied
+  by portman.ca). New fetches and page links must go through `BASE` or be
+  relative — never root-absolute. `e2e/subpath.spec.js` covers both forms.

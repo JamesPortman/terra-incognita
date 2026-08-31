@@ -5,19 +5,24 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Terra Incognita &#8212; a where-in-the-world game</title>
 <meta name="description" content="A photo of somewhere real, a map, and a clock. Play solo, take the weekly expedition, or open a live room and let a group guess the same places at once.">
-<link rel="canonical" href="https://terra-incognita-amber.vercel.app/">
+<!-- The game answers on two URLs: this deployment's own domain, and the portman.ca
+     subpath that proxies it. These name the second as the one of record, so the two
+     consolidate there rather than competing as duplicates. Deliberately static — the
+     unfurlers that read og:url do not run JavaScript, so a value set at runtime would
+     be invisible to exactly the readers it exists for. -->
+<link rel="canonical" href="https://www.portman.ca/terra-incognita/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Terra Incognita">
-<meta property="og:url" content="https://terra-incognita-amber.vercel.app/">
+<meta property="og:url" content="https://www.portman.ca/terra-incognita/">
 <meta property="og:title" content="Terra Incognita — a where-in-the-world game">
 <meta property="og:description" content="A photo of somewhere real, a map, and a clock. Guess where on Earth — solo, weekly, or in a live room with a group.">
-<meta property="og:image" content="https://terra-incognita-amber.vercel.app/og.jpg">
+<meta property="og:image" content="https://www.portman.ca/terra-incognita/og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="627">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Terra Incognita — a where-in-the-world game">
 <meta name="twitter:description" content="A photo of somewhere real, a map, and a clock. Guess where on Earth — solo, weekly, or in a live room with a group.">
-<meta name="twitter:image" content="https://terra-incognita-amber.vercel.app/og.jpg">
+<meta name="twitter:image" content="https://www.portman.ca/terra-incognita/og.jpg">
 <style>
   :root {
     --ink: #0c1220;
@@ -749,7 +754,7 @@
         </div>
         <button class="ghost" id="menuLb" data-i18n="menu.lb">All-time leaderboard</button>
         <button class="ghost" id="menuWeeklyBoard" data-i18n="menu.weeklyboard">This week's board</button>
-        <a class="ghost" href="/architecture" data-i18n="menu.arch">Architecture &mdash; how this is built</a>
+        <a class="ghost" href="architecture" data-i18n="menu.arch">Architecture &mdash; how this is built</a>
         <label class="timerow">
           <span data-i18n="ui.language">Language</span>
           <select id="langSelect" aria-label="Language"></select>
@@ -1940,8 +1945,13 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
   const hideAllModals = () =>
     [menuScreen, lobbyScreen, standingsScreen, lbScreen, weeklyScreen, detailScreen].forEach(hide);
 
+  // The path prefix this deployment is served under: empty at a domain root, and
+  // "/terra-incognita" when portman.ca proxies the game as a subpath. Read from the
+  // URL at runtime so a single deployment serves both without a build flag.
+  const BASE = /^\/terra-incognita(\/|$)/.test(location.pathname) ? "/terra-incognita" : "";
+
   async function api(path, body) {
-    const r = await fetch("/api/" + path, body ? {
+    const r = await fetch(BASE + "/api/" + path, body ? {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
@@ -3032,7 +3042,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
   $("finalMenuBtn").addEventListener("click", backToMenu);
 
   // ---- stale-tab update banner ----
-  const BUILD_ID = "20260825161903";
+  const BUILD_ID = "20260831211338";
   let updateAvailable = false;
   function maybeShowUpdate() {
     // suppress only during an active round; the menu (mode null) is always safe
@@ -3042,7 +3052,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
   }
   async function checkVersion() {
     try {
-      const r = await fetch("/version.txt?t=" + Date.now(), { cache: "no-store" });
+      const r = await fetch(BASE + "/version.txt?t=" + Date.now(), { cache: "no-store" });
       if (!r.ok) return;
       const v = (await r.text()).trim();
       if (v && v !== BUILD_ID) updateAvailable = true;

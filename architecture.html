@@ -170,7 +170,7 @@
   <span class="brand">Terra Incognita</span>
   <span style="display:flex;gap:14px;align-items:baseline">
     <button id="themeBtn" aria-label="Toggle day/night mode" title="Day / night">🌙</button>
-    <a href="/">&larr; Back to the game</a>
+    <a href="./">&larr; Back to the game</a>
   </span>
 </header>
 <main>
@@ -518,6 +518,15 @@
       Vercel's git integration is connected but its auto-deploy is disabled
       (<code>vercel.json</code>). GitHub Actions is the only path to production,
       and it runs both suites first — a red test means the deploy never starts.
+    </p>
+    <p>
+      The same deployment answers on two URLs: its own Vercel domain at the root, and
+      <code>www.portman.ca/terra-incognita/</code>, which proxies it as a subpath.
+      The client reads the prefix off <code>location.pathname</code> into
+      <code>BASE</code> and prepends it to every <code>/api/</code> and
+      <code>/version.txt</code> request, so one build serves both with no
+      environment flag. <code>e2e/subpath.spec.js</code> stands up a local stand-in
+      for that proxy and holds both forms honest.
     </p>
     <div class="diagram">
       <svg viewBox="0 0 760 150" role="img" aria-label="Pipeline: push to GitHub, Actions run unit and E2E tests, then deploy to Vercel production">
