@@ -749,7 +749,7 @@
         </div>
         <button class="ghost" id="menuLb" data-i18n="menu.lb">All-time leaderboard</button>
         <button class="ghost" id="menuWeeklyBoard" data-i18n="menu.weeklyboard">This week's board</button>
-        <a class="ghost" href="/architecture" data-i18n="menu.arch">Architecture &mdash; how this is built</a>
+        <a class="ghost" href="architecture" data-i18n="menu.arch">Architecture &mdash; how this is built</a>
         <label class="timerow">
           <span data-i18n="ui.language">Language</span>
           <select id="langSelect" aria-label="Language"></select>
@@ -1940,8 +1940,13 @@ const LOCATIONS = __LOCATIONS__;
   const hideAllModals = () =>
     [menuScreen, lobbyScreen, standingsScreen, lbScreen, weeklyScreen, detailScreen].forEach(hide);
 
+  // The path prefix this deployment is served under: empty at a domain root, and
+  // "/terra-incognita" when portman.ca proxies the game as a subpath. Read from the
+  // URL at runtime so a single deployment serves both without a build flag.
+  const BASE = /^\/terra-incognita(\/|$)/.test(location.pathname) ? "/terra-incognita" : "";
+
   async function api(path, body) {
-    const r = await fetch("/api/" + path, body ? {
+    const r = await fetch(BASE + "/api/" + path, body ? {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
@@ -3042,7 +3047,7 @@ const LOCATIONS = __LOCATIONS__;
   }
   async function checkVersion() {
     try {
-      const r = await fetch("/version.txt?t=" + Date.now(), { cache: "no-store" });
+      const r = await fetch(BASE + "/version.txt?t=" + Date.now(), { cache: "no-store" });
       if (!r.ok) return;
       const v = (await r.text()).trim();
       if (v && v !== BUILD_ID) updateAvailable = true;

@@ -58,5 +58,14 @@ see `.env.local`) that can clear the all-time leaderboard via `/api/admin`.
 ## Deploy
 
 Static site + `api/` functions on Vercel. Push to `main` to deploy.
+
+The game answers on two URLs: its own Vercel domain at the root, and
+`www.portman.ca/terra-incognita/`, which proxies it as a subpath. `BASE` in the
+game template is read from `location.pathname` at runtime and prepended to every
+`/api/` and `/version.txt` request; the architecture link is relative. One build
+serves both — there is no environment flag and no second deployment.
+
+When adding a page link or a fetch, keep it relative or run it through `BASE`;
+`e2e/subpath.spec.js` fails if a root-absolute URL creeps back in.
 Integrations: Neon (`DATABASE_URL`) and Upstash Redis (`KV_REST_API_*` /
 `UPSTASH_REDIS_REST_*`) via the Vercel Marketplace.
