@@ -9,7 +9,9 @@ const root = path.join(import.meta.dirname, '..');
 const index = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
 const head = index.slice(0, index.indexOf('</head>'));
 
-const OG_IMAGE = 'https://terra-incognita-amber.vercel.app/og.jpg';
+// The game answers on its own Vercel domain and on the portman.ca subpath that proxies
+// it. The subpath is the one of record, so both consolidate there instead of competing.
+const CANONICAL = 'https://www.portman.ca/terra-incognita/';
 
 describe('social link preview', () => {
   it('ships the Open Graph tags a crawler needs for a large card', () => {
@@ -20,9 +22,18 @@ describe('social link preview', () => {
     expect(head).toContain('summary_large_image');
   });
 
+  it('names the portman.ca subpath as canonical, and og:url agrees', () => {
+    expect(head).toContain(`<link rel="canonical" href="${CANONICAL}">`);
+    expect(head).toContain(`property="og:url" content="${CANONICAL}"`);
+  });
+
   it('points at an image that actually exists at that path', () => {
-    expect(head).toContain(OG_IMAGE);
-    const file = OG_IMAGE.replace('https://terra-incognita-amber.vercel.app/', '');
+    const found = /property="og:image" content="([^"]+)"/.exec(head);
+    expect(found, 'og:image is present').toBeTruthy();
+    // Serving the card image from anywhere but the canonical home would advertise a URL
+    // the canonical tag disowns, so derive the file from the tag rather than assuming it.
+    expect(found[1].startsWith(CANONICAL), `og:image ${found[1]} is outside ${CANONICAL}`).toBe(true);
+    const file = found[1].slice(CANONICAL.length);
     expect(fs.existsSync(path.join(root, file)), `${file} is not in the repo`).toBe(true);
   });
 
