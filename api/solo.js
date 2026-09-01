@@ -9,7 +9,7 @@
 const crypto = require('crypto');
 const { getStore } = require('./_lib/store.js');
 const { getSql, ensureTable } = require('./_lib/db.js');
-const { haversineKm, pointsFor, bestFiveTotal, roundDetail, validDeckEntry, sendJSON } = require('./_lib/rooms.js');
+const { haversineKm, pointsFor, bestFiveTotal, roundDetail, validDeckEntry, sendJSON, fail } = require('./_lib/rooms.js');
 const { isTestName } = require('./_lib/weekly.js');
 const { hallTop } = require('./_lib/hall.js');
 const { rateLimit } = require('./_lib/ratelimit.js');
@@ -38,22 +38,22 @@ async function finalPayload(attempt, last) {
 }
 
 module.exports = async (req, res) => {
-  if (req.method !== 'POST') return sendJSON(res, 405, { error: 'method not allowed' });
+  if (req.method !== 'POST') return fail(res, 405, 'method_not_allowed', 'method not allowed');
   const store = getStore();
 
   if (req.body?.action === 'start') {
     if (!(await rateLimit(req, res, 'solo', 30, 600))) return;
     const name = cleanName(req.body?.name);
-    if (!name) return sendJSON(res, 400, { error: 'name required' });
+    if (!name) return fail(res, 400, 'name_required', 'name required');
     const raw = req.body?.deck;
     if (!Array.isArray(raw) || raw.length < 1 || raw.length > 10) {
-      return sendJSON(res, 400, { error: 'recorded solo needs a random deck of 1-10 locations' });
+      return fail(res, 400, 'solo_deck_required', 'recorded solo needs a random deck of 1-10 locations');
     }
     // same validation as random-room hosting in create.js
     const customDeck = [];
     for (const d of raw) {
       const entry = validDeckEntry(d);
-      if (!entry) return sendJSON(res, 400, { error: 'invalid deck entry' });
+      if (!entry) return fail(res, 400, 'invalid_deck_entry', 'invalid deck entry');
       customDeck.push(entry);
     }
     const roundSec = Math.min(300, Math.max(10, parseInt(req.body?.roundSec, 10) || 60));
@@ -75,7 +75,7 @@ module.exports = async (req, res) => {
   if (req.body?.action === 'guess') {
     const token = String(req.body?.token || '');
     const attempt = token ? await store.getJSON(attemptKey(token)) : null;
-    if (!attempt) return sendJSON(res, 403, { error: 'no active attempt' });
+    if (!attempt) return fail(res, 403, 'no_active_attempt', 'no active attempt');
 
     if (attempt.roundIdx >= attempt.rounds) {
       // finished attempt: replay the final payload so a network retry after
@@ -121,5 +121,5 @@ module.exports = async (req, res) => {
     return sendJSON(res, 200, await finalPayload(attempt, { km, pts }));
   }
 
-  sendJSON(res, 400, { error: 'unknown action' });
+  fail(res, 400, 'unknown_action', 'unknown action');
 };

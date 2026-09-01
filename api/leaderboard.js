@@ -1,13 +1,13 @@
 const { getSql, ensureArchiveTable } = require('./_lib/db.js');
 const { hallTop, gameDetail } = require('./_lib/hall.js');
-const { sendJSON } = require('./_lib/rooms.js');
+const { sendJSON, fail } = require('./_lib/rooms.js');
 
 module.exports = async (req, res) => {
   // ?detail=<row id> — one game's round-by-round replay
   const detailId = parseInt(req.query?.detail, 10);
   if (Number.isFinite(detailId)) {
     const game = await gameDetail(detailId);
-    if (!game) return sendJSON(res, 404, { error: 'game not found' });
+    if (!game) return fail(res, 404, 'game_not_found', 'game not found');
     return sendJSON(res, 200, game);
   }
 

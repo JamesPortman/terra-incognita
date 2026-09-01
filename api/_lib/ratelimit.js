@@ -1,7 +1,7 @@
 // Fixed-window per-IP rate limiting over the KV store. Fails open: a store
 // hiccup should never lock people out of the game.
 const { getStore } = require('./store.js');
-const { sendJSON } = require('./rooms.js');
+const { fail } = require('./rooms.js');
 
 function clientIp(req) {
   const fwd = req.headers?.['x-forwarded-for'];
@@ -26,7 +26,7 @@ async function rateLimit(req, res, bucket, limit, windowSec) {
     return true;
   }
   if (n > limit) {
-    sendJSON(res, 429, { error: 'too many requests — slow down and try again shortly' });
+    fail(res, 429, 'rate_limited', 'too many requests — slow down and try again shortly');
     return false;
   }
   return true;

@@ -1,29 +1,29 @@
 const { getStore } = require('./_lib/store.js');
 const {
   loadRoom, playersKey, guessesKey, haversineKm, pointsFor, bestFiveTotal,
-  LOCATIONS, ROUND_MS, GRACE_MS, TTL_SEC, sendJSON,
+  LOCATIONS, ROUND_MS, GRACE_MS, TTL_SEC, sendJSON, fail
 } = require('./_lib/rooms.js');
 
 module.exports = async (req, res) => {
-  if (req.method !== 'POST') return sendJSON(res, 405, { error: 'method not allowed' });
+  if (req.method !== 'POST') return fail(res, 405, 'method_not_allowed', 'method not allowed');
   const { code: rawCode, playerId, token } = req.body || {};
   const lat = Number(req.body?.lat), lon = Number(req.body?.lon);
   const code = String(rawCode || '').toUpperCase();
   if (!Number.isFinite(lat) || !Number.isFinite(lon) || Math.abs(lat) > 90 || Math.abs(lon) > 180) {
-    return sendJSON(res, 400, { error: 'invalid coordinates' });
+    return fail(res, 400, 'invalid_coordinates', 'invalid coordinates');
   }
 
   const meta = await loadRoom(code);
-  if (!meta) return sendJSON(res, 404, { error: 'room not found' });
-  if (meta.state !== 'question') return sendJSON(res, 409, { error: 'round is not open' });
+  if (!meta) return fail(res, 404, 'room_not_found', 'room not found');
+  if (meta.state !== 'question') return fail(res, 409, 'round_not_open', 'round is not open');
   if (Date.now() > meta.roundStartAt + (meta.roundMs || ROUND_MS) + GRACE_MS) {
-    return sendJSON(res, 409, { error: 'time is up' });
+    return fail(res, 409, 'time_up', 'time is up');
   }
 
   const store = getStore();
   const players = await store.hgetallJSON(playersKey(code));
   const player = players[playerId];
-  if (!player || player.token !== token) return sendJSON(res, 403, { error: 'not in this room' });
+  if (!player || player.token !== token) return fail(res, 403, 'not_in_room', 'not in this room');
 
   const loc = meta.customDeck ? meta.customDeck[meta.roundIdx] : LOCATIONS[meta.deck[meta.roundIdx]];
   const km = haversineKm(lat, lon, loc.lat, loc.lon);
@@ -32,7 +32,7 @@ module.exports = async (req, res) => {
   const awayMs = Math.min(600000, Math.max(0, Math.round(Number(req.body?.awayMs) || 0)));
 
   const fresh = await store.hsetnxJSON(guessesKey(code, meta.roundIdx), playerId, { lat, lon, km, pts, ms, awayMs }, TTL_SEC);
-  if (!fresh) return sendJSON(res, 409, { error: 'already guessed this round' });
+  if (!fresh) return fail(res, 409, 'already_guessed', 'already guessed this round');
 
   player.ptsByRound = { ...(player.ptsByRound || {}), [meta.roundIdx]: pts };
   player.score = bestFiveTotal(Object.values(player.ptsByRound));

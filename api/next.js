@@ -4,16 +4,16 @@
 const { getStore } = require('./_lib/store.js');
 const { getSql, ensureTable } = require('./_lib/db.js');
 const {
-  loadRoom, saveRoom, playersKey, guessesKey, roundDetail, LOCATIONS, ROUNDS, sendJSON,
+  loadRoom, saveRoom, playersKey, guessesKey, roundDetail, LOCATIONS, ROUNDS, sendJSON, fail
 } = require('./_lib/rooms.js');
 const { DECK_LABELS } = require('../shared/decks.js');
 
 module.exports = async (req, res) => {
-  if (req.method !== 'POST') return sendJSON(res, 405, { error: 'method not allowed' });
+  if (req.method !== 'POST') return fail(res, 405, 'method_not_allowed', 'method not allowed');
   const code = String(req.body?.code || '').toUpperCase();
   const meta = await loadRoom(code);
-  if (!meta) return sendJSON(res, 404, { error: 'room not found' });
-  if (req.body?.hostToken !== meta.hostToken) return sendJSON(res, 403, { error: 'host only' });
+  if (!meta) return fail(res, 404, 'room_not_found', 'room not found');
+  if (req.body?.hostToken !== meta.hostToken) return fail(res, 403, 'host_only', 'host only');
 
   const rounds = meta.rounds || ROUNDS;
   if (meta.state === 'lobby' || (meta.state === 'reveal' && meta.roundIdx + 1 < rounds)) {
@@ -48,7 +48,7 @@ module.exports = async (req, res) => {
       }
     }
   } else {
-    return sendJSON(res, 409, { error: 'game is over' });
+    return fail(res, 409, 'game_over', 'game is over');
   }
   await saveRoom(meta);
   sendJSON(res, 200, { state: meta.state, roundIdx: meta.roundIdx });

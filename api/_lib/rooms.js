@@ -105,9 +105,17 @@ function sendJSON(res, status, body) {
   res.status(status).json(body);
 }
 
+// Errors carry a stable machine code next to the English text. The client
+// localizes on the code (`api.<code>` in its MESSAGES table) and falls back to
+// `error` for anything it doesn't recognize, so curl, older clients and the
+// tests all keep reading the same English sentence they always did.
+function fail(res, status, code, message, extra) {
+  return sendJSON(res, status, { error: message, code, ...extra });
+}
+
 module.exports = {
   ROUNDS, ROUND_MS, GRACE_MS, MAX_PLAYERS, TTL_SEC, LOCATIONS,
   metaKey, playersKey, guessesKey,
   newCode, newDeck, haversineKm, pointsFor, bestFiveTotal, roundDetail, validDeckEntry,
-  loadRoom, saveRoom, maybeAdvance, sendJSON,
+  loadRoom, saveRoom, maybeAdvance, sendJSON, fail,
 };

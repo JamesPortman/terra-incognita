@@ -950,6 +950,35 @@ const LOCATIONS = __LOCATIONS__;
       "err.nameweekly": "enter your name (the Join field) to play the weekly",
       "err.unrecorded": " — playing unrecorded", "err.retry": " — tap to retry",
       "update.banner": "A new version is available — tap to refresh",
+      // Server error codes (api/_lib/rooms.js fail()). Keep these byte-identical to the server text: it is the fallback.
+      "api.method_not_allowed": "method not allowed",
+      "api.room_code_unavailable": "could not allocate a room code — try again",
+      "api.random_deck_size": "random deck must have one location per round",
+      "api.invalid_deck_entry": "invalid deck entry",
+      "api.invalid_coordinates": "invalid coordinates",
+      "api.room_not_found": "room not found",
+      "api.round_not_open": "round is not open",
+      "api.time_up": "time is up",
+      "api.not_in_room": "not in this room",
+      "api.already_guessed": "already guessed this round",
+      "api.admin_not_configured": "admin is not configured",
+      "api.wrong_admin_token": "wrong admin token",
+      "api.unknown_action": "unknown action",
+      "api.name_required": "name required",
+      "api.solo_deck_required": "recorded solo needs a random deck of 1-10 locations",
+      "api.no_active_attempt": "no active attempt",
+      "api.host_only": "host only",
+      "api.game_over": "game is over",
+      "api.game_not_found": "game not found",
+      "api.game_started": "game already started",
+      "api.room_full": "room is full (max {0} players)",
+      "api.weekly_rounds_hidden": "this week's rounds stay hidden until the week ends",
+      "api.already_played_week": "already played this week",
+      "api.invalid_weekly_deck": "invalid weekly deck",
+      "api.attempt_finished": "attempt is finished",
+      "api.weekly_deck_missing": "this week's deck is missing",
+      "api.rate_limited": "too many requests — slow down and try again shortly",
+      "api.failed": "request failed ({0})",
     },
     es: {
       "menu.kicker": "Un juego de ¿dónde en el mundo?",
@@ -1028,6 +1057,35 @@ const LOCATIONS = __LOCATIONS__;
       "err.nameweekly": "introduce tu nombre (el campo de Unirse) para jugar la semanal",
       "err.unrecorded": " — jugando sin registro", "err.retry": " — toca para reintentar",
       "update.banner": "Hay una versión nueva — toca para actualizar",
+      // Server error codes (api/_lib/rooms.js fail()). Claves estables del servidor.
+      "api.method_not_allowed": "método no permitido",
+      "api.room_code_unavailable": "no se pudo asignar un código de sala — inténtalo de nuevo",
+      "api.random_deck_size": "el mazo aleatorio debe tener una ubicación por ronda",
+      "api.invalid_deck_entry": "entrada de mazo no válida",
+      "api.invalid_coordinates": "coordenadas no válidas",
+      "api.room_not_found": "sala no encontrada",
+      "api.round_not_open": "la ronda no está abierta",
+      "api.time_up": "se acabó el tiempo",
+      "api.not_in_room": "no estás en esta sala",
+      "api.already_guessed": "ya adivinaste en esta ronda",
+      "api.admin_not_configured": "la administración no está configurada",
+      "api.wrong_admin_token": "clave de administrador incorrecta",
+      "api.unknown_action": "acción desconocida",
+      "api.name_required": "hace falta un nombre",
+      "api.solo_deck_required": "el solo registrado necesita un mazo aleatorio de 1 a 10 ubicaciones",
+      "api.no_active_attempt": "no hay ningún intento activo",
+      "api.host_only": "solo el anfitrión",
+      "api.game_over": "la partida ha terminado",
+      "api.game_not_found": "partida no encontrada",
+      "api.game_started": "la partida ya ha empezado",
+      "api.room_full": "la sala está llena (máx. {0} jugadores)",
+      "api.weekly_rounds_hidden": "las rondas de esta semana quedan ocultas hasta que termine la semana",
+      "api.already_played_week": "ya jugaste esta semana",
+      "api.invalid_weekly_deck": "mazo semanal no válido",
+      "api.attempt_finished": "el intento ya ha terminado",
+      "api.weekly_deck_missing": "falta el mazo de esta semana",
+      "api.rate_limited": "demasiadas solicitudes — espera un momento e inténtalo de nuevo",
+      "api.failed": "la solicitud falló ({0})",
     },
     pt: {
       "menu.kicker": "Um jogo de onde-no-mundo",
@@ -1106,6 +1164,35 @@ const LOCATIONS = __LOCATIONS__;
       "err.nameweekly": "digite seu nome (o campo de Entrar) para jogar a semanal",
       "err.unrecorded": " — jogando sem registro", "err.retry": " — toque para tentar de novo",
       "update.banner": "Há uma nova versão — toque para atualizar",
+      // Server error codes (api/_lib/rooms.js fail()). Chaves estáveis do servidor.
+      "api.method_not_allowed": "método não permitido",
+      "api.room_code_unavailable": "não foi possível gerar um código de sala — tente de novo",
+      "api.random_deck_size": "o baralho aleatório precisa de um lugar por rodada",
+      "api.invalid_deck_entry": "entrada de baralho inválida",
+      "api.invalid_coordinates": "coordenadas inválidas",
+      "api.room_not_found": "sala não encontrada",
+      "api.round_not_open": "a rodada não está aberta",
+      "api.time_up": "o tempo acabou",
+      "api.not_in_room": "você não está nesta sala",
+      "api.already_guessed": "você já palpitou nesta rodada",
+      "api.admin_not_configured": "a administração não está configurada",
+      "api.wrong_admin_token": "chave de administrador incorreta",
+      "api.unknown_action": "ação desconhecida",
+      "api.name_required": "informe um nome",
+      "api.solo_deck_required": "o solo registrado precisa de um baralho aleatório de 1 a 10 lugares",
+      "api.no_active_attempt": "nenhuma tentativa ativa",
+      "api.host_only": "apenas o anfitrião",
+      "api.game_over": "a partida terminou",
+      "api.game_not_found": "partida não encontrada",
+      "api.game_started": "a partida já começou",
+      "api.room_full": "a sala está cheia (máx. {0} jogadores)",
+      "api.weekly_rounds_hidden": "as rodadas desta semana ficam ocultas até a semana terminar",
+      "api.already_played_week": "você já jogou esta semana",
+      "api.invalid_weekly_deck": "baralho semanal inválido",
+      "api.attempt_finished": "a tentativa já terminou",
+      "api.weekly_deck_missing": "o baralho desta semana está faltando",
+      "api.rate_limited": "muitas solicitações — aguarde um momento e tente de novo",
+      "api.failed": "a solicitação falhou ({0})",
     },
   };
   const LANGS = { en: "English", es: "Español", pt: "Português" };
@@ -1121,6 +1208,15 @@ const LOCATIONS = __LOCATIONS__;
     args.forEach((a, i) => { s = s.replaceAll(`{${i}}`, a); });
     return s;
   }
+  // Server errors arrive as { error, code, args? }. Localize on the stable code
+  // and fall back to the server's own English sentence for anything this build
+  // doesn't know about — a newer API can add errors without breaking this one.
+  function apiMessage(data, status) {
+    const key = data && data.code ? "api." + data.code : null;
+    if (key && MESSAGES.en[key]) return t(key, ...(data.args || []));
+    return (data && data.error) || t("api.failed", status);
+  }
+
   // deck labels are stored/queried in canonical English; translate at render
   const CANONICAL_DECK = {
     "Brazil — Famous Places": "deck.br",
@@ -1139,6 +1235,14 @@ const LOCATIONS = __LOCATIONS__;
     LANG = l;
     localStorage.setItem("terra-lang", l);
     applyI18n();
+  }
+  // Curated locations carry their own translations, baked in from
+  // shared/locations.i18n.js by build/assemble.js. Random-world rounds have no
+  // `i18n`: their labels come straight from Google, already in the player's
+  // language, so they fall through unchanged.
+  function locDisplay(loc) {
+    const tr = loc && loc.i18n && loc.i18n[LANG];
+    return tr ? { name: tr[0], place: tr[1] } : { name: loc.name, place: loc.place || "" };
   }
 
   let ROUNDS = 5; // solo rounds; set from the menu input when a game starts
@@ -1544,13 +1648,14 @@ const LOCATIONS = __LOCATIONS__;
     const loc = deck[round];
     actualPt = lonLatToMap(loc.lon, loc.lat);
     showLine = false;
-    results.push({ name: loc.name, km: null, pts: 0, away, gPt: null, aPt: actualPt.slice() });
+    results.push({ name: locDisplay(loc).name, km: null, pts: 0, away, gPt: null, aPt: actualPt.slice() });
     total = bestFiveTotal(results.map((r) => r.pts));
     drawMarkers();
     if (gmap) gmapShowActualOnly(loc);
     else flyToPoint(actualPt[0], actualPt[1], 3);
-    revealName.textContent = loc.name;
-    revealPlace.textContent = loc.place;
+    const disp = locDisplay(loc);
+    revealName.textContent = disp.name;
+    revealPlace.textContent = disp.place;
     revealCard.classList.add("show");
     distReadout.textContent = t("dist.timesup") +
       (away >= 3000 ? t("dist.offtab", Math.round(away / 1000)) : "");
@@ -1691,14 +1796,15 @@ const LOCATIONS = __LOCATIONS__;
     const km = haversine(glat, glon, loc.lat, loc.lon);
     const pts = Math.round(5000 * Math.exp(-km / 2000));
     actualPt = lonLatToMap(loc.lon, loc.lat);
-    results.push({ name: loc.name, km, pts, away, gPt: guessPt.slice(), aPt: actualPt.slice() });
+    results.push({ name: locDisplay(loc).name, km, pts, away, gPt: guessPt.slice(), aPt: actualPt.slice() });
     total = bestFiveTotal(results.map((r) => r.pts));
     showLine = true;
     if (gmap) gmapReveal([{ lat: glat, lng: glon, isMe: true }], loc);
     else fitBoth(guessPt, actualPt);
 
-    revealName.textContent = loc.name;
-    revealPlace.textContent = loc.place;
+    const disp = locDisplay(loc);
+    revealName.textContent = disp.name;
+    revealPlace.textContent = disp.place;
     revealCard.classList.add("show");
     distReadout.textContent = t("dist.landed", fmtKm(km)) +
       (away >= 3000 ? t("dist.offtab", Math.round(away / 1000)) : "");
@@ -1957,7 +2063,11 @@ const LOCATIONS = __LOCATIONS__;
       body: JSON.stringify(body),
     } : undefined);
     const data = await r.json().catch(() => ({}));
-    if (!r.ok) throw new Error(data.error || "request failed (" + r.status + ")");
+    if (!r.ok) {
+      const err = new Error(apiMessage(data, r.status));
+      err.code = data.code || null;
+      throw err;
+    }
     return data;
   }
 
@@ -2005,7 +2115,7 @@ const LOCATIONS = __LOCATIONS__;
         };
         const s = document.createElement("script");
         s.src = "https://maps.googleapis.com/maps/api/js?key=" + encodeURIComponent(mapsKey) +
-          "&v=weekly&loading=async&callback=__terraMapsInit";
+          "&v=weekly&loading=async&callback=__terraMapsInit&language=" + encodeURIComponent(LANG);
         s.onerror = () => { window.__svErr = new Error("maps script failed to load"); resolve(false); };
         document.head.appendChild(s);
       });
@@ -2395,7 +2505,7 @@ const LOCATIONS = __LOCATIONS__;
         ? [{ panoId: d.pano, name: "", place: "" }]
         : [LOCATIONS[d.locIdx]]);
     } catch (err) {
-      if (/already played/.test(String(err.message))) showWeeklyBoard();
+      if (err.code === "already_played_week") showWeeklyBoard();
       else menuErr.textContent = String(err.message);
     }
   }
@@ -2426,14 +2536,15 @@ const LOCATIONS = __LOCATIONS__;
       ? { name: resp.loc.label || t("reveal.mystery"), place: "", lat: resp.loc.lat, lon: resp.loc.lon }
       : resp.locIdx != null ? LOCATIONS[resp.locIdx] : deck[round];
     actualPt = lonLatToMap(loc.lon, loc.lat);
-    results.push({ name: loc.name, km: resp.km, pts: resp.pts, away, gPt: hasPin ? guessPt.slice() : null, aPt: actualPt.slice() });
+    results.push({ name: locDisplay(loc).name, km: resp.km, pts: resp.pts, away, gPt: hasPin ? guessPt.slice() : null, aPt: actualPt.slice() });
     total = resp.total;
     showLine = hasPin;
     if (gmap) gmapReveal(hasPin ? [{ lat: glat, lng: glon, isMe: true }] : [], loc);
     else if (hasPin) fitBoth(guessPt, actualPt);
     else { drawMarkers(); flyToPoint(actualPt[0], actualPt[1], 3); }
-    revealName.textContent = loc.name;
-    revealPlace.textContent = loc.place;
+    const disp = locDisplay(loc);
+    revealName.textContent = disp.name;
+    revealPlace.textContent = disp.place;
     revealCard.classList.add("show");
     distReadout.textContent = (resp.km == null ? t("dist.nopinscored") : t("dist.landed", fmtKm(resp.km))) +
       (away >= 3000 ? t("dist.offtab", Math.round(away / 1000)) : "");
@@ -2555,7 +2666,7 @@ const LOCATIONS = __LOCATIONS__;
           : `code=${party.code}&playerId=${party.playerId}&token=${party.token}`;
         applyPartyState(await api(`state?${encodeURI(qs)}`));
       } catch (err) {
-        if (/not found|not in this room/.test(String(err.message))) backToMenu();
+        if (err.code === "room_not_found" || err.code === "not_in_room") backToMenu();
       }
     };
     tick();

@@ -4,6 +4,7 @@ const dir = __dirname;
 
 const LOCS = require('../shared/locations.js');
 const { DECKS } = require('../shared/decks.js');
+const LOC_I18N = require('../shared/locations.i18n.js');
 
 // Photos are served as static files from /photos (copy build/photos -> ../photos
 // after fetching); embedding them inline would put ~7MB of base64 in the page.
@@ -11,7 +12,14 @@ const locs = LOCS.map((l) => {
   if (!fs.existsSync(path.join(dir, '..', 'photos', l.k + '.jpg'))) {
     throw new Error(`missing photo for "${l.k}" — run build/build-photos.sh and copy build/photos -> photos`);
   }
-  return { name: l.name, place: l.place, lat: l.lat, lon: l.lon, img: '/photos/' + l.k + '.jpg' };
+  // Every language must cover every location, so a new place cannot ship
+  // half-translated with English leaking into a Spanish or Portuguese round.
+  const i18n = {};
+  for (const [lang, table] of Object.entries(LOC_I18N)) {
+    if (!table[l.k]) throw new Error(`missing ${lang} text for "${l.k}" — add it to shared/locations.i18n.js`);
+    i18n[lang] = table[l.k];
+  }
+  return { name: l.name, place: l.place, lat: l.lat, lon: l.lon, img: '/photos/' + l.k + '.jpg', i18n };
 });
 
 const mapData = fs.readFileSync(path.join(dir, 'map-data.js'), 'utf8');

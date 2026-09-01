@@ -5,7 +5,7 @@
 const crypto = require('crypto');
 const { getStore } = require('./_lib/store.js');
 const { getSql, ensureWeeklyTable } = require('./_lib/db.js');
-const { haversineKm, pointsFor, roundDetail, validDeckEntry, sendJSON, LOCATIONS } = require('./_lib/rooms.js');
+const { haversineKm, pointsFor, roundDetail, validDeckEntry, sendJSON, LOCATIONS, fail } = require('./_lib/rooms.js');
 const {
   WEEKLY_ROUNDS, WEEKLY_ROUND_SEC, isoWeek, weeklyDeck, weeklyMode, isTestName, groupPastWeeks,
 } = require('./_lib/weekly.js');
@@ -70,12 +70,12 @@ module.exports = async (req, res) => {
       const rows = await getSql()`
         SELECT week, player_name, score, rounds, played_at, detail
         FROM weekly_scores WHERE id = ${detailId}`;
-      if (!rows.length) return sendJSON(res, 404, { error: 'game not found' });
+      if (!rows.length) return fail(res, 404, 'game_not_found', 'game not found');
       const r = rows[0];
       // The board is public before you play, so a replay of the week in
       // progress would hand out its answers. Rounds unlock once it is over.
       if (r.week === week) {
-        return sendJSON(res, 403, { error: 'this week\'s rounds stay hidden until the week ends' });
+        return fail(res, 403, 'weekly_rounds_hidden', 'this week\'s rounds stay hidden until the week ends');
       }
       return sendJSON(res, 200, {
         name: r.player_name, score: r.score, rounds: r.rounds,
@@ -98,10 +98,10 @@ module.exports = async (req, res) => {
     return sendJSON(res, 200, out);
   }
 
-  if (req.method !== 'POST') return sendJSON(res, 405, { error: 'method not allowed' });
+  if (req.method !== 'POST') return fail(res, 405, 'method_not_allowed', 'method not allowed');
   const store = getStore();
   const name = cleanName(req.body?.name);
-  if (!name) return sendJSON(res, 400, { error: 'name required' });
+  if (!name) return fail(res, 400, 'name_required', 'name required');
 
   if (req.body?.action === 'start') {
     if (!(await rateLimit(req, res, 'weekly', 20, 600))) return;
@@ -110,7 +110,7 @@ module.exports = async (req, res) => {
       const existing = await getSql()`
         SELECT score FROM weekly_scores WHERE week = ${week} AND lower(player_name) = ${name.toLowerCase()} LIMIT 1`;
       if (existing.length) {
-        return sendJSON(res, 409, { error: 'already played this week', yourScore: existing[0].score });
+        return fail(res, 409, 'already_played_week', 'already played this week', { yourScore: existing[0].score });
       }
     }
     // random weeks play a stored panorama deck; the first player's browser
@@ -121,7 +121,7 @@ module.exports = async (req, res) => {
       if (!randomDeck) {
         if (req.body?.deck === undefined) return sendJSON(res, 200, { week, mode, needDeck: true });
         const submitted = validateRandomDeck(req.body.deck);
-        if (!submitted) return sendJSON(res, 400, { error: 'invalid weekly deck' });
+        if (!submitted) return fail(res, 400, 'invalid_weekly_deck', 'invalid weekly deck');
         await store.setJSONnx(randomDeckKey(week), submitted, RANDOM_DECK_TTL);
         randomDeck = await store.getJSON(randomDeckKey(week)); // a racer may have won
       }
@@ -146,13 +146,13 @@ module.exports = async (req, res) => {
 
   if (req.body?.action === 'guess') {
     const attempt = await store.getJSON(attemptKey(week, name));
-    if (!attempt || attempt.token !== req.body?.token) return sendJSON(res, 403, { error: 'no active attempt' });
-    if (attempt.roundIdx >= WEEKLY_ROUNDS) return sendJSON(res, 409, { error: 'attempt is finished' });
+    if (!attempt || attempt.token !== req.body?.token) return fail(res, 403, 'no_active_attempt', 'no active attempt');
+    if (attempt.roundIdx >= WEEKLY_ROUNDS) return fail(res, 409, 'attempt_finished', 'attempt is finished');
 
     let locIdx = null, randomDeck = null, loc;
     if (mode === 'random') {
       randomDeck = await store.getJSON(randomDeckKey(week));
-      if (!randomDeck) return sendJSON(res, 409, { error: 'this week\'s deck is missing' });
+      if (!randomDeck) return fail(res, 409, 'weekly_deck_missing', 'this week\'s deck is missing');
       loc = randomDeck[attempt.roundIdx];
     } else {
       locIdx = deck[attempt.roundIdx];
@@ -202,5 +202,5 @@ module.exports = async (req, res) => {
     return sendJSON(res, 200, out);
   }
 
-  sendJSON(res, 400, { error: 'unknown action' });
+  fail(res, 400, 'unknown_action', 'unknown action');
 };

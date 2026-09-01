@@ -3,7 +3,7 @@
 const { getStore } = require('./_lib/store.js');
 const {
   loadRoom, maybeAdvance, playersKey, guessesKey,
-  ROUNDS, ROUND_MS, sendJSON,
+  ROUNDS, ROUND_MS, sendJSON, fail
 } = require('./_lib/rooms.js');
 
 module.exports = async (req, res) => {
@@ -11,13 +11,13 @@ module.exports = async (req, res) => {
   const { playerId, token, hostToken } = req.query;
 
   let meta = await loadRoom(code);
-  if (!meta) return sendJSON(res, 404, { error: 'room not found' });
+  if (!meta) return fail(res, 404, 'room_not_found', 'room not found');
 
   const store = getStore();
   const players = await store.hgetallJSON(playersKey(code));
   const isHost = hostToken && hostToken === meta.hostToken;
   const isPlayer = playerId && players[playerId] && players[playerId].token === token;
-  if (!isHost && !isPlayer) return sendJSON(res, 403, { error: 'not in this room' });
+  if (!isHost && !isPlayer) return fail(res, 403, 'not_in_room', 'not in this room');
 
   meta = await maybeAdvance(meta);
 

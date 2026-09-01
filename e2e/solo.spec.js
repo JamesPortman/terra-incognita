@@ -295,3 +295,62 @@ test.describe('best-five scoring', () => {
     await expect(page.locator('#finalTable tr', { hasText: '(dropped)' })).toHaveCount(1);
   });
 });
+
+// No world-deck location has BOTH its name and its place identical in
+// Portuguese, so whichever five rounds get dealt, an English pair reaching the
+// reveal is a real failure rather than an unlucky draw. Individual halves do
+// coincide — "Petra" is "Petra" in both — so the pair is what gets asserted.
+const LOCATIONS = require('../shared/locations.js');
+const LOC_I18N = require('../shared/locations.i18n.js');
+const { DECK_KEYS } = require('../shared/decks.js');
+
+const worldKeys = new Set(DECK_KEYS.world);
+const worldLocs = LOCATIONS.filter((l) => worldKeys.has(l.k));
+const pair = (name, place) => `${name} | ${place}`;
+const ptPairs = new Set(worldLocs.map((l) => pair(...LOC_I18N.pt[l.k])));
+const enPairs = new Set(worldLocs.map((l) => pair(l.name, l.place)));
+
+test.describe('localized rounds', () => {
+  test('reveals places in the chosen language, never in English', async ({ page }) => {
+    await page.goto('/?plainmap=1');
+    await expect(page.locator('#menuSolo')).toBeVisible();
+    await page.locator('#langSelect').selectOption('pt');
+    await expect(page.locator('#menuSolo')).toHaveText('Jogar sozinho');
+    await expect(page.locator('#modeToggleRow')).toBeVisible();
+    await page.locator('#deckSelect').selectOption('world');
+    await page.locator('#svToggle').uncheck();
+    await page.locator('#menuSolo').click();
+
+    const seen = [];
+    for (let round = 1; round <= 5; round++) {
+      await expect(page.locator('#roundLabel')).toHaveText(`${round} / 5`);
+      await page.locator('#map').click();
+      await page.locator('#goBtn').click();
+      await expect(page.locator('#revealCard')).toBeVisible();
+
+      const name = await page.locator('#revealName').textContent();
+      const place = await page.locator('#revealPlace').textContent();
+      const shown = pair(name, place);
+      expect(enPairs.has(shown), `"${shown}" is still the English text`).toBe(false);
+      expect(ptPairs.has(shown), `"${shown}" is not a Portuguese location`).toBe(true);
+      seen.push(name);
+
+      await page.locator('#goBtn').click();
+    }
+
+    // the final table carries the same localized names through
+    await expect(page.locator('#finalScreen')).toBeVisible();
+    for (const name of seen) {
+      await expect(page.locator('#finalTable')).toContainText(name);
+    }
+  });
+
+  test('shows server errors in the chosen language', async ({ page }) => {
+    await page.goto('/?plainmap=1');
+    await page.locator('#langSelect').selectOption('es');
+    await page.locator('#joinName').fill('E2E-Lang');
+    await page.locator('#joinCode').fill('ZZZZ'); // a room that cannot exist
+    await page.locator('#menuJoin').click();
+    await expect(page.locator('#menuErr')).toHaveText('sala no encontrada');
+  });
+});

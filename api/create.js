@@ -1,17 +1,17 @@
 const crypto = require('crypto');
-const { newCode, newDeck, saveRoom, loadRoom, validDeckEntry, ROUNDS, ROUND_MS, sendJSON } = require('./_lib/rooms.js');
+const { newCode, newDeck, saveRoom, loadRoom, validDeckEntry, ROUNDS, ROUND_MS, sendJSON, fail } = require('./_lib/rooms.js');
 const { rateLimit } = require('./_lib/ratelimit.js');
 const { DECKS } = require('../shared/decks.js');
 
 module.exports = async (req, res) => {
-  if (req.method !== 'POST') return sendJSON(res, 405, { error: 'method not allowed' });
+  if (req.method !== 'POST') return fail(res, 405, 'method_not_allowed', 'method not allowed');
   if (!(await rateLimit(req, res, 'create', 20, 600))) return;
   let code = null;
   for (let tries = 0; tries < 5 && !code; tries++) {
     const c = newCode();
     if (!(await loadRoom(c))) code = c;
   }
-  if (!code) return sendJSON(res, 503, { error: 'could not allocate a room code — try again' });
+  if (!code) return fail(res, 503, 'room_code_unavailable', 'could not allocate a room code — try again');
   const roundSec = Math.min(300, Math.max(10, parseInt(req.body?.roundSec, 10) || 60));
   const rounds = Math.min(10, Math.max(1, parseInt(req.body?.rounds, 10) || 5));
 
@@ -22,12 +22,12 @@ module.exports = async (req, res) => {
   if (req.body?.deckType === 'random') {
     const raw = req.body?.deck;
     if (!Array.isArray(raw) || raw.length !== rounds) {
-      return sendJSON(res, 400, { error: 'random deck must have one location per round' });
+      return fail(res, 400, 'random_deck_size', 'random deck must have one location per round');
     }
     customDeck = [];
     for (const d of raw) {
       const entry = validDeckEntry(d);
-      if (!entry) return sendJSON(res, 400, { error: 'invalid deck entry' });
+      if (!entry) return fail(res, 400, 'invalid_deck_entry', 'invalid deck entry');
       customDeck.push(entry);
     }
   }

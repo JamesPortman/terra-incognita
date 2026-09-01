@@ -247,9 +247,13 @@
     <p class="lede">
       The client is one HTML file with everything embedded — country polygons,
       photos, gazetteer. Solo games never touch the network; live rooms poll a
-      small JSON API every 1.5&nbsp;s. The interface localizes to English,
-      Spanish, and Portuguese (a menu dropdown, persisted per browser);
-      place names, stored deck labels, and server messages stay in English.
+      small JSON API every 1.5&nbsp;s. English, Spanish and Portuguese are
+      chosen from a menu dropdown and persisted per browser &mdash; interface,
+      the 202 curated place names, and API errors all follow. Errors localize on
+      a stable code the server sends beside its English text, so an older client
+      still shows something sensible. Random-world labels come from Google in
+      the chosen language; deck labels are stored in English and translated at
+      render, keeping the leaderboard filter a byte match.
     </p>
     <div class="diagram">
       <svg viewBox="0 0 760 470" role="img" aria-label="Runtime layers: browser client, Vercel functions, Redis, Neon, and Google Maps">
@@ -584,13 +588,14 @@ api/
 photos/                     202 famous-place photos, served statically
 shared/locations.js         202 locations — client decks + server answer key (append-only)
 shared/decks.js             world / na / sa / us / br deck pools + display labels
+shared/locations.i18n.js    es/pt name + place for all 202 (build fails if one is missing)
 build/
   game-template.html        client source (edit this, not index.html)
   assemble.js               embeds map + decks + gazetteer, stamps build id -> index.html
   build-map.js              GeoJSON -> compact SVG paths
   build-photos.sh           Wikipedia lead images -> photos/&lt;key&gt;.jpg (idempotent)
   build-search.js           GeoNames -> offline search index (cities · regions · countries)
-__tests__/                  vitest: scoring, store contract, API handlers, decks, weekly, solo
+__tests__/                  vitest: scoring, store contract, API handlers, decks, weekly, solo, i18n
 e2e/                        playwright: menu · solo · search · live room · weekly · gmap
 .github/workflows/ci.yml    test gate + production deploy</pre>
   </section>
