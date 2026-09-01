@@ -1666,7 +1666,7 @@ const LOCATIONS = __LOCATIONS__;
     const loc = deck[round];
     presentLocation(loc, soloStreet);
     const upNext = deck[round + 1];
-    if (upNext && upNext.img) { new Image().src = upNext.img; } // warm the next photo
+    if (upNext && upNext.img) { new Image().src = BASE + upNext.img; } // warm the next photo
     roundLabel.textContent = `${round + 1} / ${ROUNDS}`;
     revealCard.classList.remove("show");
     distReadout.textContent = "";
@@ -2074,7 +2074,7 @@ const LOCATIONS = __LOCATIONS__;
     }
     if (seq !== presentSeq) return;
     showPanoView(false);
-    photo.src = loc.img;
+    photo.src = BASE + loc.img; // baked in as /photos/... at build time
   }
 
   // Random-world decks: jitter around gazetteer cities (guaranteed coverage
@@ -2806,10 +2806,13 @@ const LOCATIONS = __LOCATIONS__;
       if (!soloAvailable) $("lbSoloToggle").checked = false;
       const solo = $("lbSoloToggle").checked; // group games are the default board
       $("lbSoloNote").style.display = solo ? "" : "none";
-      const params = new URLSearchParams();
-      if (deck) params.set("deck", deck);
-      if (solo) params.set("source", "solo");
-      const qs = params.toString();
+      // encodeURIComponent, not URLSearchParams: the latter encodes spaces as
+      // "+", which `vercel dev` does not decode back (production does), so the
+      // deck filter would silently return nothing in local development
+      const parts = [];
+      if (deck) parts.push("deck=" + encodeURIComponent(deck));
+      if (solo) parts.push("source=solo");
+      const qs = parts.join("&");
       const lb = await api("leaderboard" + (qs ? "?" + qs : ""));
       lastHallTop = lb.top;
       const medals = ["🥇", "🥈", "🥉"];

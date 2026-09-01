@@ -140,6 +140,12 @@ test.describe('recorded solo game (random world only)', () => {
     await expect(page.locator('#lbSoloNote')).toBeHidden();
     await expect(page.locator('#lbTable')).not.toContainText('E2E-SoloRec');
     await expect(page.locator('#lbPodium')).not.toContainText('E2E-SoloRec');
+    // what the API has for this deck is what the board must show — catches the
+    // query-encoding mismatch that made the filter return nothing locally
+    const api = await page.request.get('/api/leaderboard?deck=' + encodeURIComponent('Random world (Street View)'));
+    if ((await api.json()).top.length) {
+      await expect(page.locator('#lbPodium .pod').first()).toBeVisible();
+    }
     // the solo board announces avg-per-round scoring and is clean of test agents
     await page.locator('#lbSoloToggle').check();
     await expect(page.locator('#lbSoloNote')).toBeVisible();
