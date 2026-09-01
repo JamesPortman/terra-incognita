@@ -79,6 +79,45 @@ test.describe('menu', () => {
     await expect(page.locator('#menuErr')).toHaveText(/room not found/);
   });
 
+// A centred flex scroll container pushes overflow off the TOP, where scrollTop
+  // cannot reach it — the menu title and the weekly kicker were being cut in half
+  // and could not be scrolled back into view on a short window.
+  test('short windows can still reach the top of every panel', async ({ page }) => {
+    await page.setViewportSize({ width: 1400, height: 480 });
+    await page.goto('/');
+
+    const geometry = () => page.evaluate(() => {
+      const m = document.querySelector('.modal.show');
+      const s = m.querySelector('.sheet');
+      m.scrollTop = -9999; // ask for the very top
+      const mr = m.getBoundingClientRect(), sr = s.getBoundingClientRect();
+      return { id: m.id, hiddenAbove: Math.round(mr.top - sr.top), taller: sr.height > mr.height };
+    });
+
+    const menu = await geometry();
+    expect(menu.taller, 'viewport is too tall to exercise the overflow').toBe(true);
+    expect(menu.hiddenAbove, `${menu.id} hides its top`).toBeLessThanOrEqual(0);
+    await expect(page.locator('#menuScreen h2')).toBeInViewport();
+
+    // the weekly board is the tallest panel: kicker, table, past weeks, buttons
+    await page.locator('#menuWeeklyBoard').click();
+    await expect(page.locator('#weeklyScreen')).toBeVisible();
+    const weekly = await geometry();
+    expect(weekly.hiddenAbove, `${weekly.id} hides its top`).toBeLessThanOrEqual(0);
+    await expect(page.locator('#weeklyKicker')).toBeInViewport();
+
+    // and a tall window must still centre the sheet, not top-align it
+    await page.setViewportSize({ width: 1400, height: 1100 });
+    await page.goto('/');
+    const gaps = await page.evaluate(() => {
+      const m = document.querySelector('.modal.show');
+      const mr = m.getBoundingClientRect(), sr = m.querySelector('.sheet').getBoundingClientRect();
+      return { above: sr.top - mr.top, below: mr.bottom - sr.bottom };
+    });
+    expect(gaps.above).toBeGreaterThan(10);
+    expect(Math.abs(gaps.above - gaps.below)).toBeLessThanOrEqual(2);
+  });
+
   test('join link prefills the room code', async ({ page }) => {
     await page.goto('/?join=ABCD');
     await expect(page.locator('#joinCode')).toHaveValue('ABCD');

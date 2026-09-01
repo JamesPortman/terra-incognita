@@ -421,14 +421,19 @@
     inset: 0;
     background: var(--ink);
     display: none;
-    align-items: center;
+    /* Centering a scroll container with align-items pushes overflow off the TOP
+       when the sheet is taller than the window — and scrollTop can't go below 0,
+       so that part is unreachable, not merely clipped. Auto margins on the sheet
+       only ever absorb POSITIVE free space, so it centres in a tall window and
+       falls back to a normal top-aligned scroll in a short one. */
+    align-items: flex-start;
     justify-content: center;
     padding: 24px;
     overflow-y: auto;
     z-index: 40;
   }
   .modal.show { display: flex; }
-  .modal .sheet { max-width: 420px; width: 100%; text-align: center; }
+  .modal .sheet { max-width: 420px; width: 100%; margin: auto; text-align: center; }
   .modal .kicker {
     font-size: 0.72rem;
     letter-spacing: 0.22em;
