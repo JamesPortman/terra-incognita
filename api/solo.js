@@ -9,7 +9,7 @@
 const crypto = require('crypto');
 const { getStore } = require('./_lib/store.js');
 const { getSql, ensureTable } = require('./_lib/db.js');
-const { haversineKm, pointsFor, bestFiveTotal, roundDetail, sendJSON } = require('./_lib/rooms.js');
+const { haversineKm, pointsFor, bestFiveTotal, roundDetail, validDeckEntry, sendJSON } = require('./_lib/rooms.js');
 const { isTestName } = require('./_lib/weekly.js');
 const { hallTop } = require('./_lib/hall.js');
 const { rateLimit } = require('./_lib/ratelimit.js');
@@ -52,16 +52,9 @@ module.exports = async (req, res) => {
     // same validation as random-room hosting in create.js
     const customDeck = [];
     for (const d of raw) {
-      const lat = Number(d?.lat), lon = Number(d?.lon);
-      const panoId = String(d?.panoId || '').slice(0, 64);
-      if (!Number.isFinite(lat) || !Number.isFinite(lon) ||
-          Math.abs(lat) > 90 || Math.abs(lon) > 180 || !/^[\w-]+$/.test(panoId)) {
-        return sendJSON(res, 400, { error: 'invalid deck entry' });
-      }
-      customDeck.push({
-        lat, lon, panoId,
-        label: String(d?.label || '').slice(0, 80).replace(/[<>&"']/g, ''),
-      });
+      const entry = validDeckEntry(d);
+      if (!entry) return sendJSON(res, 400, { error: 'invalid deck entry' });
+      customDeck.push(entry);
     }
     const roundSec = Math.min(300, Math.max(10, parseInt(req.body?.roundSec, 10) || 60));
     const attempt = {

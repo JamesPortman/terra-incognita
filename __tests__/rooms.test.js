@@ -4,6 +4,36 @@ import LOCATIONS from '../shared/locations.js';
 
 const { haversineKm, pointsFor, newCode, newDeck, bestFiveTotal, roundDetail, ROUNDS } = rooms;
 
+describe('validDeckEntry', () => {
+  const { validDeckEntry } = rooms;
+  const ok = { lat: 10, lon: 20, panoId: 'pXAGo-RkIFPbbUUTtJ5J8Q', label: 'A place' };
+
+  it('accepts a normal panorama id', () => {
+    expect(validDeckEntry(ok)).toEqual(ok);
+  });
+
+  it('accepts the dot-padded ids Google gives user photospheres', () => {
+    // this exact shape was silently rejected, dropping recorded games to casual
+    const dotted = { ...ok, panoId: 'CAoSFkNJSE0wb2dLRUlDQWdJQ2tzT2VPUGc.' };
+    expect(validDeckEntry(dotted)).toMatchObject({ panoId: 'CAoSFkNJSE0wb2dLRUlDQWdJQ2tzT2VPUGc.' });
+    expect(validDeckEntry({ ...ok, panoId: 'CAoSF0NJSE0wb2dLRUlDQWdJRHFuY1RCcWdF' })).toBeTruthy();
+  });
+
+  it('rejects junk coordinates and malformed ids', () => {
+    expect(validDeckEntry({ ...ok, lat: 91 })).toBeNull();
+    expect(validDeckEntry({ ...ok, lon: 181 })).toBeNull();
+    expect(validDeckEntry({ ...ok, lat: 'x' })).toBeNull();
+    expect(validDeckEntry({ ...ok, panoId: '' })).toBeNull();
+    expect(validDeckEntry({ ...ok, panoId: 'has spaces' })).toBeNull();
+    expect(validDeckEntry({ ...ok, panoId: '<script>' })).toBeNull();
+    expect(validDeckEntry(undefined)).toBeNull();
+  });
+
+  it('strips markup from the label', () => {
+    expect(validDeckEntry({ ...ok, label: '<b>x</b>' }).label).toBe('bx/b');
+  });
+});
+
 describe('roundDetail', () => {
   const loc = { name: 'Eiffel Tower', lat: 48.8584, lon: 2.2945 };
 

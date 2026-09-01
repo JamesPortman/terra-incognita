@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-const { newCode, newDeck, saveRoom, loadRoom, ROUNDS, ROUND_MS, sendJSON } = require('./_lib/rooms.js');
+const { newCode, newDeck, saveRoom, loadRoom, validDeckEntry, ROUNDS, ROUND_MS, sendJSON } = require('./_lib/rooms.js');
 const { rateLimit } = require('./_lib/ratelimit.js');
 const { DECKS } = require('../shared/decks.js');
 
@@ -26,16 +26,9 @@ module.exports = async (req, res) => {
     }
     customDeck = [];
     for (const d of raw) {
-      const lat = Number(d?.lat), lon = Number(d?.lon);
-      const panoId = String(d?.panoId || '').slice(0, 64);
-      if (!Number.isFinite(lat) || !Number.isFinite(lon) ||
-          Math.abs(lat) > 90 || Math.abs(lon) > 180 || !/^[\w-]+$/.test(panoId)) {
-        return sendJSON(res, 400, { error: 'invalid deck entry' });
-      }
-      customDeck.push({
-        lat, lon, panoId,
-        label: String(d?.label || '').slice(0, 80).replace(/[<>&"']/g, ''),
-      });
+      const entry = validDeckEntry(d);
+      if (!entry) return sendJSON(res, 400, { error: 'invalid deck entry' });
+      customDeck.push(entry);
     }
   }
 

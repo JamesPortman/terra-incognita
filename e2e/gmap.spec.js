@@ -1,5 +1,15 @@
 const { test, expect } = require('@playwright/test');
 
+// The Google map occasionally swallows a click while its tiles engine is still
+// initializing, so a single click is not a reliable way to place a pin. Retry
+// until one registers — which is what a real player would do.
+async function pinOnGoogleMap(page, position = { x: 210, y: 150 }) {
+  await expect(async () => {
+    await page.locator('#gmap').click({ position });
+    await expect(page.locator('#goBtn')).toHaveText(/Make guess/i, { timeout: 3000 });
+  }).toPass({ timeout: 25_000 });
+}
+
 // The one spec that exercises the real Google guess map (network-dependent).
 // Everything else runs with ?plainmap=1 for determinism.
 test.describe('google guess map', () => {
@@ -16,8 +26,7 @@ test.describe('google guess map', () => {
     await expect(page.locator('#roundLabel')).toHaveText('1 / 5');
 
     // click the Google map to drop a pin, then guess
-    await page.locator('#gmap').click({ position: { x: 200, y: 150 } });
-    await expect(page.locator('#goBtn')).toHaveText(/Make guess/i, { timeout: 10_000 });
+    await pinOnGoogleMap(page, { x: 200, y: 150 });
     await page.locator('#goBtn').click();
     await expect(page.locator('#distReadout')).toHaveText(/your pin landed/);
     await expect(page.locator('#ptsReadout')).toHaveText(/\+[\d,]+ pts/);
@@ -34,8 +43,9 @@ test.describe('google guess map', () => {
     await page.locator('#menuSolo').click();
     await expect(page.locator('#roundLabel')).toHaveText('1 / 2', { timeout: 45_000 });
     for (let round = 1; round <= 2; round++) {
-      await page.locator('#gmap').click({ position: { x: 210, y: 150 } });
-      await expect(page.locator('#goBtn')).toHaveText(/Make guess/i, { timeout: 10_000 });
+      // wait for the round to be ready before pinning, like the other specs
+      await expect(page.locator('#panobox')).toHaveClass(/active/, { timeout: 20_000 });
+      await pinOnGoogleMap(page, { x: 210, y: 150 });
       await page.locator('#goBtn').click();
       await expect(page.locator('#distReadout')).toHaveText(/your pin landed/);
       await page.locator('#goBtn').click();
@@ -59,8 +69,7 @@ test.describe('google guess map', () => {
     await expect(page.locator('#roundLabel')).toHaveText('1 / 5', { timeout: 60_000 });
     for (let round = 1; round <= 5; round++) {
       await expect(page.locator('#panobox')).toHaveClass(/active/, { timeout: 20_000 });
-      await page.locator('#gmap').click({ position: { x: 210, y: 150 } });
-      await expect(page.locator('#goBtn')).toHaveText(/Make guess/i, { timeout: 10_000 });
+      await pinOnGoogleMap(page, { x: 210, y: 150 });
       await page.locator('#goBtn').click();
       await expect(page.locator('#distReadout')).toHaveText(/your pin landed/);
       await page.locator('#goBtn').click();
@@ -79,8 +88,7 @@ test.describe('google guess map', () => {
     // deck resolution can take a few seconds of metadata lookups
     await expect(page.locator('#roundLabel')).toHaveText('1 / 1', { timeout: 45_000 });
     await expect(page.locator('#panobox')).toHaveClass(/active/, { timeout: 20_000 });
-    await page.locator('#gmap').click({ position: { x: 220, y: 160 } });
-    await expect(page.locator('#goBtn')).toHaveText(/Make guess/i, { timeout: 10_000 });
+    await pinOnGoogleMap(page, { x: 220, y: 160 });
     await page.locator('#goBtn').click();
     await expect(page.locator('#distReadout')).toHaveText(/your pin landed/);
     // reveal names the spot (metadata description or gazetteer city)

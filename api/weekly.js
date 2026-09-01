@@ -5,7 +5,7 @@
 const crypto = require('crypto');
 const { getStore } = require('./_lib/store.js');
 const { getSql, ensureWeeklyTable } = require('./_lib/db.js');
-const { haversineKm, pointsFor, roundDetail, sendJSON, LOCATIONS } = require('./_lib/rooms.js');
+const { haversineKm, pointsFor, roundDetail, validDeckEntry, sendJSON, LOCATIONS } = require('./_lib/rooms.js');
 const {
   WEEKLY_ROUNDS, WEEKLY_ROUND_SEC, isoWeek, weeklyDeck, weeklyMode, isTestName, groupPastWeeks,
 } = require('./_lib/weekly.js');
@@ -22,16 +22,9 @@ function validateRandomDeck(raw) {
   if (!Array.isArray(raw) || raw.length !== WEEKLY_ROUNDS) return null;
   const deck = [];
   for (const d of raw) {
-    const lat = Number(d?.lat), lon = Number(d?.lon);
-    const panoId = String(d?.panoId || '').slice(0, 64);
-    if (!Number.isFinite(lat) || !Number.isFinite(lon) ||
-        Math.abs(lat) > 90 || Math.abs(lon) > 180 || !/^[\w-]+$/.test(panoId)) {
-      return null;
-    }
-    deck.push({
-      lat, lon, panoId,
-      label: String(d?.label || '').slice(0, 80).replace(/[<>&"']/g, ''),
-    });
+    const entry = validDeckEntry(d);
+    if (!entry) return null;
+    deck.push(entry);
   }
   return deck;
 }

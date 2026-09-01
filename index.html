@@ -829,7 +829,7 @@
         <option value="" data-i18n="deck.all">All decks</option>
         <option value="Brazil &mdash; Famous Places" data-i18n="deck.br">Brazil &mdash; Famous Places</option>
         <option value="North America &mdash; Famous Places" data-i18n="deck.na">North America &mdash; Famous Places</option>
-        <option value="Random world (Street View)" data-i18n="deck.random">Random world (Street View)</option>
+        <option value="Random world (Street View)" selected data-i18n="deck.random">Random world (Street View)</option>
         <option value="South America &mdash; Famous Places" data-i18n="deck.sa">South America &mdash; Famous Places</option>
         <option value="USA &mdash; Famous Places" data-i18n="deck.us">USA &mdash; Famous Places</option>
         <option value="World &mdash; Famous Places" data-i18n="deck.world">World &mdash; Famous Places</option>
@@ -3042,7 +3042,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
   $("finalMenuBtn").addEventListener("click", backToMenu);
 
   // ---- stale-tab update banner ----
-  const BUILD_ID = "20260831211338";
+  const BUILD_ID = "20260901003142";
   let updateAvailable = false;
   function maybeShowUpdate() {
     // suppress only during an active round; the menu (mode null) is always safe

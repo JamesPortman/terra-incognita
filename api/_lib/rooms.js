@@ -51,8 +51,21 @@ async function saveRoom(meta) {
   await getStore().setJSON(metaKey(meta.code), meta, TTL_SEC);
 }
 
-// Lazy transition: flip question -> reveal when time is up or everyone answered.
-// Called from every state read; benign if two polls race (same outcome).
+// Street View pano ids are opaque base64-ish tokens: letters, digits, and
+// - _ . — Google pads user photosphere ids with a trailing dot, so a stricter
+// pattern silently rejects real panoramas. Returns null when the entry is junk.
+const PANO_ID = /^[\w.-]{1,128}$/;
+function validDeckEntry(d) {
+  const lat = Number(d?.lat), lon = Number(d?.lon);
+  const panoId = String(d?.panoId || '');
+  if (!Number.isFinite(lat) || !Number.isFinite(lon) ||
+      Math.abs(lat) > 90 || Math.abs(lon) > 180 || !PANO_ID.test(panoId)) return null;
+  return {
+    lat, lon, panoId,
+    label: String(d?.label || '').slice(0, 80).replace(/[<>&"']/g, ''),
+  };
+}
+
 // One finished round, shaped for the map replay stored on a leaderboard row.
 // `loc` is a LOCATIONS entry or a custom-deck entry; `g` is the stored guess
 // (absent when the player never pinned).
@@ -69,6 +82,8 @@ function roundDetail(loc, g) {
   };
 }
 
+// Lazy transition: flip question -> reveal when time is up or everyone answered.
+// Called from every state read; benign if two polls race (same outcome).
 async function maybeAdvance(meta) {
   if (meta.state !== 'question') return meta;
   const store = getStore();
@@ -93,6 +108,6 @@ function sendJSON(res, status, body) {
 module.exports = {
   ROUNDS, ROUND_MS, GRACE_MS, MAX_PLAYERS, TTL_SEC, LOCATIONS,
   metaKey, playersKey, guessesKey,
-  newCode, newDeck, haversineKm, pointsFor, bestFiveTotal, roundDetail,
+  newCode, newDeck, haversineKm, pointsFor, bestFiveTotal, roundDetail, validDeckEntry,
   loadRoom, saveRoom, maybeAdvance, sendJSON,
 };
