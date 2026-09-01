@@ -51,6 +51,16 @@ npm run test:e2e  # Playwright E2E (starts `vercel dev` on :3300 automatically)
   nothing behind. Most specs run with `?plainmap=1` (SVG guess map) for
   determinism; one spec exercises the real Google map. Street View stays off
   in E2E so tests don't consume Google quota.
+- **The E2E suite needs the deployment env vars; the unit tests do not.** In a
+  clone with none of them set, most specs fail on missing config rather than on
+  anything being broken, so check these before chasing a red run:
+  - `GOOGLE_MAPS_KEY` — without it `/api/config` serves `mapsKey: null`, and the
+    client then hides the Street View toggle and the random-world deck and falls
+    back to `na`, failing the menu and solo specs on the deck default.
+  - `DATABASE_URL` — `/api/weekly` and `/api/leaderboard` throw `DATABASE_URL is
+    not set`, failing the weekly and Hall specs.
+  - `ADMIN_TOKEN` — `/api/admin` fails closed with 503 `admin_not_configured`,
+    so the spec asserting a 403 on a wrong token fails.
 
 Admin: the leaderboard screen has an Admin section (token in `ADMIN_TOKEN`,
 see `.env.local`) that can clear the all-time leaderboard via `/api/admin`.
