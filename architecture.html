@@ -196,7 +196,7 @@
       ISO week — famous places make an occasional change of pace — with one
       server-scored attempt per name and its own weekly board, kept alongside
       every past week's results.
-      The client is one ~0.9&#8201;MB HTML file served by Vercel, with a thin
+      The client is one ~1&#8201;MB HTML file served by Vercel, with a thin
       set of serverless functions
       adding Kahoot-style live rooms for up to 14 players (room state in
       Upstash Redis, expiring automatically), between-round standings, and a
@@ -264,7 +264,7 @@
         </defs>
         <!-- Browser layer -->
         <rect x="20" y="10" width="720" height="108" rx="10" fill="#7fa8d0" fill-opacity="0.10" stroke="#7fa8d0" stroke-width="1.5"/>
-        <text x="40" y="36" font-size="15" font-weight="700" fill="#7fa8d0">Browser — index.html (~0.9&#8201;MB, gzipped in transit) + /photos static files</text>
+        <text x="40" y="36" font-size="15" font-weight="700" fill="#7fa8d0">Browser — index.html (~1&#8201;MB, gzipped in transit) + /photos static files</text>
         <text x="40" y="58" font-size="12" fill="currentColor" fill-opacity="0.85">Google guess map (dark-styled, full labels) · SVG atlas fallback + results map · five 50-place famous decks (static photos) · gazetteer</text>
         <text x="40" y="76" font-size="12" fill="currentColor" fill-opacity="0.85">Street View panorama · random-deck resolver (free metadata) · solo engine · party polling loop (1.5&#8201;s)</text>
         <text x="40" y="94" font-size="12" fill="currentColor" fill-opacity="0.85">WebAudio sfx (ticks, stings, fanfare; muteable) · count-up + confetti theatrics · EN/ES/PT interface · sessionStorage per tab</text>
@@ -341,9 +341,9 @@
         <text x="449" y="82" font-size="10.5" fill="currentColor" fill-opacity="0.7" text-anchor="middle">all answered ·</text>
         <text x="449" y="95" font-size="10.5" fill="currentColor" fill-opacity="0.7" text-anchor="middle">time up · host ends</text>
         <path d="M 496 60 C 460 20, 400 20, 340 60" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#ar2)"/>
-        <text x="418" y="30" font-size="10.5" fill="currentColor" fill-opacity="0.7" text-anchor="middle">host: next round (&#215;4)</text>
+        <text x="418" y="30" font-size="10.5" fill="currentColor" fill-opacity="0.7" text-anchor="middle">host: next round (&#215; rounds &#8722; 1)</text>
         <line x1="620" y1="134" x2="660" y2="160" stroke="currentColor" stroke-width="1.5" marker-end="url(#ar2)"/>
-        <text x="590" y="156" font-size="10.5" fill="currentColor" fill-opacity="0.7" text-anchor="end">after round 5 —</text>
+        <text x="590" y="156" font-size="10.5" fill="currentColor" fill-opacity="0.7" text-anchor="end">after the last round —</text>
         <text x="590" y="169" font-size="10.5" fill="currentColor" fill-opacity="0.7" text-anchor="end">writes leaderboard once</text>
       </svg>
     </div>
@@ -355,9 +355,9 @@
       <div class="card">
         <h3 style="color:var(--red)">Redis — ephemeral room state</h3>
         <table class="plain keys">
-          <tr><td>room:CODE</td><td>meta JSON: state, mode, rounds, roundIdx, roundStartAt, roundMs, deck, customDeck (random-world panos), hostToken, savedToLb</td></tr>
+          <tr><td>room:CODE</td><td>meta JSON: state, mode, rounds, roundIdx, roundStartAt, roundMs, deckId, deck, customDeck (random-world panos), hostToken, savedToLb</td></tr>
           <tr><td>room:CODE:players</td><td>hash <code>playerId &#8594; {name, token, score}</code> — per-field writes, no races</td></tr>
-          <tr><td>room:CODE:g:N</td><td>hash <code>playerId &#8594; {lat, lon, km, pts, ms}</code> — written once via <code>HSETNX</code></td></tr>
+          <tr><td>room:CODE:g:N</td><td>hash <code>playerId &#8594; {lat, lon, km, pts, ms, awayMs}</code> — written once via <code>HSETNX</code></td></tr>
         </table>
         <p style="margin-top:10px">The SDK serializes JSON itself — values are stored as plain
         objects (<code>api/_lib/store.js</code>). A file-based store with the same interface
@@ -394,7 +394,7 @@
         <h3>Host creates a room</h3>
         <ol>
           <li><code>POST /api/create</code> with mode, rounds (1–10), and round seconds (clamped 10–300).</li>
-          <li>Famous decks (North America / World / South America / USA): server samples the chosen pool (<code>shared/decks.js</code>). Random world: the host's browser resolves random panoramas (city-jittered, free metadata lookups) and submits a validated deck; questions carry only the pano id — coordinates appear at reveal.</li>
+          <li>Famous decks (Brazil / North America / World / South America / USA): server samples the chosen pool (<code>shared/decks.js</code>). Random world: the host's browser resolves random panoramas (city-jittered, free metadata lookups) and submits a validated deck; questions carry only the pano id — coordinates appear at reveal.</li>
           <li>Host screen shows the 4-letter code; players join at the site or via <code>/?join=CODE</code>.</li>
         </ol>
       </div>
@@ -420,7 +420,7 @@
           <li><code>/api/config</code> supplies the referrer-locked Maps key; the Maps script loads once, on demand.</li>
           <li>Each round asks <code>StreetViewService</code> for the nearest outdoor panorama within 1.5&nbsp;km.</li>
           <li>No coverage → the round silently falls back to the embedded photo. Labels, addresses, and dates are hidden.</li>
-          <li>Random world: the resolver jitters around one of 3,057 gazetteer cities and snaps to the nearest pano within 5&nbsp;km — coverage-biased without any extra data.</li>
+          <li>Random world: the resolver jitters around one of ~12.4k gazetteer cities and snaps to the nearest pano within 5&nbsp;km — coverage-biased without any extra data. Each deck uses a city at most once and spreads across countries first, dropping that constraint only if coverage is too thin to fill the deck.</li>
         </ol>
       </div>
     </div>
@@ -469,8 +469,8 @@
         <ul>
           <li>All scoring is server-side (haversine + exponential decay); coordinates are validated before scoring.</li>
           <li>State responses omit scores and answers during open questions; random-world rounds send only a pano id, coordinates at reveal.</li>
-          <li>The weekly deck is revealed one round per guess — the console can't preview upcoming locations. Designated weeks play Random world instead of famous places: the first player's browser resolves the panoramas and the server stores them first-write-wins for the whole week, sending pano ids only and coordinates at reveal.</li>
-          <li>Solo games recorded to the Hall are <em>Random world only</em>: the client resolves and submits the deck (the same trust model as hosting a random room — the submitting browser knows its own deck), and the server validates it, enforces timing and no-rewrites, scores every guess, and writes the row as <code>room_code 'SOLO'</code>. The solo board appears only under the Random world deck filter and scores by <em>average points per counted round</em>, since solo games vary in length (1–10 rounds, best five counted); group games are the default Hall view. Famous-deck solo is casual and never recorded — 50 memorizable places make it a memory test, not a navigation one.</li>
+          <li>The weekly deck is revealed one round per guess — the console can't preview upcoming locations. Designated weeks play Random world instead of famous places: the first player's browser resolves the panoramas and the server stores them first-write-wins for the whole week, sending pano ids only and coordinates at reveal. Replays of the current week's attempts are refused (403) until the week ends; past weeks open freely.</li>
+          <li>Solo games recorded to the Hall are <em>Random world only</em>: the client resolves and submits the deck (the same trust model as hosting a random room — the submitting browser knows its own deck), and the server validates it, enforces timing and no-rewrites, scores every guess, and writes the row as <code>room_code 'SOLO'</code>. The solo board appears only under the Random world deck filter and scores by <em>average points per counted round</em>, since solo games vary in length (1–10 rounds, best five counted); group games are the default Hall view, which opens on the Random world filter. Famous-deck solo is casual and never recorded — 50 memorizable places make it a memory test, not a navigation one.</li>
           <li>Round timing is enforced server-side (late guesses score zero, small grace window) and a first guess is final (<code>HSETNX</code>).</li>
           <li>Time spent off the tab mid-round shows as a social &#128064; badge — solo reveals and the final table, live-room reveals, weekly boards. Informational, never punitive; values are clamped server-side.</li>
         </ul>
@@ -507,12 +507,12 @@
   <section>
     <h2>7 · Build pipeline (assets)</h2>
     <ul class="notes">
-      <li><code>build/game-template.html</code> is the source of truth; <code>build/assemble.js</code> injects data and writes <code>index.html</code>.</li>
+      <li><code>build/game-template.html</code> is the source of truth; <code>build/assemble.js</code> injects data, writes <code>build/terra-incognita.html</code> and stamps <code>version.txt</code>; that file is copied over <code>index.html</code>.</li>
       <li>World map: Natural-Earth-derived GeoJSON &#8594; simplified SVG paths (~110&#8201;KB, 179 countries) by <code>build/build-map.js</code>.</li>
       <li>Photos: Wikipedia lead images, downscaled by <code>build/build-photos.sh</code> (idempotent) and served statically from <code>/photos</code>.</li>
       <li>Search gazetteer: GeoNames cities &#8805;50k (~12.4k), admin-1 regions (~2.8k, boxes derived from member cities) + country bounding boxes (~700&#8201;KB; country names indexed once) by <code>build/build-search.js</code>. Sources re-downloaded, never committed.</li>
       <li>Locations live once in <code>shared/locations.js</code> — embedded into the client <em>and</em> imported by the scoring API; order is the contract.</li>
-      <li>Rebuild = <code>node build/assemble.js</code>, prepend doctype, commit.</li>
+      <li>Rebuild = <code>node build/assemble.js &amp;&amp; cp build/terra-incognita.html index.html</code>, commit.</li>
     </ul>
   </section>
 
@@ -528,7 +528,7 @@
       <code>www.portman.ca/terra-incognita/</code>, which proxies it as a subpath.
       The client reads the prefix off <code>location.pathname</code> into
       <code>BASE</code> and prepends it to every <code>/api/</code> and
-      <code>/version.txt</code> request, so one build serves both with no
+      <code>/version.txt</code> request and every <code>/photos/</code> URL (baked in root-relative at build time), so one build serves both with no
       environment flag. <code>e2e/subpath.spec.js</code> stands up a local stand-in
       for that proxy and holds both forms honest.
     </p>
@@ -547,7 +547,7 @@
         <text x="216" y="50" font-size="14" font-weight="700" fill="#d9a441">Actions · test</text>
         <text x="216" y="70" font-size="11" fill="currentColor" fill-opacity="0.85">vitest + coverage floor</text>
         <text x="216" y="86" font-size="11" fill="currentColor" fill-opacity="0.85">playwright vs vercel dev</text>
-        <text x="216" y="102" font-size="11" fill="currentColor" fill-opacity="0.85">(11 E2E, real Redis)</text>
+        <text x="216" y="102" font-size="11" fill="currentColor" fill-opacity="0.85">(40 E2E, real Redis)</text>
         <rect x="422" y="24" width="160" height="92" rx="10" fill="#e2574c" fill-opacity="0.12" stroke="#e2574c" stroke-width="1.5"/>
         <text x="438" y="50" font-size="14" font-weight="700" fill="#e2574c">Actions · deploy</text>
         <text x="438" y="70" font-size="11" fill="currentColor" fill-opacity="0.85">main only, needs: test</text>
@@ -591,12 +591,12 @@ shared/decks.js             world / na / sa / us / br deck pools + display label
 shared/locations.i18n.js    es/pt name + place for all 202 (build fails if one is missing)
 build/
   game-template.html        client source (edit this, not index.html)
-  assemble.js               embeds map + decks + gazetteer, stamps build id -> index.html
+  assemble.js               embeds map + decks + gazetteer, stamps build id -> build/terra-incognita.html
   build-map.js              GeoJSON -> compact SVG paths
   build-photos.sh           Wikipedia lead images -> photos/&lt;key&gt;.jpg (idempotent)
   build-search.js           GeoNames -> offline search index (cities · regions · countries)
-__tests__/                  vitest: scoring, store contract, API handlers, decks, weekly, solo, i18n
-e2e/                        playwright: menu · solo · search · live room · weekly · gmap
+__tests__/                  vitest: scoring, store contract, API handlers, decks, weekly, solo, admin, config, social meta, i18n
+e2e/                        playwright: menu · solo · search · live room · weekly · gmap · subpath
 .github/workflows/ci.yml    test gate + production deploy</pre>
   </section>
 </main>
