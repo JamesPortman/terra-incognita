@@ -1,10 +1,11 @@
 # Terra Incognita
 
 A GeoGuessr-style guessing game: each round shows a photo of a real place; drop a pin
-on the world map and score up to 5,000 points per round based on distance (5 rounds).
+on the world map and score up to 5,000 points per round based on distance (5 rounds by default, 1–10).
 
-Fully self-contained — `index.html` has the world map (SVG paths from GeoJSON) and all
-20 location photos (Wikimedia Commons) inlined, so it runs with no network access.
+`index.html` has the world map (SVG paths from GeoJSON), the search gazetteer and all
+202 curated locations inlined; their photos (Wikimedia Commons) are served statically
+from `photos/`.
 
 ## Editing the game
 
@@ -18,7 +19,9 @@ cp build/terra-incognita.html index.html
 - `build/map-data.js` — generated SVG world map (regenerate with `build/build-map.js`,
   which needs `countries.geo.json` from https://github.com/johan/world.geo.json)
 - `build/photos/` — location photos; `build/build-photos.sh` re-fetches them from
-  Wikipedia. Add a location by adding a photo + an entry in `LOCS` in `build/assemble.js`.
+  Wikipedia (copy them to `photos/`). Add a location by appending it to `shared/locations.js`
+  (append-only), adding its es/pt text to `shared/locations.i18n.js` and its photo;
+  deck membership lives in `shared/decks.js`.
 
 ## Live rooms (multiplayer)
 
@@ -32,7 +35,7 @@ guesses the same locations under one timer, and reveals show all pins.
   the same array embedded in the client; order must stay in sync (rebuild after edits).
 - **All-time leaderboard** persists to Neon Postgres (`leaderboard` table,
   auto-created); rows are written once per game when the host ends it.
-- Rounds auto-advance to reveal when every player has answered or 45s elapses
+- Rounds auto-advance to reveal when every player has answered or the round timer (10–300s, default 60s) elapses
   (lazy transition in `api/state.js`); clients poll every 1.5s.
 
 ## Tests
