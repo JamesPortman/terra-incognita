@@ -1,5 +1,7 @@
 # Terra Incognita
 
+Built with [Claude Code](https://claude.com/claude-code) — [`CLAUDE.md`](CLAUDE.md) holds the project notes it works from.
+
 A GeoGuessr-style guessing game: each round shows a photo of a real place; drop a pin
 on the world map and score up to 5,000 points per round based on distance (5 rounds by default, 1–10).
 
