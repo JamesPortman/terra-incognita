@@ -13,7 +13,7 @@ const locs = LOCS.map((l) => {
     throw new Error(`missing photo for "${l.k}" — run build/build-photos.sh and copy build/photos -> photos`);
   }
   // Every language must cover every location, so a new place cannot ship
-  // half-translated with English leaking into a Spanish or Portuguese round.
+  // half-translated with English leaking into a Spanish, Portuguese or Farsi round.
   const i18n = {};
   for (const [lang, table] of Object.entries(LOC_I18N)) {
     if (!table[l.k]) throw new Error(`missing ${lang} text for "${l.k}" — add it to shared/locations.i18n.js`);

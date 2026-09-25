@@ -46,6 +46,21 @@ test.describe('menu', () => {
     await expect(page.locator('#menuSolo')).toHaveText('Play solo');
   });
 
+  test('Farsi flips the page right-to-left, and back', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.locator('html')).toHaveAttribute('dir', 'ltr');
+    await page.locator('#langSelect').selectOption('fa');
+    await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
+    await expect(page.locator('html')).toHaveAttribute('lang', 'fa');
+    await expect(page.locator('#menuSolo')).toHaveText('بازی تک‌نفره');
+    await expect(page.locator('#joinName')).toHaveAttribute('placeholder', 'نام شما');
+    await page.reload();
+    await expect(page.locator('html')).toHaveAttribute('dir', 'rtl'); // persisted
+    await page.locator('#langSelect').selectOption('en');
+    await expect(page.locator('html')).toHaveAttribute('dir', 'ltr');
+    await expect(page.locator('#menuSolo')).toHaveText('Play solo');
+  });
+
   test('architecture page shares the game theme', async ({ page }) => {
     await page.goto('/architecture');
     await expect(page.locator('h1')).toHaveText('Architecture');

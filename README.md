@@ -22,7 +22,7 @@ cp build/terra-incognita.html index.html
   which needs `countries.geo.json` from https://github.com/johan/world.geo.json)
 - `build/photos/` — location photos; `build/build-photos.sh` re-fetches them from
   Wikipedia (copy them to `photos/`). Add a location by appending it to `shared/locations.js`
-  (append-only), adding its es/pt text to `shared/locations.i18n.js` and its photo;
+  (append-only), adding its es/pt/fa text to `shared/locations.i18n.js` and its photo;
   deck membership lives in `shared/decks.js`.
 
 ## Live rooms (multiplayer)
