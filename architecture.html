@@ -513,6 +513,7 @@
       <li>World map: Natural-Earth-derived GeoJSON &#8594; simplified SVG paths (~110&#8201;KB, 179 countries) by <code>build/build-map.js</code>.</li>
       <li>Photos: Wikipedia lead images, downscaled by <code>build/build-photos.sh</code> (idempotent) and served statically from <code>/photos</code>.</li>
       <li>Search gazetteer: GeoNames cities &#8805;50k (~12.4k), admin-1 regions (~2.8k, boxes derived from member cities) + country bounding boxes (~700&#8201;KB; country names indexed once) by <code>build/build-search.js</code>. Sources re-downloaded, never committed.</li>
+      <li>Farsi search names: <code>search-fa.json</code> (~230&#8201;KB) holds a Persian name for every country and most regions and cities, aligned index-for-index with the gazetteer. The client fetches it only when a player picks Farsi, then matches queries against both the English and Persian names and shows results in Persian. Persian matching drops vowel marks, folds Arabic &#1610;/&#1603; into Persian &#1740;/&#1705;, and treats a zero-width non-joiner as a space. Built by <code>build/build-search-fa.js</code> from the countries-states-cities database, with a short hand-written override list for cities that source misspells or omits. Data by <a href="https://github.com/dr5hn/countries-states-cities-database">Countries States Cities Database</a> (ODbL v1.0); <code>search-fa.json</code> is shared under the same licence.</li>
       <li>Locations live once in <code>shared/locations.js</code> — embedded into the client <em>and</em> imported by the scoring API; order is the contract.</li>
       <li>Rebuild = <code>node build/assemble.js &amp;&amp; cp build/terra-incognita.html index.html</code>, commit.</li>
     </ul>
@@ -588,6 +589,7 @@ api/
   weekly.js · _lib/weekly.js  weekly expedition: seeded or random deck, server-scored
   config.js                 serves the referrer-locked Maps key
 photos/                     202 famous-place photos, served statically
+search-fa.json              Persian search names, fetched when a player picks Farsi
 shared/locations.js         202 locations — client decks + server answer key (append-only)
 shared/decks.js             world / na / sa / us / br deck pools + display labels
 shared/locations.i18n.js    es/pt/fa name + place for all 202 (build fails if one is missing)
@@ -597,7 +599,8 @@ build/
   build-map.js              GeoJSON -> compact SVG paths
   build-photos.sh           Wikipedia lead images -> photos/&lt;key&gt;.jpg (idempotent)
   build-search.js           GeoNames -> offline search index (cities · regions · countries)
-__tests__/                  vitest: scoring, store contract, API handlers, decks, weekly, solo, admin, config, social meta, i18n
+  build-search-fa.js        Persian names for that index -> search-fa.json (loaded only in Farsi)
+__tests__/                  vitest: scoring, store contract, API handlers, decks, weekly, solo, admin, config, social meta, i18n, Farsi search names
 e2e/                        playwright: menu · solo · search · live room · weekly · gmap · subpath
 .github/workflows/ci.yml    test gate + production deploy</pre>
   </section>

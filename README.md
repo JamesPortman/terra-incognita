@@ -24,6 +24,13 @@ cp build/terra-incognita.html index.html
   Wikipedia (copy them to `photos/`). Add a location by appending it to `shared/locations.js`
   (append-only), adding its es/pt/fa text to `shared/locations.i18n.js` and its photo;
   deck membership lives in `shared/decks.js`.
+- `search-fa.json` — Persian names for the map search, fetched only when a player
+  picks Farsi. It lines up entry for entry with `build/search-data.js`, so re-run
+  `build/build-search-fa.js` (download steps at the top of that file) whenever the
+  gazetteer is rebuilt; `__tests__/search-fa.test.js` fails if they drift apart.
+  Its names are "Data by Countries States Cities Database,
+  https://github.com/dr5hn/countries-states-cities-database | ODbL v1.0", and
+  `search-fa.json` itself is made available under the same ODbL v1.0 licence.
 
 ## Live rooms (multiplayer)
 

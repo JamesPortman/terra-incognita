@@ -6,3 +6,4 @@ playwright-report
 build/cities15000.*
 build/countryInfo.txt
 build/admin1CodesASCII.txt
+build/csc/

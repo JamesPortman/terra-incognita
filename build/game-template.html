@@ -1351,6 +1351,7 @@ const LOCATIONS = __LOCATIONS__;
   function applyI18n() {
     document.documentElement.lang = LANG;
     document.documentElement.dir = RTL_LANGS.has(LANG) ? "rtl" : "ltr";
+    if (LANG === "fa") loadSearchFa(); // Persian place names for the map search
     for (const el of document.querySelectorAll("[data-i18n]")) el.textContent = t(el.dataset.i18n);
     for (const el of document.querySelectorAll("[data-i18n-placeholder]")) el.placeholder = t(el.dataset.i18nPlaceholder);
   }
@@ -1570,20 +1571,44 @@ const LOCATIONS = __LOCATIONS__;
   // ---- search ----
   const searchBox = document.getElementById("searchBox");
   const searchResults = document.getElementById("searchResults");
-  const norm = (s) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  // Latin: accents off. Persian: vowel marks and madda/hamza off (NFD splits
+  // \u0622 and \u0623 into \u0627 + mark), Arabic \u064a/\u0643 folded to Persian \u06cc/\u06a9, and a
+  // zero-width non-joiner treated as a space, so "\u0633\u0627\u0646 \u0641\u0631\u0627\u0646\u0633\u06cc\u0633\u06a9\u0648" finds
+  // "\u0633\u0627\u0646\u200c\u0641\u0631\u0627\u0646\u0633\u06cc\u0633\u06a9\u0648".
+  const norm = (s) => s.normalize("NFD")
+    .replace(/[\u0300-\u036f\u064b-\u065f\u0670\u0640]/g, "")
+    .replace(/\u064a/g, "\u06cc").replace(/\u0643/g, "\u06a9").replace(/\u200c/g, " ")
+    .toLowerCase();
   // expand country-name indexes and normalize every name once, not per keystroke
   for (const c of SEARCH_COUNTRIES) c.q = norm(c.n);
-  for (const r of SEARCH_REGIONS) { r.s = SEARCH_CC[r.s]; r.q = norm(r.n); }
-  for (const c of SEARCH_CITIES) { c.s = SEARCH_CC[c.s]; c.q = norm(c.n); }
+  for (const r of SEARCH_REGIONS) { r.si = r.s; r.s = SEARCH_CC[r.s]; r.q = norm(r.n); }
+  for (const c of SEARCH_CITIES) { c.si = c.s; c.s = SEARCH_CC[c.s]; c.q = norm(c.n); }
   let matches = [], activeIdx = -1;
+
+  // Persian names (search-fa.json, built by build/build-search-fa.js) are
+  // fetched the first time Farsi is chosen, so other players never pay for them.
+  let searchFa = null;
+  function loadSearchFa() {
+    if (searchFa) return searchFa;
+    searchFa = fetch(BASE + "/search-fa.json").then((r) => r.ok ? r.json() : Promise.reject(r.status)).then((d) => {
+      const lists = [[SEARCH_COUNTRIES, d.countries], [SEARCH_REGIONS, d.regions], [SEARCH_CITIES, d.cities]];
+      if (lists.some(([list, fa]) => !fa || fa.length !== list.length)) throw new Error("search-fa.json does not match this build");
+      for (const [list, fa] of lists) list.forEach((c, i) => { if (fa[i]) { c.fa = fa[i]; c.qf = norm(fa[i]); } });
+      for (const c of [...SEARCH_REGIONS, ...SEARCH_CITIES]) if (d.cc[c.si]) c.sf = d.cc[c.si];
+    }).catch((e) => { searchFa = null; console.warn("Farsi search names unavailable:", e); });
+    return searchFa;
+  }
+  // shown in the player's language when a Persian name exists
+  const placeName = (m) => (LANG === "fa" && m.fa) || m.n;
+  const placeCountry = (m) => (LANG === "fa" && m.sf) || m.s;
 
   function findMatches(q) {
     const starts = [], contains = [];
     const scan = (list, kind) => {
       for (const c of list) {
         if (starts.length > 40) return;
-        if (c.q.startsWith(q)) starts.push({ ...c, kind });
-        else if (contains.length <= 40 && c.q.includes(q)) contains.push({ ...c, kind });
+        if (c.q.startsWith(q) || (c.qf && c.qf.startsWith(q))) starts.push({ ...c, kind });
+        else if (contains.length <= 40 && (c.q.includes(q) || (c.qf && c.qf.includes(q)))) contains.push({ ...c, kind });
       }
     };
     scan(SEARCH_COUNTRIES, "country");
@@ -1596,7 +1621,7 @@ const LOCATIONS = __LOCATIONS__;
     if (!matches.length) { searchResults.classList.remove("open"); return; }
     searchResults.innerHTML = matches.map((m, i) =>
       `<div class="item${i === activeIdx ? " active" : ""}" role="option" data-i="${i}">
-         <span>${m.n}${m.kind !== "country" ? ` <span class="sub">${m.s}</span>` : ""}</span>
+         <span>${placeName(m)}${m.kind !== "country" ? ` <span class="sub">${placeCountry(m)}</span>` : ""}</span>
          <span class="sub kind">${t("kind." + m.kind)}</span>
        </div>`
     ).join("");
@@ -1618,7 +1643,7 @@ const LOCATIONS = __LOCATIONS__;
       }
     } else if (m.b) flyToBox(m.b);
     else flyToPoint(m.x, m.y, 6);
-    searchBox.value = m.n;
+    searchBox.value = placeName(m);
     matches = []; activeIdx = -1;
     renderResults();
     searchBox.blur();
