@@ -1320,6 +1320,11 @@ const LOCATIONS = __LOCATIONS__;
   const LANGS = { en: "English", es: "Español", pt: "Português", fa: "فارسی" };
   const RTL_LANGS = new Set(["fa"]);
   function detectLang() {
+    // ?lang=fa (or es, pt, en; "fa-IR" works too) opens the game in that
+    // language and remembers it, same as choosing it from the menu. Unknown
+    // codes are ignored.
+    const asked = (new URLSearchParams(location.search).get("lang") || "").slice(0, 2).toLowerCase();
+    if (MESSAGES[asked]) { localStorage.setItem("terra-lang", asked); return asked; }
     const saved = localStorage.getItem("terra-lang");
     if (saved && MESSAGES[saved]) return saved;
     const nav = (navigator.language || "en").slice(0, 2).toLowerCase();

@@ -1320,6 +1320,11 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
   const LANGS = { en: "English", es: "Español", pt: "Português", fa: "فارسی" };
   const RTL_LANGS = new Set(["fa"]);
   function detectLang() {
+    // ?lang=fa (or es, pt, en; "fa-IR" works too) opens the game in that
+    // language and remembers it, same as choosing it from the menu. Unknown
+    // codes are ignored.
+    const asked = (new URLSearchParams(location.search).get("lang") || "").slice(0, 2).toLowerCase();
+    if (MESSAGES[asked]) { localStorage.setItem("terra-lang", asked); return asked; }
     const saved = localStorage.getItem("terra-lang");
     if (saved && MESSAGES[saved]) return saved;
     const nav = (navigator.language || "en").slice(0, 2).toLowerCase();
@@ -3305,7 +3310,7 @@ const LOCATIONS = [{"name":"Shibuya Crossing","place":"Tokyo, Japan","lat":35.65
   $("finalMenuBtn").addEventListener("click", backToMenu);
 
   // ---- stale-tab update banner ----
-  const BUILD_ID = "20260925153449";
+  const BUILD_ID = "20260925154830";
   let updateAvailable = false;
   function maybeShowUpdate() {
     // suppress only during an active round; the menu (mode null) is always safe

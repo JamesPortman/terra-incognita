@@ -46,6 +46,25 @@ test.describe('menu', () => {
     await expect(page.locator('#menuSolo')).toHaveText('Play solo');
   });
 
+  test('?lang= opens the game in any language and remembers it', async ({ page }) => {
+    const solo = { en: 'Play solo', es: 'Jugar solo', pt: 'Jogar sozinho', fa: 'بازی تک‌نفره' };
+    for (const [lang, text] of Object.entries(solo)) {
+      await page.goto(`/?lang=${lang}`);
+      await expect(page.locator('#menuSolo')).toHaveText(text);
+      await expect(page.locator('#langSelect')).toHaveValue(lang);
+      await expect(page.locator('html')).toHaveAttribute('dir', lang === 'fa' ? 'rtl' : 'ltr');
+    }
+    await page.goto('/?lang=fa-IR'); // region suffixes are fine
+    await expect(page.locator('html')).toHaveAttribute('lang', 'fa');
+    await page.goto('/'); // remembered without the parameter
+    await expect(page.locator('#menuSolo')).toHaveText('بازی تک‌نفره');
+    await page.goto('/?lang=xx'); // unknown code: keep the saved choice
+    await expect(page.locator('#menuSolo')).toHaveText('بازی تک‌نفره');
+    await page.goto('/?lang=en&join=ABCD'); // combines with an invite link
+    await expect(page.locator('#menuSolo')).toHaveText('Play solo');
+    await expect(page.locator('#joinCode')).toHaveValue('ABCD');
+  });
+
   test('Farsi flips the page right-to-left, and back', async ({ page }) => {
     await page.goto('/');
     await expect(page.locator('html')).toHaveAttribute('dir', 'ltr');
