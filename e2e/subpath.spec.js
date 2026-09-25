@@ -69,3 +69,9 @@ test('behind the proxy, the Farsi search names load from under the prefix', asyn
   expect(new URL(r.url()).pathname).toBe(`${PREFIX}/search-fa.json`);
   expect(r.status()).toBe(200);
 });
+
+test('behind the proxy, ?lang=fa opens the game in Farsi', async ({ page }) => {
+  await page.goto(`http://localhost:${PROXY_PORT}${PREFIX}/?lang=fa`);
+  await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
+  await expect(page.locator('#menuSolo')).toHaveText('بازی تک‌نفره');
+});

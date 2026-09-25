@@ -9,6 +9,10 @@ on the world map and score up to 5,000 points per round based on distance (5 rou
 202 curated locations inlined; their photos (Wikimedia Commons) are served statically
 from `photos/`.
 
+Links can pick the language: `?lang=en`, `?lang=es`, `?lang=pt` or `?lang=fa`
+(e.g. `https://www.portman.ca/terra-incognita/?lang=fa`). The choice is remembered
+like a menu pick, and it combines with invite links (`?lang=fa&join=ABCD`).
+
 ## Editing the game
 
 Game logic and styling live in `build/game-template.html`. To rebuild `index.html`:

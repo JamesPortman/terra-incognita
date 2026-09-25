@@ -248,7 +248,8 @@
       The client is one HTML file with everything embedded — country polygons,
       photos, gazetteer. Solo games never touch the network; live rooms poll a
       small JSON API every 1.5&nbsp;s. English, Spanish, Portuguese and Farsi are
-      chosen from a menu dropdown and persisted per browser &mdash; interface,
+      chosen from a menu dropdown or a <code>?lang=</code> link (<code>en</code>,
+      <code>es</code>, <code>pt</code>, <code>fa</code>) and persisted per browser &mdash; interface,
       the 202 curated place names, and API errors all follow. Errors localize on
       a stable code the server sends beside its English text, so an older client
       still shows something sensible. Random-world labels come from Google in
