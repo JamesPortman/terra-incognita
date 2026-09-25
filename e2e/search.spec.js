@@ -51,3 +51,47 @@ test.describe('map search', () => {
     await expect(first).toContainText('region'); // the Brazilian state ranks first
   });
 });
+
+test.describe('map search in Farsi', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/?plainmap=1');
+    await expect(page.locator('#modeToggleRow')).toBeVisible();
+    await page.locator('#langSelect').selectOption('fa'); // the menu is hidden once a game starts
+    await page.locator('#deckSelect').selectOption('world');
+    await page.locator('#svToggle').uncheck();
+    await page.locator('#menuSolo').click();
+    await expect(page.locator('#roundLabel')).toHaveText('1 / 5');
+  });
+
+  test('in Farsi, Persian names find places and results show in Persian', async ({ page }) => {
+    const first = page.locator('#searchResults .item').first();
+    // loaded on demand, so retry the query until the names have arrived
+    await expect(async () => {
+      await page.locator('#searchBox').fill('');
+      await page.locator('#searchBox').fill('پاریس');
+      await expect(first).toContainText('پاریس', { timeout: 500 });
+    }).toPass();
+    await expect(first).toContainText('فرانسه'); // country sub-label in Persian too
+    await page.locator('#searchBox').press('Enter');
+    await expect(page.locator('#searchBox')).toHaveValue('پاریس');
+    expect(await page.locator('#map > g').getAttribute('transform')).toMatch(/scale\(6/);
+  });
+
+  test('Farsi search ignores Arabic letter forms and zero-width joiners', async ({ page }) => {
+    const first = page.locator('#searchResults .item').first();
+    await expect(async () => {
+      await page.locator('#searchBox').fill('');
+      await page.locator('#searchBox').fill('تهران');
+      await expect(first).toContainText('تهران', { timeout: 500 });
+    }).toPass();
+    // Arabic yeh (ي) and kaf (ك) typed on an Arabic keyboard
+    await page.locator('#searchBox').fill('مكزيك');
+    await expect(first).toContainText('مکزیک');
+    // a zero-width non-joiner matches the plain space in "لس آنجلس"
+    await page.locator('#searchBox').fill('لس\u200cآنجلس');
+    await expect(first).toContainText('لس آنجلس');
+    // English still works while the interface is Farsi, shown in Persian
+    await page.locator('#searchBox').fill('tokyo');
+    await expect(first).toContainText('توکیو');
+  });
+});

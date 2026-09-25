@@ -60,3 +60,12 @@ test('at the domain root, API calls stay unprefixed', async ({ page }) => {
     expect(u).not.toContain(PREFIX);
   }
 });
+
+test('behind the proxy, the Farsi search names load from under the prefix', async ({ page }) => {
+  const res = page.waitForResponse((r) => r.url().includes('search-fa.json'));
+  await page.goto(`http://localhost:${PROXY_PORT}${PREFIX}/?plainmap=1`);
+  await page.locator('#langSelect').selectOption('fa');
+  const r = await res;
+  expect(new URL(r.url()).pathname).toBe(`${PREFIX}/search-fa.json`);
+  expect(r.status()).toBe(200);
+});
