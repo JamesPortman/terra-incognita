@@ -42,11 +42,11 @@ function serverErrors() {
 describe('location translations', () => {
   const langs = Object.keys(LOC_I18N);
 
-  it('covers Spanish and Portuguese', () => {
-    expect(langs.sort()).toEqual(['es', 'pt']);
+  it('covers Spanish, Portuguese and Farsi', () => {
+    expect(langs.sort()).toEqual(['es', 'fa', 'pt']);
   });
 
-  it.each(['es', 'pt'])('has a [name, place] pair for every location in %s', (lang) => {
+  it.each(['es', 'pt', 'fa'])('has a [name, place] pair for every location in %s', (lang) => {
     const table = LOC_I18N[lang];
     expect(Object.keys(table)).toHaveLength(LOCATIONS.length);
     for (const loc of LOCATIONS) {
@@ -60,7 +60,7 @@ describe('location translations', () => {
     }
   });
 
-  it.each(['es', 'pt'])('has no %s entries for locations that no longer exist', (lang) => {
+  it.each(['es', 'pt', 'fa'])('has no %s entries for locations that no longer exist', (lang) => {
     const keys = new Set(LOCATIONS.map((l) => l.k));
     expect(Object.keys(LOC_I18N[lang]).filter((k) => !keys.has(k))).toEqual([]);
   });
@@ -74,6 +74,14 @@ describe('location translations', () => {
     const same = LOCATIONS.filter((l) => keys.has(l.k) &&
       LOC_I18N.pt[l.k][0] === l.name && LOC_I18N.pt[l.k][1] === l.place);
     expect(same.map((l) => l.k)).toEqual([]);
+  });
+
+  it('writes every Farsi pair in Persian script', () => {
+    // a Latin-only entry would render left-to-right inside a right-to-left
+    // card; acronyms may ride along (MASP) as long as the Persian is there
+    const persian = /[\u0600-\u06FF]/;
+    const latinOnly = LOCATIONS.filter((l) => LOC_I18N.fa[l.k].some((s) => !persian.test(s)));
+    expect(latinOnly.map((l) => l.k)).toEqual([]);
   });
 
   it('actually translates — most places differ from the English', () => {
@@ -94,6 +102,27 @@ describe('fail()', () => {
   });
 });
 
+describe('interface translations', () => {
+  const M = clientMessages();
+
+  it.each(['es', 'pt', 'fa'])('has exactly the English keys in %s', (lang) => {
+    expect(Object.keys(M[lang]).sort()).toEqual(Object.keys(M.en).sort());
+  });
+
+  it.each(['es', 'pt', 'fa'])('keeps every {n} placeholder in %s', (lang) => {
+    const holes = (s) => (s.match(/\{\d\}/g) || []).sort();
+    for (const [key, text] of Object.entries(M.en)) {
+      expect(holes(M[lang][key]), key).toEqual(holes(text));
+    }
+  });
+
+  it('lays Farsi out right-to-left', () => {
+    expect(template).toMatch(/fa: "فارسی"/);
+    expect(template).toMatch(/RTL_LANGS = new Set\(\["fa"\]\)/);
+    expect(template).toMatch(/documentElement\.dir = RTL_LANGS\.has\(LANG\)/);
+  });
+});
+
 describe('API error messages', () => {
   const server = serverErrors();
   const M = clientMessages();
@@ -110,7 +139,7 @@ describe('API error messages', () => {
     }
   });
 
-  it.each(['es', 'pt'])('translates every error code into %s', (lang) => {
+  it.each(['es', 'pt', 'fa'])('translates every error code into %s', (lang) => {
     for (const code of Object.keys(server)) {
       const s = M[lang][`api.${code}`];
       expect(s, `api.${code} missing in ${lang}`).toBeTruthy();
@@ -119,7 +148,7 @@ describe('API error messages', () => {
   });
 
   it('translates the generic request failure too', () => {
-    for (const lang of ['en', 'es', 'pt']) expect(M[lang]['api.failed']).toContain('{0}');
+    for (const lang of ['en', 'es', 'pt', 'fa']) expect(M[lang]['api.failed']).toContain('{0}');
   });
 
   it('leaves no error responses without a code', () => {

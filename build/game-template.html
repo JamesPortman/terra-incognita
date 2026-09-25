@@ -249,7 +249,7 @@
   }
   .stage .credit {
     position: absolute;
-    left: 12px;
+    inset-inline-start: 12px;
     bottom: 10px;
     font-size: 0.68rem;
     color: #ffffffb0;
@@ -285,10 +285,10 @@
   .mapside {
     display: flex;
     flex-direction: column;
-    border-left: 1px solid var(--line);
+    border-inline-start: 1px solid var(--line);
     min-height: 0;
   }
-  @media (max-width: 900px) { .mapside { border-left: none; border-top: 1px solid var(--line); } }
+  @media (max-width: 900px) { .mapside { border-inline-start: none; border-top: 1px solid var(--line); } }
   .mapwrap { position: relative; flex: 1; min-height: 0; background: var(--sea); }
   #gmap { position: absolute; inset: 0; display: none; background: var(--sea); }
   #gmap.active { display: block; }
@@ -524,7 +524,7 @@
     font-size: 0.88rem;
   }
   .chip.ans { border-color: var(--teal); color: var(--teal); }
-  .standlist { list-style: none; padding: 0; margin: 0 0 24px; text-align: left; }
+  .standlist { list-style: none; padding: 0; margin: 0 0 24px; text-align: start; }
   .standlist li {
     display: flex;
     justify-content: space-between;
@@ -538,12 +538,12 @@
   .standlist li:first-child { border-top: none; font-family: var(--serif); font-size: 1.15rem; color: var(--brass); }
   .standlist .pts { font-family: var(--mono); color: var(--brass); }
   .lbtable { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-bottom: 20px; font-variant-numeric: tabular-nums; }
-  .lbtable td, .lbtable th { padding: 7px 6px; border-top: 1px solid var(--line); text-align: left; }
+  .lbtable td, .lbtable th { padding: 7px 6px; border-top: 1px solid var(--line); text-align: start; }
   .lbtable th { font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); border-top: none; }
-  .lbtable td:last-child, .lbtable th:last-child { text-align: right; }
-  .lbtable td.score { font-family: var(--mono); color: var(--brass); text-align: right; }
+  .lbtable td:last-child, .lbtable th:last-child { text-align: end; }
+  .lbtable td.score { font-family: var(--mono); color: var(--brass); text-align: end; }
   .lbtable td.deckcell { font-size: 0.76rem; color: var(--muted); }
-  .peek { color: var(--muted); font-size: 0.72rem; margin-left: 6px; white-space: nowrap; }
+  .peek { color: var(--muted); font-size: 0.72rem; margin-inline-start: 6px; white-space: nowrap; }
   .podium { display: flex; gap: 12px; justify-content: center; align-items: flex-end; margin-bottom: 18px; }
   .pod {
     border: 1px solid var(--line);
@@ -641,9 +641,19 @@
     margin-bottom: 26px;
     font-variant-numeric: tabular-nums;
   }
-  .final td { padding: 7px 4px; border-top: 1px solid var(--line); text-align: left; }
-  .final td:last-child { text-align: right; font-family: var(--mono); color: var(--brass); }
-  .final td.dist { text-align: right; font-family: var(--mono); color: var(--muted); }
+  .final td { padding: 7px 4px; border-top: 1px solid var(--line); text-align: start; }
+  .final td:last-child { text-align: end; font-family: var(--mono); color: var(--brass); }
+  .final td.dist { text-align: end; font-family: var(--mono); color: var(--muted); }
+
+  /* Right-to-left (Farsi). Maps stay left-to-right: their pin labels and
+     numbers are drawn in map space, not text flow. Letter-spacing splits the
+     joined letters of Persian script, so it is dropped there. */
+  svg { direction: ltr; }
+  :lang(fa) * { letter-spacing: normal !important; }
+  /* numeric readouts ("1 / 5", "+1,949 pts") keep their left-to-right order */
+  .hud .value, .readout .pts, .ministand .msgain, .ministand .mstotal { unicode-bidi: isolate; direction: ltr; }
+  /* monospace fonts carry no Persian glyphs and space the fallback out */
+  :lang(fa) .readout { font-family: var(--sans); }
 
   @media (prefers-reduced-motion: reduce) {
     * { transition: none !important; }
@@ -1199,8 +1209,116 @@ const LOCATIONS = __LOCATIONS__;
       "api.rate_limited": "muitas solicitações — aguarde um momento e tente de novo",
       "api.failed": "a solicitação falhou ({0})",
     },
+    fa: {
+      "menu.kicker": "یک بازی حدس زدن مکان در جهان",
+      "hud.tagline": "حدس بزن کجای زمین است",
+      "hud.round": "دور", "hud.time": "زمان", "hud.score": "امتیاز",
+      "hud.sound": "صدا", "hud.theme": "پوسته",
+      "menu.locations": "مکان‌ها", "menu.sv": "تصاویر استریت‌ویو (به اطراف نگاه کن و بگرد)",
+      "menu.timeper": "زمان هر دور", "menu.seconds": "ثانیه",
+      "menu.roundsper": "تعداد دورهای هر بازی", "menu.rounds": "دور",
+      "menu.best5": "در بازی‌های طولانی‌تر، ۵ دور برترت حساب می‌شود",
+      "menu.record": "ثبت در تالار دریانوردان",
+      "menu.solo": "بازی تک‌نفره", "menu.weekly": "سفر اکتشافی هفتگی", "menu.host": "ساختن اتاق زنده",
+      "menu.join": "پیوستن", "menu.lb": "جدول امتیازات همهٔ دوران", "menu.weeklyboard": "جدول این هفته",
+      "menu.arch": "معماری — این بازی چطور ساخته شده",
+      "ph.code": "کد", "ph.name": "نام شما", "ph.search": "جست‌وجوی کشور یا شهر…", "ph.admintoken": "توکن مدیر",
+      "ui.language": "زبان", "ui.backmenu": "بازگشت به منو", "ui.back": "بازگشت",
+      "deck.br": "برزیل — مکان‌های مشهور",
+      "deck.na": "آمریکای شمالی — مکان‌های مشهور", "deck.random": "جهان تصادفی (استریت‌ویو)",
+      "deck.sa": "آمریکای جنوبی — مکان‌های مشهور", "deck.us": "آمریکا — مکان‌های مشهور",
+      "deck.world": "جهان — مکان‌های مشهور", "deck.all": "همهٔ دسته‌ها", "deck.classic": "کلاسیک",
+      "btn.place": "برای حدس زدن سنجاق بگذار", "btn.guess": "ثبت حدس", "btn.next": "دور بعد",
+      "btn.finalscore": "دیدن امتیاز نهایی", "btn.complete": "سفر به پایان رسید",
+      "btn.backconfirm": "به منو برگردیم؟", "btn.weeklystand": "دیدن جدول هفتگی",
+      "btn.endearly": "پایان زودهنگام دور", "btn.locked": "حدس ثبت شد", "btn.waithost": "در انتظار میزبان",
+      "btn.finalstand": "رده‌بندی نهایی", "btn.charting": "در حال ترسیم مسیر…",
+      "hint.map": "برای گذاشتن سنجاق روی نقشه کلیک کن · با چرخ ماوس بزرگ‌نمایی کن",
+      "credit.photo": "عکس: ویکی‌مدیا کامانز · با چرخ ماوس بزرگ‌نمایی کن",
+      "dist.landed": "سنجاقت با فاصلهٔ {0} فرود آمد", "dist.timesup": "وقت تمام شد — سنجاقی گذاشته نشد",
+      "dist.nopin": "در این دور سنجاقی گذاشته نشد", "dist.nopinscored": "در این دور هیچ سنجاقی امتیاز نگرفت",
+      "dist.offtab": " · 👀 {0} ثانیه بیرون از زبانه", "dist.noguess": "بدون حدس",
+      "reveal.mystery": "مکان مرموز",
+      "party.locked": "حدس ثبت شد — در انتظار بقیه", "party.answered": "اتاق {0} · {1}/{2} پاسخ دادند",
+      "final.kicker": "سفر به پایان رسید", "final.outof": "از {0}", "final.best5": " — ۵ دور برتر حساب می‌شود",
+      "final.dropped": "(حذف‌شده)", "final.again": "ترسیم سفری تازه",
+      "verdict.a": "دریانوردی چیره‌دست. نقشه تقریباً لازم نیست.",
+      "verdict.b": "مسافری کارکشته — قطب‌نمایت به‌ندرت دروغ می‌گوید.",
+      "verdict.c": "کاشفی آینده‌دار، با چند انحراف از مسیر.",
+      "verdict.d": "سفر مهم‌تر از مقصد است. ظاهراً.",
+      "verdict.e": "چند جا را کشف کرده‌ای که اصلاً وجود نداشتند.",
+      "rank.test": "بازی آزمایشی — ثبت نشد", "rank.n": "رتبهٔ {0} در تالار تک‌نفرهٔ دریانوردان",
+      "rank.rec": "در تالار تک‌نفرهٔ دریانوردان ثبت شد",
+      "lobby.role": "اتاق زنده", "lobby.joinhint": "در همین سایت وارد شو · کد را بزن",
+      "lobby.waiting": "در انتظار بازیکنان…", "lobby.start1": "شروع بازی (۱ بازیکن)",
+      "lobby.startN": "شروع بازی ({0} بازیکن)", "lobby.hostwait": "در انتظار شروع بازی توسط میزبان…",
+      "lobby.leave": "خروج", "lobby.noplayers": "هنوز بازیکنی نیست",
+      "stand.kicker": "رده‌بندی نهایی", "stand.winner": "{0} برنده شد", "stand.gameover": "بازی تمام شد",
+      "weekly.kicker": "سفر اکتشافی هفتگی · {0}", "weekly.title": "سفر اکتشافی هفتگی",
+      "weekly.board": "جدول این هفته", "weekly.play": "بازی سفر این هفته",
+      "weekly.played": "این هفته بازی کرده‌ای — {0} امتیاز",
+      "weekly.placed": "رتبهٔ {0} شدی — {1} امتیاز", "weekly.mypts": "{0} امتیاز در این هفته",
+      "weekly.empty": "هنوز کسی بازی نکرده — اولین نفر باش!",
+      "weekly.past": "سفرهای گذشته",
+      "weekly.locked": "جزئیات دورها پس از پایان هفته باز می‌شود.",
+      "lb.kicker": "جدول امتیازات همهٔ دوران", "lb.title": "تالار دریانوردان",
+      "lb.showsolo": "نمایش امتیازهای تک‌نفره",
+      "lb.solonote": "امتیاز تک‌نفره میانگین امتیاز هر دور است — طول بازی‌های تک‌نفره یکسان نیست.",
+      "lb.loading": "در حال بارگذاری…", "lb.seasons": "فصل‌های گذشته",
+      "lb.emptygroup": "هنوز بازی گروهی ثبت نشده — یک اتاق زنده بساز!",
+      "lb.emptysolo": "هنوز بازی تک‌نفره‌ای ثبت نشده — «ثبت در تالار دریانوردان» را تیک بزن و بازی کن!",
+      "lb.empty": "هنوز بازی‌ای ثبت نشده — یک اتاق زنده بساز یا یک بازی تک‌نفره ثبت کن!",
+      "th.navigator": "دریانورد", "th.location": "مکان", "th.score": "امتیاز", "th.when": "زمان",
+      "th.distance": "فاصله",
+      "detail.kicker": "دور به دور",
+      "detail.legend": "سنجاق شماره‌دار = حدس · نقطهٔ فیروزه‌ای = مکان واقعی",
+      "detail.zoomhint": "با چرخ ماوس بزرگ‌نمایی کن · بکش تا جابه‌جا شود · دوبار کلیک برای بازنشانی",
+      "detail.none": "جزئیات دورهای این بازی نگه داشته نشده است.",
+      "kind.country": "کشور", "kind.region": "منطقه", "kind.city": "شهر",
+      "copy.board": "کپی جدول", "copy.done": "کپی شد!", "copy.fail": "کپی نشد",
+      "copy.hall": "Terra Incognita — تالار دریانوردان", "copy.hallsolo": " (تک‌نفره — میانگین امتیاز هر دور)",
+      "admin.btn": "مدیریت", "admin.clear": "پاک کردن جدول", "admin.archive": "بایگانی فصل",
+      "admin.token": "توکن مدیر را وارد کن", "admin.clearconfirm": "واقعاً پاک شود؟",
+      "admin.archconfirm": "واقعاً بایگانی و بازنشانی شود؟", "admin.cleared": "جدول پاک شد",
+      "admin.archived": "{0} رکورد با نام {1} بایگانی شد",
+      "err.code": "کد ۴ حرفی اتاق را وارد کن", "err.name": "نامت را وارد کن",
+      "err.namerecord": "برای ثبت در تالار، نامت را (در کادر «پیوستن») وارد کن",
+      "err.nameweekly": "برای بازی هفتگی، نامت را (در کادر «پیوستن») وارد کن",
+      "err.unrecorded": " — بازی بدون ثبت", "err.retry": " — برای تلاش دوباره بزن",
+      "update.banner": "نسخهٔ تازه‌ای آمده — برای به‌روزرسانی بزن",
+      // Server error codes (api/_lib/rooms.js fail()). Stable server keys.
+      "api.method_not_allowed": "این روش مجاز نیست",
+      "api.room_code_unavailable": "کد اتاق ساخته نشد — دوباره تلاش کن",
+      "api.random_deck_size": "دستهٔ تصادفی باید برای هر دور یک مکان داشته باشد",
+      "api.invalid_deck_entry": "مورد نامعتبر در دسته",
+      "api.invalid_coordinates": "مختصات نامعتبر",
+      "api.room_not_found": "اتاق پیدا نشد",
+      "api.round_not_open": "این دور باز نیست",
+      "api.time_up": "وقت تمام شد",
+      "api.not_in_room": "در این اتاق نیستی",
+      "api.already_guessed": "در این دور حدس زده‌ای",
+      "api.admin_not_configured": "بخش مدیریت پیکربندی نشده است",
+      "api.wrong_admin_token": "توکن مدیر اشتباه است",
+      "api.unknown_action": "عملیات ناشناخته",
+      "api.name_required": "نام لازم است",
+      "api.solo_deck_required": "بازی تک‌نفرهٔ ثبت‌شده به دسته‌ای تصادفی با ۱ تا ۱۰ مکان نیاز دارد",
+      "api.no_active_attempt": "تلاش فعالی وجود ندارد",
+      "api.host_only": "فقط میزبان",
+      "api.game_over": "بازی تمام شده است",
+      "api.game_not_found": "بازی پیدا نشد",
+      "api.game_started": "بازی از قبل شروع شده است",
+      "api.room_full": "اتاق پر است (حداکثر {0} بازیکن)",
+      "api.weekly_rounds_hidden": "دورهای این هفته تا پایان هفته پنهان می‌مانند",
+      "api.already_played_week": "این هفته بازی کرده‌ای",
+      "api.invalid_weekly_deck": "دستهٔ هفتگی نامعتبر",
+      "api.attempt_finished": "این تلاش تمام شده است",
+      "api.weekly_deck_missing": "دستهٔ این هفته موجود نیست",
+      "api.rate_limited": "درخواست‌ها زیاد است — کمی صبر کن و دوباره تلاش کن",
+      "api.failed": "درخواست ناموفق بود ({0})",
+    },
   };
-  const LANGS = { en: "English", es: "Español", pt: "Português" };
+  const LANGS = { en: "English", es: "Español", pt: "Português", fa: "فارسی" };
+  const RTL_LANGS = new Set(["fa"]);
   function detectLang() {
     const saved = localStorage.getItem("terra-lang");
     if (saved && MESSAGES[saved]) return saved;
@@ -1232,6 +1350,7 @@ const LOCATIONS = __LOCATIONS__;
   const deckDisplay = (label) => CANONICAL_DECK[label] ? t(CANONICAL_DECK[label]) : (label || t("deck.classic"));
   function applyI18n() {
     document.documentElement.lang = LANG;
+    document.documentElement.dir = RTL_LANGS.has(LANG) ? "rtl" : "ltr";
     for (const el of document.querySelectorAll("[data-i18n]")) el.textContent = t(el.dataset.i18n);
     for (const el of document.querySelectorAll("[data-i18n-placeholder]")) el.placeholder = t(el.dataset.i18nPlaceholder);
   }
