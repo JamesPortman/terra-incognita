@@ -1,6 +1,7 @@
 // Polled by host and players (~every 1.5s). Performs the lazy question->reveal
 // transition, and shapes the response so answers never leak during a question.
 const { getStore } = require('./_lib/store.js');
+const { tokenMatches, ownEntry } = require('./_lib/auth.js');
 const {
   loadRoom, maybeAdvance, playersKey, guessesKey,
   ROUNDS, ROUND_MS, sendJSON, fail
@@ -15,8 +16,8 @@ module.exports = async (req, res) => {
 
   const store = getStore();
   const players = await store.hgetallJSON(playersKey(code));
-  const isHost = hostToken && hostToken === meta.hostToken;
-  const isPlayer = playerId && players[playerId] && players[playerId].token === token;
+  const isHost = tokenMatches(hostToken, meta.hostToken);
+  const isPlayer = tokenMatches(token, ownEntry(players, playerId)?.token);
   if (!isHost && !isPlayer) return fail(res, 403, 'not_in_room', 'not in this room');
 
   meta = await maybeAdvance(meta);
@@ -37,7 +38,7 @@ module.exports = async (req, res) => {
       id: pid,
       name: p.name,
       score: meta.state === 'question' ? undefined : p.score,
-      answered: meta.state === 'question' ? Boolean(guesses[pid]) : undefined,
+      answered: meta.state === 'question' ? Boolean(ownEntry(guesses, pid)) : undefined,
     })).sort((a, b) => (b.score ?? 0) - (a.score ?? 0) || a.name.localeCompare(b.name)),
   };
 
@@ -52,10 +53,10 @@ module.exports = async (req, res) => {
   if (meta.state === 'reveal') {
     out.reveal = Object.entries(guesses).map(([pid, g]) => ({
       id: pid,
-      name: players[pid]?.name || '?',
+      name: ownEntry(players, pid)?.name || '?',
       lat: g.lat, lon: g.lon, km: g.km, pts: g.pts, awayMs: g.awayMs || 0,
     }));
-    if (isPlayer && guesses[playerId]) out.you = guesses[playerId];
+    if (isPlayer && ownEntry(guesses, playerId)) out.you = ownEntry(guesses, playerId);
   }
   sendJSON(res, 200, out);
 };

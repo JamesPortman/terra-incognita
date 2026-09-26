@@ -12,7 +12,7 @@ export default defineConfig({
       // Floor, not target: fails the run (and therefore the deploy) if server
       // code coverage regresses. Raise these as coverage improves; never lower
       // them to get a build through.
-      thresholds: { lines: 70, statements: 70, branches: 60, functions: 50 },
+      thresholds: { lines: 70, statements: 70, branches: 60, functions: 60 },
     },
   },
 });

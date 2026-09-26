@@ -1,4 +1,5 @@
 const { getStore } = require('./_lib/store.js');
+const { tokenMatches, ownEntry } = require('./_lib/auth.js');
 const {
   loadRoom, playersKey, guessesKey, haversineKm, pointsFor, bestFiveTotal,
   LOCATIONS, ROUND_MS, GRACE_MS, TTL_SEC, sendJSON, fail
@@ -22,8 +23,11 @@ module.exports = async (req, res) => {
 
   const store = getStore();
   const players = await store.hgetallJSON(playersKey(code));
-  const player = players[playerId];
-  if (!player || player.token !== token) return fail(res, 403, 'not_in_room', 'not in this room');
+  // own-property lookup: `constructor`/`__proto__` must not resolve to
+  // Object.prototype (whose .token is undefined) — and every write below is
+  // keyed by this playerId, so it is a real joined player from here on
+  const player = ownEntry(players, playerId);
+  if (!player || !tokenMatches(token, player.token)) return fail(res, 403, 'not_in_room', 'not in this room');
 
   const loc = meta.customDeck ? meta.customDeck[meta.roundIdx] : LOCATIONS[meta.deck[meta.roundIdx]];
   const km = haversineKm(lat, lon, loc.lat, loc.lon);

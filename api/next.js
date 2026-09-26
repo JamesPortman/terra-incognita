@@ -2,6 +2,7 @@
 // round early); reveal -> question(n+1) | final. Writing the leaderboard happens
 // exactly once, on the transition into final.
 const { getStore } = require('./_lib/store.js');
+const { tokenMatches, ownEntry } = require('./_lib/auth.js');
 const { getSql, ensureTable } = require('./_lib/db.js');
 const {
   loadRoom, saveRoom, playersKey, guessesKey, roundDetail, LOCATIONS, ROUNDS, sendJSON, fail
@@ -13,7 +14,7 @@ module.exports = async (req, res) => {
   const code = String(req.body?.code || '').toUpperCase();
   const meta = await loadRoom(code);
   if (!meta) return fail(res, 404, 'room_not_found', 'room not found');
-  if (req.body?.hostToken !== meta.hostToken) return fail(res, 403, 'host_only', 'host only');
+  if (!tokenMatches(req.body?.hostToken, meta.hostToken)) return fail(res, 403, 'host_only', 'host only');
 
   const rounds = meta.rounds || ROUNDS;
   if (meta.state === 'lobby' || (meta.state === 'reveal' && meta.roundIdx + 1 < rounds)) {
@@ -41,7 +42,7 @@ module.exports = async (req, res) => {
         }
         for (const [pid, p] of players) {
           const detail = roundGuesses.map((g, i) =>
-            roundDetail(meta.customDeck ? meta.customDeck[i] : LOCATIONS[meta.deck[i]], g[pid]));
+            roundDetail(meta.customDeck ? meta.customDeck[i] : LOCATIONS[meta.deck[i]], ownEntry(g, pid)));
           await sql`INSERT INTO leaderboard (room_code, player_name, score, rounds, deck, detail)
                     VALUES (${code}, ${p.name}, ${p.score}, ${rounds}, ${deckLabel}, ${JSON.stringify(detail)}::jsonb)`;
         }

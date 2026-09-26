@@ -299,3 +299,69 @@ describe('next / state machine', () => {
     expect(st.code).toBe(403);
   });
 });
+
+// Regression: players[playerId] with playerId = 'constructor' / '__proto__' /
+// 'toString' used to resolve to an Object.prototype member whose .token is
+// undefined, so a request with no token passed `undefined === undefined`.
+describe('prototype-key player ids', () => {
+  const PROTO_IDS = ['constructor', '__proto__', 'toString', 'hasOwnProperty'];
+
+  async function startedRoom() {
+    const { code, hostToken } = await newRoom();
+    const p = (await joinAs(code, 'Alice')).body;
+    await call(next, { body: { code, hostToken } }); // lobby -> question
+    return { code, hostToken, p };
+  }
+
+  it('state rejects prototype-key ids with no or empty token', async () => {
+    const { code } = await newRoom();
+    for (const playerId of PROTO_IDS) {
+      for (const token of [undefined, '']) {
+        const st = await call(state, { method: 'GET', query: { code, playerId, token } });
+        expect(st.code, `${playerId}/${token}`).toBe(403);
+      }
+    }
+  });
+
+  it('state rejects a missing or empty host token', async () => {
+    const { code } = await newRoom();
+    expect((await call(state, { method: 'GET', query: { code } })).code).toBe(403);
+    expect((await call(state, { method: 'GET', query: { code, hostToken: '' } })).code).toBe(403);
+  });
+
+  it('guess rejects prototype-key ids and writes nothing', async () => {
+    const { code, hostToken, p } = await startedRoom();
+    for (const playerId of PROTO_IDS) {
+      for (const token of [undefined, '']) {
+        const r = await call(guess, { body: { code, playerId, token, lat: 1, lon: 1 } });
+        expect(r.code, `${playerId}/${token}`).toBe(403);
+      }
+    }
+    expect(Object.prototype).not.toHaveProperty('ptsByRound');
+    expect(Object.ptsByRound).toBeUndefined();
+    expect({}.score).toBeUndefined();
+
+    // the room is untouched: still one player, no answers recorded
+    const st = await call(state, { method: 'GET', query: { code, hostToken } });
+    expect(st.body.state).toBe('question');
+    expect(st.body.players.map((x) => x.id)).toEqual([p.playerId]);
+    expect(st.body.players[0].answered).toBe(false);
+  });
+
+  it('a valid player still reads state and guesses', async () => {
+    const { code, p } = await startedRoom();
+    const st = await call(state, { method: 'GET', query: { code, playerId: p.playerId, token: p.token } });
+    expect(st.code).toBe(200);
+    const r = await call(guess, { body: { code, playerId: p.playerId, token: p.token, lat: 1, lon: 1 } });
+    expect(r.code).toBe(200);
+    // a valid id with a missing token is still refused
+    const noTok = await call(state, { method: 'GET', query: { code, playerId: p.playerId } });
+    expect(noTok.code).toBe(403);
+  });
+
+  it('next rejects a missing or empty host token', async () => {
+    const { code } = await newRoom();
+    expect((await call(next, { body: { code } })).code).toBe(403);
+    expect((await call(next, { body: { code, hostToken: '' } })).code).toBe(403);
+  });
+});
