@@ -4,6 +4,11 @@
 const REDIS_URL = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
 const REDIS_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
 
+// Hashes come back as null-prototype maps, so a field lookup like
+// players['constructor'] or players['__proto__'] can never hit Object.prototype.
+// Object.assign copies an own "__proto__" key as a plain field (no setter here).
+const nullProto = (o) => Object.assign(Object.create(null), o || {});
+
 function redisStore() {
   // The SDK JSON-serializes on write and deserializes on read — store plain
   // objects and never stringify ourselves, or values end up double-encoded.
@@ -28,7 +33,7 @@ function redisStore() {
       return set === 1;
     },
     async hgetallJSON(key) {
-      return (await redis.hgetall(key)) || {};
+      return nullProto(await redis.hgetall(key));
     },
     async incr(key, ttlSec) {
       const n = await redis.incr(key);
@@ -59,18 +64,18 @@ function fileStore() {
     async getJSON(key) { return read(key); },
     async setJSON(key, val) { write(key, val); },
     async hsetJSON(key, field, val) {
-      const o = read(key) || {};
+      const o = nullProto(read(key));
       o[field] = val;
       write(key, o);
     },
     async hsetnxJSON(key, field, val) {
-      const o = read(key) || {};
-      if (Object.prototype.hasOwnProperty.call(o, field)) return false;
+      const o = nullProto(read(key));
+      if (Object.hasOwn(o, field)) return false;
       o[field] = val;
       write(key, o);
       return true;
     },
-    async hgetallJSON(key) { return read(key) || {}; },
+    async hgetallJSON(key) { return nullProto(read(key)); },
     async incr(key, ttlSec) {
       const now = Date.now();
       let o = read(key);

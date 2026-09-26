@@ -10,6 +10,7 @@ const {
   WEEKLY_ROUNDS, WEEKLY_ROUND_SEC, isoWeek, weeklyDeck, weeklyMode, isTestName, groupPastWeeks,
 } = require('./_lib/weekly.js');
 const { rateLimit } = require('./_lib/ratelimit.js');
+const { tokenMatches } = require('./_lib/auth.js');
 
 const GRACE_MS = 5000;
 const ATTEMPT_TTL = 6 * 3600;
@@ -146,7 +147,7 @@ module.exports = async (req, res) => {
 
   if (req.body?.action === 'guess') {
     const attempt = await store.getJSON(attemptKey(week, name));
-    if (!attempt || attempt.token !== req.body?.token) return fail(res, 403, 'no_active_attempt', 'no active attempt');
+    if (!attempt || !tokenMatches(req.body?.token, attempt.token)) return fail(res, 403, 'no_active_attempt', 'no active attempt');
     if (attempt.roundIdx >= WEEKLY_ROUNDS) return fail(res, 409, 'attempt_finished', 'attempt is finished');
 
     let locIdx = null, randomDeck = null, loc;

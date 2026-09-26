@@ -52,4 +52,19 @@ describe('kv store', () => {
     expect((await store.hgetallJSON(key)).g.pts).toBe(100);
     await store.del(key);
   });
+
+  it('hashes have no prototype, so prototype-key fields are plain data', async () => {
+    const key = uniq();
+    const empty = await store.hgetallJSON(key);
+    expect(Object.getPrototypeOf(empty)).toBeNull();
+    expect(empty.constructor).toBeUndefined();
+    expect(empty.toString).toBeUndefined();
+    await store.hsetJSON(key, '__proto__', { token: 't' });
+    expect(await store.hsetnxJSON(key, 'constructor', { pts: 1 })).toBe(true);
+    const all = await store.hgetallJSON(key);
+    expect(Object.keys(all).sort()).toEqual(['__proto__', 'constructor']);
+    expect(Object.getPrototypeOf(all)).toBeNull();
+    expect(Object.prototype).not.toHaveProperty('token');
+    await store.del(key);
+  });
 });

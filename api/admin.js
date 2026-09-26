@@ -1,14 +1,9 @@
 // Admin actions, gated by the ADMIN_TOKEN env var (server-side check only).
-const crypto = require('crypto');
 const { getSql, ensureTable, ensureArchiveTable } = require('./_lib/db.js');
 const { sendJSON, fail } = require('./_lib/rooms.js');
 const { rateLimit } = require('./_lib/ratelimit.js');
+const { tokenMatches } = require('./_lib/auth.js');
 
-// hash both sides so timingSafeEqual gets equal-length buffers
-const tokenMatches = (given, expected) => crypto.timingSafeEqual(
-  crypto.createHash('sha256').update(String(given || '')).digest(),
-  crypto.createHash('sha256').update(expected).digest(),
-);
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return fail(res, 405, 'method_not_allowed', 'method not allowed');

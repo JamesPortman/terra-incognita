@@ -465,6 +465,7 @@
           <li>The host token is a separate secret — only its holder can start rounds, end them early, or advance the game.</li>
           <li>Session tokens live in per-tab <code>sessionStorage</code> — refresh rejoins, but tabs are independent participants.</li>
           <li>Admin actions (clear / archive the leaderboard) sit behind an <code>ADMIN_TOKEN</code>-gated endpoint; the token compares in constant time (hashed <code>timingSafeEqual</code>).</li>
+          <li>Every token check (player, host, weekly attempt, admin) goes through one helper, <code>api/_lib/auth.js</code>: an absent or empty token never matches, and the compare is constant-time (hashed <code>timingSafeEqual</code>). Player ids resolve only as own properties of the room's player hash, and hashes load with a null prototype — an id like <code>constructor</code> or <code>__proto__</code> can't reach <code>Object.prototype</code>.</li>
         </ul>
       </div>
       <div class="card">
