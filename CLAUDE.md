@@ -47,7 +47,10 @@ auto-deploy is off.
   `build/build-photos.sh` and an entry in `build/photo-credits.json`
   (`node build/build-credits.js --fetch`); assemble.js refuses to build without
   it and `__tests__/credits.test.js` checks the page. Never invent authors or
-  licences. Code is MIT (`LICENSE`); `NOTICE` lists what isn't.
+  licences. A round photo must not name its answer: when an article's lead
+  image is a logo, map or sign, add the key to `photoquery` in
+  build-photos.sh (a Commons search, or a pinned `File:`); the chosen file is
+  recorded in `build/photo-overrides.json` and credited from there. Code is MIT (`LICENSE`); `NOTICE` lists what isn't.
 - Local dev uses the real production Neon + Upstash (env from `.env.local`);
   clean up any non-`E2E-` test data you create.
 - The game is served both at a domain root and under `/terra-incognita` (proxied

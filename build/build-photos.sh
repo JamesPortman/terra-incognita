@@ -214,7 +214,81 @@ titles=(
   itaipu "Itaipu Dam"
 )
 
+# Some articles' lead image is a logo, a map or a sign that names the place,
+# which gives the round away. For these, search Wikimedia Commons instead and
+# take the first photo whose file name isn't a logo/map/sign/flag/seal (and
+# isn't an SVG/PNG or under 800 px wide). A value starting "File:" pins that
+# exact Commons file. The file chosen is recorded in build/photo-overrides.json,
+# which build-credits.js credits in place of the article's lead image.
+# To re-pick one: delete photos/<key>.jpg, edit its query (or pin a File:), rerun.
+typeset -A photoquery
+photoquery=(
+  cntower "CN Tower Toronto skyline"
+  rockefeller "30 Rockefeller Plaza building"
+  montevideo "Palacio Salvo Montevideo"
+  kennedyspace "Kennedy Space Center Launch Complex 39A"
+  fishermanswharf "Fisherman's Wharf San Francisco boats"
+  santamonicapier "Santa Monica Pier Ferris wheel"
+  panamacanal "Miraflores Locks ship Panama Canal"
+  oldhavana "Old Havana street"
+  jericoacoara "Jericoacoara beach dune"
+)
+OVERRIDES=build/photo-overrides.json
+[[ -s $OVERRIDES ]] || echo '{}' > $OVERRIDES
+
+# Prints "<file name>\t<thumbnail url>" for a Commons search, or for a pinned File:.
+commons_pick() {
+  python3 - "$1" <<'PY'
+import json, re, sys, urllib.parse, urllib.request
+q = sys.argv[1]
+UA = {"User-Agent": "GeoGame-build/1.0 (james@portman.ca)"}
+def get(params):
+    url = "https://commons.wikimedia.org/w/api.php?" + urllib.parse.urlencode({**params, "format": "json"})
+    return json.load(urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=30))
+info = {"prop": "imageinfo", "iiprop": "url|size", "iiurlwidth": "1100"}
+if q.startswith("File:"):
+    pages = get({"action": "query", "titles": q, **info})["query"]["pages"].values()
+else:
+    d = get({"action": "query", "generator": "search", "gsrnamespace": "6",
+             "gsrsearch": q + " filetype:bitmap", "gsrlimit": "30", **info})
+    pages = sorted(d.get("query", {}).get("pages", {}).values(), key=lambda p: p.get("index", 0))
+bad = re.compile(r"logo|map|sign|flag|seal|coat of arms|emblem|locator|diagram|plan\b|plano|mapa|carte|karte|\.(svg|png|gif|tiff?)$", re.I)
+for p in pages:
+    ii = (p.get("imageinfo") or [{}])[0]
+    name = p["title"][len("File:"):]
+    if not ii.get("thumburl"):
+        continue
+    if not q.startswith("File:") and (bad.search(name) or ii.get("width", 0) < 800):
+        continue
+    print(name + "\t" + ii["thumburl"])
+    break
+PY
+}
+
 for key in ${(k)titles}; do
+  if [[ -n "${photoquery[$key]:-}" ]]; then
+    if [[ -s "photos/${key}.jpg" ]] && python3 -c "import json,sys;sys.exit(0 if sys.argv[1] in json.load(open('$OVERRIDES')) else 1)" "$key"; then
+      echo "KEEP  $key (override)"
+      continue
+    fi
+    pick=$(commons_pick "${photoquery[$key]}" 2>/dev/null)
+    if [[ -z "$pick" ]]; then
+      echo "MISS  $key (no Commons photo for: ${photoquery[$key]})"
+      continue
+    fi
+    file=${pick%%$'\t'*}; url=${pick#*$'\t'}
+    curl -sL -A "GeoGame-build/1.0 (james@portman.ca)" -o "photos/${key}.raw" "$url"
+    sips -Z 900 -s format jpeg -s formatOptions 55 "photos/${key}.raw" --out "photos/${key}.jpg" >/dev/null 2>&1
+    rm -f "photos/${key}.raw"
+    if [[ -s "photos/${key}.jpg" ]]; then
+      python3 -c "import json,sys;p=sys.argv[1];d=json.load(open(p));d[sys.argv[2]]=sys.argv[3];open(p,'w').write(json.dumps(dict(sorted(d.items())),indent=2,ensure_ascii=False)+'\n')" "$OVERRIDES" "$key" "$file"
+      echo "OK    $key  ← $file"
+    else
+      echo "FAIL  $key ($url)"
+    fi
+    sleep 1
+    continue
+  fi
   if [[ -s "photos/${key}.jpg" ]]; then
     echo "KEEP  $key"
     continue

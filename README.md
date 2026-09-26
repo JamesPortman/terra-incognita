@@ -24,7 +24,9 @@ node build/assemble.js   # writes index.html and credits.html, stamps version.tx
 - `build/map-data.js` — generated SVG world map (regenerate with `build/build-map.js`,
   which needs `countries.geo.json` from https://github.com/johan/world.geo.json)
 - `photos/` — location photos (the only copy); `build/build-photos.sh` fetches missing ones
-  from Wikipedia straight into it. Add a location by appending it to `shared/locations.js`
+  from Wikipedia straight into it. Where an article's lead image is a logo, map or sign that
+  gives the answer away, its `photoquery` entry takes a Commons photo instead (recorded in
+  `build/photo-overrides.json`). Add a location by appending it to `shared/locations.js`
   (append-only), adding its es/pt/fa text to `shared/locations.i18n.js`, its article title to
   `build/build-photos.sh` and its photo, then crediting it with `node build/build-credits.js --fetch`;
   deck membership lives in `shared/decks.js`.
