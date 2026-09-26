@@ -1,810 +1,1803 @@
 {
   "acropolis": {
     "article": "Acropolis of Athens",
-    "articleUrl": "https://en.wikipedia.org/wiki/Acropolis_of_Athens"
+    "articleUrl": "https://en.wikipedia.org/wiki/Acropolis_of_Athens",
+    "file": "1029 Acropolis of Athens in Greece at night Photo by Giles Laurent.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:1029_Acropolis_of_Athens_in_Greece_at_night_Photo_by_Giles_Laurent.jpg",
+    "author": "Giles Laurent",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "alcatraz": {
     "article": "Alcatraz Island",
-    "articleUrl": "https://en.wikipedia.org/wiki/Alcatraz_Island"
+    "articleUrl": "https://en.wikipedia.org/wiki/Alcatraz_Island",
+    "file": "Alcatraz 2021.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Alcatraz_2021.jpg",
+    "author": "Chris6d",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "alterdochao": {
     "article": "Alter do Chão, Pará",
-    "articleUrl": "https://en.wikipedia.org/wiki/Alter_do_Ch%C3%A3o,_Par%C3%A1"
+    "articleUrl": "https://en.wikipedia.org/wiki/Alter_do_Ch%C3%A3o,_Par%C3%A1",
+    "file": "Alter do Chão Brazil The Beach.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Alter_do_Ch%C3%A3o_Brazil_The_Beach.jpg",
+    "author": "Richard N Horne",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "amazontheatre": {
     "article": "Amazon Theatre",
-    "articleUrl": "https://en.wikipedia.org/wiki/Amazon_Theatre"
+    "articleUrl": "https://en.wikipedia.org/wiki/Amazon_Theatre",
+    "file": "Noite no Teatro Amazonas (cropped).jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Noite_no_Teatro_Amazonas_(cropped).jpg",
+    "author": "Susan Valentim",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "angelfalls": {
     "article": "Angel Falls",
-    "articleUrl": "https://en.wikipedia.org/wiki/Angel_Falls"
+    "articleUrl": "https://en.wikipedia.org/wiki/Angel_Falls",
+    "file": "SaltoAngel1.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:SaltoAngel1.jpg",
+    "author": "Rich Childs",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
   },
   "angkor": {
     "article": "Angkor Wat",
-    "articleUrl": "https://en.wikipedia.org/wiki/Angkor_Wat"
+    "articleUrl": "https://en.wikipedia.org/wiki/Angkor_Wat",
+    "file": "Angkor Wat.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Angkor_Wat.jpg",
+    "author": "Bjørn Christian Tørrissen",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "antelopecanyon": {
     "article": "Antelope Canyon",
-    "articleUrl": "https://en.wikipedia.org/wiki/Antelope_Canyon"
+    "articleUrl": "https://en.wikipedia.org/wiki/Antelope_Canyon",
+    "file": "USA Antelope-Canyon.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:USA_Antelope-Canyon.jpg",
+    "author": "Lucas Löffler",
+    "license": "Public domain"
   },
   "arenal": {
     "article": "Arenal Volcano",
-    "articleUrl": "https://en.wikipedia.org/wiki/Arenal_Volcano"
+    "articleUrl": "https://en.wikipedia.org/wiki/Arenal_Volcano",
+    "file": "Arenal volcano (70785p) (cropped).jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Arenal_volcano_(70785p)_(cropped).jpg",
+    "author": "Rhododendrites",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "arequipa": {
     "article": "Arequipa",
-    "articleUrl": "https://en.wikipedia.org/wiki/Arequipa"
+    "articleUrl": "https://en.wikipedia.org/wiki/Arequipa",
+    "file": "Plaza de Armas, Arequipa 2006.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Plaza_de_Armas%2C_Arequipa_2006.jpg",
+    "author": "Hans Brian Brandsberg Berg",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
   },
   "atacama": {
     "article": "Valle de la Luna (Chile)",
-    "articleUrl": "https://en.wikipedia.org/wiki/Valle_de_la_Luna_(Chile)"
+    "articleUrl": "https://en.wikipedia.org/wiki/Valle_de_la_Luna_(Chile)",
+    "file": "Valle della Luna 01.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Valle_della_Luna_01.jpg",
+    "author": "Davide guallini",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
   },
   "athabascafalls": {
     "article": "Athabasca Falls",
-    "articleUrl": "https://en.wikipedia.org/wiki/Athabasca_Falls"
+    "articleUrl": "https://en.wikipedia.org/wiki/Athabasca_Falls",
+    "file": "Athabasca Falls - Jasper.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Athabasca_Falls_-_Jasper.jpg",
+    "author": "Jakub Fryš",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "banos": {
     "article": "Baños de Agua Santa",
-    "articleUrl": "https://en.wikipedia.org/wiki/Ba%C3%B1os_de_Agua_Santa"
+    "articleUrl": "https://en.wikipedia.org/wiki/Ba%C3%B1os_de_Agua_Santa",
+    "file": "Baños, Ecuador.JPG",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Ba%C3%B1os%2C_Ecuador.JPG",
+    "author": "Eddyl",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
   },
   "bariloche": {
     "article": "San Carlos de Bariloche",
-    "articleUrl": "https://en.wikipedia.org/wiki/San_Carlos_de_Bariloche"
+    "articleUrl": "https://en.wikipedia.org/wiki/San_Carlos_de_Bariloche",
+    "file": "Catedral desde el Lago Nahuel Huapi - panoramio.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Catedral_desde_el_Lago_Nahuel_Huapi_-_panoramio.jpg",
+    "author": "enzofloyd",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
   },
   "bealestreet": {
     "article": "Beale Street",
-    "articleUrl": "https://en.wikipedia.org/wiki/Beale_Street"
+    "articleUrl": "https://en.wikipedia.org/wiki/Beale_Street",
+    "file": "Beale Street 060523.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Beale_Street_060523.jpg",
+    "author": "Jeremy Atherton",
+    "license": "CC BY-SA 2.5",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.5"
   },
   "bigben": {
     "article": "Big Ben",
-    "articleUrl": "https://en.wikipedia.org/wiki/Big_Ben"
+    "articleUrl": "https://en.wikipedia.org/wiki/Big_Ben",
+    "file": "Elizabeth Tower and the north front of the Palace of Westminster, London.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Elizabeth_Tower_and_the_north_front_of_the_Palace_of_Westminster%2C_London.jpg",
+    "author": "Christian David",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "bluemosque": {
     "article": "Sultan Ahmed Mosque",
-    "articleUrl": "https://en.wikipedia.org/wiki/Sultan_Ahmed_Mosque"
+    "articleUrl": "https://en.wikipedia.org/wiki/Sultan_Ahmed_Mosque",
+    "file": "Istanbul (34223582516) (cropped).jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Istanbul_(34223582516)_(cropped).jpg",
+    "author": "Pedro Szekely from Los Angeles, USA",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0"
   },
   "bonito": {
     "article": "Bonito, Mato Grosso do Sul",
-    "articleUrl": "https://en.wikipedia.org/wiki/Bonito,_Mato_Grosso_do_Sul"
+    "articleUrl": "https://en.wikipedia.org/wiki/Bonito,_Mato_Grosso_do_Sul",
+    "file": "Abismo Anhumas, Bonito, MS.JPG",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Abismo_Anhumas%2C_Bonito%2C_MS.JPG",
+    "author": "Caio Vilela",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
   },
   "borabora": {
     "article": "Bora Bora",
-    "articleUrl": "https://en.wikipedia.org/wiki/Bora_Bora"
+    "articleUrl": "https://en.wikipedia.org/wiki/Bora_Bora",
+    "file": "Bora Bora ISS006.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Bora_Bora_ISS006.jpg",
+    "author": "NASA Johnson Space Center",
+    "license": "Public domain"
   },
   "brandenburg": {
     "article": "Brandenburg Gate",
-    "articleUrl": "https://en.wikipedia.org/wiki/Brandenburg_Gate"
+    "articleUrl": "https://en.wikipedia.org/wiki/Brandenburg_Gate",
+    "file": "Brandenburger Tor abends.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Brandenburger_Tor_abends.jpg",
+    "author": "Thomas Wolf, www.foto-tw.de",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
   },
   "brasilia": {
     "article": "Cathedral of Brasília",
-    "articleUrl": "https://en.wikipedia.org/wiki/Cathedral_of_Bras%C3%ADlia"
+    "articleUrl": "https://en.wikipedia.org/wiki/Cathedral_of_Bras%C3%ADlia",
+    "file": "Catedral Metropolitana de Brasilia.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Catedral_Metropolitana_de_Brasilia.jpg",
+    "author": "Tissiana de A. de Souza",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "brooklynbridge": {
     "article": "Brooklyn Bridge",
-    "articleUrl": "https://en.wikipedia.org/wiki/Brooklyn_Bridge"
+    "articleUrl": "https://en.wikipedia.org/wiki/Brooklyn_Bridge",
+    "file": "Brooklyn Bridge and the Lower Manhattan skyline from Pebble Beach, New York.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Brooklyn_Bridge_and_the_Lower_Manhattan_skyline_from_Pebble_Beach%2C_New_York.jpg",
+    "author": "Christian David",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "brycecanyon": {
     "article": "Bryce Canyon National Park",
-    "articleUrl": "https://en.wikipedia.org/wiki/Bryce_Canyon_National_Park"
+    "articleUrl": "https://en.wikipedia.org/wiki/Bryce_Canyon_National_Park",
+    "file": "Inspiration Point Bryce Canyon November 2018 panorama.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Inspiration_Point_Bryce_Canyon_November_2018_panorama.jpg",
+    "author": "King of Hearts",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "buzios": {
     "article": "Armação dos Búzios",
-    "articleUrl": "https://en.wikipedia.org/wiki/Arma%C3%A7%C3%A3o_dos_B%C3%BAzios"
+    "articleUrl": "https://en.wikipedia.org/wiki/Arma%C3%A7%C3%A3o_dos_B%C3%BAzios",
+    "file": "Vista da Igreja de Sant'Anna (Armação dos Búzios).jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Vista_da_Igreja_de_Sant'Anna_(Arma%C3%A7%C3%A3o_dos_B%C3%BAzios).jpg",
+    "author": "Arthur Bomfim",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "cabosanlucas": {
     "article": "Arch of Cabo San Lucas",
-    "articleUrl": "https://en.wikipedia.org/wiki/Arch_of_Cabo_San_Lucas"
+    "articleUrl": "https://en.wikipedia.org/wiki/Arch_of_Cabo_San_Lucas",
+    "file": "Cabo San Lucas Los Arcos 3.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Cabo_San_Lucas_Los_Arcos_3.jpg",
+    "author": "User:Stan Shebs",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
   },
   "caminito": {
     "article": "Caminito",
-    "articleUrl": "https://en.wikipedia.org/wiki/Caminito"
+    "articleUrl": "https://en.wikipedia.org/wiki/Caminito",
+    "file": "Caminito - Entrada.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Caminito_-_Entrada.jpg",
+    "author": "Hernán Piñera",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0"
   },
   "canaima": {
     "article": "Canaima National Park",
-    "articleUrl": "https://en.wikipedia.org/wiki/Canaima_National_Park"
+    "articleUrl": "https://en.wikipedia.org/wiki/Canaima_National_Park",
+    "file": "Wadakapiapo Yuruani tepuy 2010.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Wadakapiapo_Yuruani_tepuy_2010.jpg",
+    "author": "Paolo Costa Baldi",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
   },
   "canoaquebrada": {
     "article": "Canoa Quebrada",
-    "articleUrl": "https://en.wikipedia.org/wiki/Canoa_Quebrada"
+    "articleUrl": "https://en.wikipedia.org/wiki/Canoa_Quebrada",
+    "file": "Canoa Quebrada, Ceará, Brazil.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Canoa_Quebrada%2C_Cear%C3%A1%2C_Brazil.jpg",
+    "author": "Flaviohmg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "capilano": {
     "article": "Capilano Suspension Bridge",
-    "articleUrl": "https://en.wikipedia.org/wiki/Capilano_Suspension_Bridge"
+    "articleUrl": "https://en.wikipedia.org/wiki/Capilano_Suspension_Bridge",
+    "file": "Capilano Suspension Bridge, Vancouver, Canada (July 2016) 1.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Capilano_Suspension_Bridge%2C_Vancouver%2C_Canada_(July_2016)_1.jpg",
+    "author": "Markus Säynevirta",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "cappadocia": {
     "article": "Cappadocia",
-    "articleUrl": "https://en.wikipedia.org/wiki/Cappadocia"
+    "articleUrl": "https://en.wikipedia.org/wiki/Cappadocia",
+    "file": "Cappadocia balloon trip, Ortahisar Castle (11893715185).jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Cappadocia_balloon_trip%2C_Ortahisar_Castle_(11893715185).jpg",
+    "author": "Arian Zwegers from Brussels, Belgium",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
   },
   "caracol": {
     "article": "Caracol Falls",
-    "articleUrl": "https://en.wikipedia.org/wiki/Caracol_Falls"
+    "articleUrl": "https://en.wikipedia.org/wiki/Caracol_Falls",
+    "file": "Caracol falls (2 April 2008).jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Caracol_falls_(2_April_2008).jpg",
+    "author": "Tiago Fioreze",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
   },
   "cartagena": {
     "article": "Cartagena, Colombia",
-    "articleUrl": "https://en.wikipedia.org/wiki/Cartagena,_Colombia"
+    "articleUrl": "https://en.wikipedia.org/wiki/Cartagena,_Colombia",
+    "file": "Museo Naval del Caribe.JPG",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Museo_Naval_del_Caribe.JPG",
+    "author": "Sgonzalezb",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
   },
   "centralpark": {
     "article": "Central Park",
-    "articleUrl": "https://en.wikipedia.org/wiki/Central_Park"
+    "articleUrl": "https://en.wikipedia.org/wiki/Central_Park",
+    "file": "Global Citizen Festival Central Park New York City from NYonAir (15351915006).jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Global_Citizen_Festival_Central_Park_New_York_City_from_NYonAir_(15351915006).jpg",
+    "author": "Anthony Quintano from Hillsborough, NJ, United States",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
   },
   "chapada": {
     "article": "Chapada Diamantina National Park",
-    "articleUrl": "https://en.wikipedia.org/wiki/Chapada_Diamantina_National_Park"
+    "articleUrl": "https://en.wikipedia.org/wiki/Chapada_Diamantina_National_Park",
+    "file": "Chapada diamantina.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Chapada_diamantina.jpg",
+    "author": "roney",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
   },
   "chapadaguimaraes": {
     "article": "Chapada dos Guimarães National Park",
-    "articleUrl": "https://en.wikipedia.org/wiki/Chapada_dos_Guimar%C3%A3es_National_Park"
+    "articleUrl": "https://en.wikipedia.org/wiki/Chapada_dos_Guimar%C3%A3es_National_Park",
+    "file": "Cachoeira Véu de Noiva.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Cachoeira_V%C3%A9u_de_Noiva.jpg",
+    "author": "Jeff Belmonte",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
   },
   "charlesbridge": {
     "article": "Charles Bridge",
-    "articleUrl": "https://en.wikipedia.org/wiki/Charles_Bridge"
+    "articleUrl": "https://en.wikipedia.org/wiki/Charles_Bridge",
+    "file": "Prague 07-2016 view from Lesser Town Tower of Charles Bridge img3.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Prague_07-2016_view_from_Lesser_Town_Tower_of_Charles_Bridge_img3.jpg",
+    "author": "A.Savin",
+    "license": "FAL",
+    "licenseUrl": "http://artlibre.org/licence/lal/en"
   },
   "chateaufrontenac": {
     "article": "Château Frontenac",
-    "articleUrl": "https://en.wikipedia.org/wiki/Ch%C3%A2teau_Frontenac"
+    "articleUrl": "https://en.wikipedia.org/wiki/Ch%C3%A2teau_Frontenac",
+    "file": "Château Frontenac 02.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Ch%C3%A2teau_Frontenac_02.jpg",
+    "author": "Bernard Gagnon",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "chichenitza": {
     "article": "Chichen Itza",
-    "articleUrl": "https://en.wikipedia.org/wiki/Chichen_Itza"
+    "articleUrl": "https://en.wikipedia.org/wiki/Chichen_Itza",
+    "file": "Chichen Itza 3.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Chichen_Itza_3.jpg",
+    "author": "Daniel Schwen",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "chiloe": {
     "article": "Churches of Chiloé",
-    "articleUrl": "https://en.wikipedia.org/wiki/Churches_of_Chilo%C3%A9"
+    "articleUrl": "https://en.wikipedia.org/wiki/Churches_of_Chilo%C3%A9",
+    "file": "Iglesia de Achao-fachada.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Iglesia_de_Achao-fachada.jpg",
+    "author": "Rodrigo Basaure",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
   },
   "cliffsofmoher": {
     "article": "Cliffs of Moher",
-    "articleUrl": "https://en.wikipedia.org/wiki/Cliffs_of_Moher"
+    "articleUrl": "https://en.wikipedia.org/wiki/Cliffs_of_Moher",
+    "file": "Cliffs-Of-Moher-OBriens-From-South.JPG",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Cliffs-Of-Moher-OBriens-From-South.JPG",
+    "author": "Bjørn Christian Tørrissen",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
   },
   "cloudgate": {
     "article": "Millennium Park",
-    "articleUrl": "https://en.wikipedia.org/wiki/Millennium_Park"
+    "articleUrl": "https://en.wikipedia.org/wiki/Millennium_Park",
+    "file": "Millennium Square, Chicago, Illinois (9181701264).jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Millennium_Square%2C_Chicago%2C_Illinois_(9181701264).jpg",
+    "author": "Ken Lund from Reno, Nevada, USA",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0"
   },
   "cntower": {
     "article": "CN Tower",
-    "articleUrl": "https://en.wikipedia.org/wiki/CN_Tower"
+    "articleUrl": "https://en.wikipedia.org/wiki/CN_Tower",
+    "file": "CN Tower logo.png",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:CN_Tower_logo.png",
+    "author": "Unknown authorUnknown author",
+    "license": "Public domain"
   },
   "cocora": {
     "article": "Cocora Valley",
-    "articleUrl": "https://en.wikipedia.org/wiki/Cocora_Valley"
+    "articleUrl": "https://en.wikipedia.org/wiki/Cocora_Valley",
+    "file": "Valle del cocora - general view.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Valle_del_cocora_-_general_view.jpg",
+    "author": "Angela Calle and Daniel Di Palma",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "colcacanyon": {
     "article": "Colca Canyon",
-    "articleUrl": "https://en.wikipedia.org/wiki/Colca_Canyon"
+    "articleUrl": "https://en.wikipedia.org/wiki/Colca_Canyon",
+    "file": "Colca Canyon Puno.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Colca_Canyon_Puno.jpg",
+    "author": "world-wide-gifts.com",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0"
   },
   "colosseum": {
     "article": "Colosseum",
-    "articleUrl": "https://en.wikipedia.org/wiki/Colosseum"
+    "articleUrl": "https://en.wikipedia.org/wiki/Colosseum",
+    "file": "Colosseo 2020.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Colosseo_2020.jpg",
+    "author": "FeaturedPics",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "congonhas": {
     "article": "Sanctuary of Bom Jesus do Congonhas",
-    "articleUrl": "https://en.wikipedia.org/wiki/Sanctuary_of_Bom_Jesus_do_Congonhas"
+    "articleUrl": "https://en.wikipedia.org/wiki/Sanctuary_of_Bom_Jesus_do_Congonhas",
+    "file": "Congonhas santuario matosinhos.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Congonhas_santuario_matosinhos.jpg",
+    "author": "Halleypo",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
   },
   "copacabana": {
     "article": "Copacabana, Rio de Janeiro",
-    "articleUrl": "https://en.wikipedia.org/wiki/Copacabana,_Rio_de_Janeiro"
+    "articleUrl": "https://en.wikipedia.org/wiki/Copacabana,_Rio_de_Janeiro",
+    "file": "Praia de Copacabana - Rio de Janeiro, Brasil.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Praia_de_Copacabana_-_Rio_de_Janeiro%2C_Brasil.jpg",
+    "author": "[www.flickr.com/photos/26912057@N02/ bisonlux]",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
   },
   "coppercanyon": {
     "article": "Copper Canyon",
-    "articleUrl": "https://en.wikipedia.org/wiki/Copper_Canyon"
+    "articleUrl": "https://en.wikipedia.org/wiki/Copper_Canyon",
+    "file": "Barranca del cobre 2.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Barranca_del_cobre_2.jpg",
+    "author": "No machine-readable author provided. JensUhlenbrock~commonswiki assumed (based on copyright claims).",
+    "license": "Public domain"
   },
   "cotopaxi": {
     "article": "Cotopaxi",
-    "articleUrl": "https://en.wikipedia.org/wiki/Cotopaxi"
+    "articleUrl": "https://en.wikipedia.org/wiki/Cotopaxi",
+    "file": "Cotopaxi volcano 2008-06-27T1322.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Cotopaxi_volcano_2008-06-27T1322.jpg",
+    "author": "Gerard Prins",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
   },
   "curitibabotanic": {
     "article": "Botanical Garden of Curitiba",
-    "articleUrl": "https://en.wikipedia.org/wiki/Botanical_Garden_of_Curitiba"
+    "articleUrl": "https://en.wikipedia.org/wiki/Botanical_Garden_of_Curitiba",
+    "file": "Curitiba Botanic Garden.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Curitiba_Botanic_Garden.jpg",
+    "author": "Alan Franco",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
   },
   "cusco": {
     "article": "Cusco",
-    "articleUrl": "https://en.wikipedia.org/wiki/Cusco"
+    "articleUrl": "https://en.wikipedia.org/wiki/Cusco",
+    "file": "Vista Calle Suecia.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Vista_Calle_Suecia.jpg",
+    "author": "tomscoffin",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
   },
   "delicatearch": {
     "article": "Delicate Arch",
-    "articleUrl": "https://en.wikipedia.org/wiki/Delicate_Arch"
+    "articleUrl": "https://en.wikipedia.org/wiki/Delicate_Arch",
+    "file": "Delicate arch sunset.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Delicate_arch_sunset.jpg",
+    "author": "Palacemusic",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
   },
   "denali": {
     "article": "Denali",
-    "articleUrl": "https://en.wikipedia.org/wiki/Denali"
+    "articleUrl": "https://en.wikipedia.org/wiki/Denali",
+    "file": "Wonder Lake and Denali.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Wonder_Lake_and_Denali.jpg",
+    "author": "Denali National Park and Preserve",
+    "license": "Public domain"
   },
   "dubai": {
     "article": "Burj Khalifa",
-    "articleUrl": "https://en.wikipedia.org/wiki/Burj_Khalifa"
+    "articleUrl": "https://en.wikipedia.org/wiki/Burj_Khalifa",
+    "file": "Burj Khalifa (worlds tallest building) and the Dubai skyline (25781049892).jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Burj_Khalifa_(worlds_tallest_building)_and_the_Dubai_skyline_(25781049892).jpg",
+    "author": "imran shahabuddin",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
   },
   "easterisland": {
     "article": "Moai",
-    "articleUrl": "https://en.wikipedia.org/wiki/Moai"
+    "articleUrl": "https://en.wikipedia.org/wiki/Moai",
+    "file": "AhuTongariki.JPG",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:AhuTongariki.JPG",
+    "author": "Ian Sewell",
+    "license": "CC BY 2.5",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.5"
   },
   "eiffel": {
     "article": "Eiffel Tower",
-    "articleUrl": "https://en.wikipedia.org/wiki/Eiffel_Tower"
+    "articleUrl": "https://en.wikipedia.org/wiki/Eiffel_Tower",
+    "file": "Tour Eiffel Wikimedia Commons (cropped).jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Tour_Eiffel_Wikimedia_Commons_(cropped).jpg",
+    "author": "Benh LIEU SONG",
+    "license": "Public domain"
   },
   "elcapitan": {
     "article": "El Capitan",
-    "articleUrl": "https://en.wikipedia.org/wiki/El_Capitan"
+    "articleUrl": "https://en.wikipedia.org/wiki/El_Capitan",
+    "file": "El Capitan en Californie.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:El_Capitan_en_Californie.jpg",
+    "author": "Clementp.fr",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "empirestate": {
     "article": "Empire State Building",
-    "articleUrl": "https://en.wikipedia.org/wiki/Empire_State_Building"
+    "articleUrl": "https://en.wikipedia.org/wiki/Empire_State_Building",
+    "file": "Empire State Building (aerial view).jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Empire_State_Building_(aerial_view).jpg",
+    "author": "Sam Valadi",
+    "license": "Public domain"
   },
   "escadaria": {
     "article": "Escadaria Selarón",
-    "articleUrl": "https://en.wikipedia.org/wiki/Escadaria_Selar%C3%B3n"
+    "articleUrl": "https://en.wikipedia.org/wiki/Escadaria_Selar%C3%B3n",
+    "file": "Selaron Stairs, Rio de Janeiro, Brasil.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Selaron_Stairs%2C_Rio_de_Janeiro%2C_Brasil.jpg",
+    "author": "Marshallhenrie",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "fenway": {
     "article": "Fenway Park",
-    "articleUrl": "https://en.wikipedia.org/wiki/Fenway_Park"
+    "articleUrl": "https://en.wikipedia.org/wiki/Fenway_Park",
+    "file": "131023-F-PR861-033 Hanscom participates in World Series pregame events.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:131023-F-PR861-033_Hanscom_participates_in_World_Series_pregame_events.jpg",
+    "author": "Rick Berry",
+    "license": "Public domain"
   },
   "fernandodenoronha": {
     "article": "Fernando de Noronha",
-    "articleUrl": "https://en.wikipedia.org/wiki/Fernando_de_Noronha"
+    "articleUrl": "https://en.wikipedia.org/wiki/Fernando_de_Noronha",
+    "file": "EDUARDO MURUCI - BAIA DOS PORCOS-(recorte).jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:EDUARDO_MURUCI_-_BAIA_DOS_PORCOS-(recorte).jpg",
+    "author": "Eduardo Muruci",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
   },
   "fishermanswharf": {
     "article": "Fisherman's Wharf, San Francisco",
-    "articleUrl": "https://en.wikipedia.org/wiki/Fisherman's_Wharf,_San_Francisco"
+    "articleUrl": "https://en.wikipedia.org/wiki/Fisherman's_Wharf,_San_Francisco",
+    "file": "Fishermans Wharf Sign, SF, CA, jjron 25.03.2012.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Fishermans_Wharf_Sign%2C_SF%2C_CA%2C_jjron_25.03.2012.jpg",
+    "author": "jjron",
+    "license": "GFDL 1.2",
+    "licenseUrl": "http://www.gnu.org/licenses/old-licenses/fdl-1.2.html"
   },
   "fitzroy": {
     "article": "Fitz Roy",
-    "articleUrl": "https://en.wikipedia.org/wiki/Fitz_Roy"
+    "articleUrl": "https://en.wikipedia.org/wiki/Fitz_Roy",
+    "file": "1952-01-31 - Lionel Terray, Fitzroy, dédicace - NB.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:1952-01-31_-_Lionel_Terray%2C_Fitzroy%2C_d%C3%A9dicace_-_NB.jpg",
+    "author": "Lionel Terray",
+    "license": "CC0",
+    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en"
   },
   "frenchquarter": {
     "article": "French Quarter",
-    "articleUrl": "https://en.wikipedia.org/wiki/French_Quarter"
+    "articleUrl": "https://en.wikipedia.org/wiki/French_Quarter",
+    "file": "French Quarter, looking north with Mississippi River to the right 2011.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:French_Quarter%2C_looking_north_with_Mississippi_River_to_the_right_2011.jpg",
+    "author": "Chris Litherland",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
   },
   "fuji": {
     "article": "Mount Fuji",
-    "articleUrl": "https://en.wikipedia.org/wiki/Mount_Fuji"
+    "articleUrl": "https://en.wikipedia.org/wiki/Mount_Fuji",
+    "file": "View of Mount Fuji from Ōwakudani 20211202.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:View_of_Mount_Fuji_from_%C5%8Cwakudani_20211202.jpg",
+    "author": "Suicasmo",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "galapagos": {
     "article": "Galápagos Islands",
-    "articleUrl": "https://en.wikipedia.org/wiki/Gal%C3%A1pagos_Islands"
+    "articleUrl": "https://en.wikipedia.org/wiki/Gal%C3%A1pagos_Islands",
+    "file": "Lobo marino (Zalophus californianus wollebaeki), Punta Pitt, isla de San Cristóbal, islas Galápagos, Ecuador, 2015-07-24, DD 11.JPG",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Lobo_marino_(Zalophus_californianus_wollebaeki)%2C_Punta_Pitt%2C_isla_de_San_Crist%C3%B3bal%2C_islas_Gal%C3%A1pagos%2C_Ecuador%2C_2015-07-24%2C_DD_11.JPG",
+    "author": "Diego Delso",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "gardensbay": {
     "article": "Gardens by the Bay",
-    "articleUrl": "https://en.wikipedia.org/wiki/Gardens_by_the_Bay"
+    "articleUrl": "https://en.wikipedia.org/wiki/Gardens_by_the_Bay",
+    "file": "Supertree Grove, Gardens by the Bay, Singapore - 20120712-02.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Supertree_Grove%2C_Gardens_by_the_Bay%2C_Singapore_-_20120712-02.jpg",
+    "author": "Shiny Things.",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
   },
   "gatewayarch": {
     "article": "Gateway Arch",
-    "articleUrl": "https://en.wikipedia.org/wiki/Gateway_Arch"
+    "articleUrl": "https://en.wikipedia.org/wiki/Gateway_Arch",
+    "file": "St Louis night expblend cropped.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:St_Louis_night_expblend_cropped.jpg",
+    "author": "St_Louis_night_expblend.jpg: Daniel Schwen derivative work: ←fetchcomms",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/"
   },
   "genipabu": {
     "article": "Genipabu",
-    "articleUrl": "https://en.wikipedia.org/wiki/Genipabu"
+    "articleUrl": "https://en.wikipedia.org/wiki/Genipabu",
+    "file": "Genipabu-Natal.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Genipabu-Natal.jpg",
+    "author": "No machine-readable author provided. Gegio69 assumed (based on copyright claims).",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/"
   },
   "giza": {
     "article": "Great Pyramid of Giza",
-    "articleUrl": "https://en.wikipedia.org/wiki/Great_Pyramid_of_Giza"
+    "articleUrl": "https://en.wikipedia.org/wiki/Great_Pyramid_of_Giza",
+    "file": "Great Pyramid of Giza - Pyramid of Khufu.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Great_Pyramid_of_Giza_-_Pyramid_of_Khufu.jpg",
+    "author": "Douwe C. van der Zee",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "goldengate": {
     "article": "Golden Gate Bridge",
-    "articleUrl": "https://en.wikipedia.org/wiki/Golden_Gate_Bridge"
+    "articleUrl": "https://en.wikipedia.org/wiki/Golden_Gate_Bridge",
+    "file": "Golden Gate Bridge as seen from Battery East.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Golden_Gate_Bridge_as_seen_from_Battery_East.jpg",
+    "author": "Frank Schulenburg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "goldentemple": {
     "article": "Golden Temple",
-    "articleUrl": "https://en.wikipedia.org/wiki/Golden_Temple"
+    "articleUrl": "https://en.wikipedia.org/wiki/Golden_Temple",
+    "file": "The Golden Temple of Amrithsar 7.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:The_Golden_Temple_of_Amrithsar_7.jpg",
+    "author": "Shagil Kannur",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "gramado": {
     "article": "Gramado",
-    "articleUrl": "https://en.wikipedia.org/wiki/Gramado"
+    "articleUrl": "https://en.wikipedia.org/wiki/Gramado",
+    "file": "GRAMADO - RIO GRANDE DO SUL - BRASIL BY AUGUSTO JANISCKI JUNIOR (14281900109).jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:GRAMADO_-_RIO_GRANDE_DO_SUL_-_BRASIL_BY_AUGUSTO_JANISCKI_JUNIOR_(14281900109).jpg",
+    "author": "AUGUSTO JANISKI JUNIOR",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
   },
   "grandcanyon": {
     "article": "Grand Canyon",
-    "articleUrl": "https://en.wikipedia.org/wiki/Grand_Canyon"
+    "articleUrl": "https://en.wikipedia.org/wiki/Grand_Canyon",
+    "file": "Canyon River Tree (165872763).jpeg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Canyon_River_Tree_(165872763).jpeg",
+    "author": "Lennart Sikkema",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0"
   },
   "greatwall": {
     "article": "Mutianyu",
-    "articleUrl": "https://en.wikipedia.org/wiki/Mutianyu"
+    "articleUrl": "https://en.wikipedia.org/wiki/Mutianyu",
+    "file": "Great Wall of China July 2006.JPG",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Great_Wall_of_China_July_2006.JPG",
+    "author": "Velatrix",
+    "license": "CC0",
+    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en"
   },
   "griffith": {
     "article": "Griffith Observatory",
-    "articleUrl": "https://en.wikipedia.org/wiki/Griffith_Observatory"
+    "articleUrl": "https://en.wikipedia.org/wiki/Griffith_Observatory",
+    "file": "Griffith observatory 2006.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Griffith_observatory_2006.jpg",
+    "author": "Matthew Field",
+    "license": "CC BY 2.5",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.5"
   },
   "guanajuato": {
     "article": "Guanajuato (city)",
-    "articleUrl": "https://en.wikipedia.org/wiki/Guanajuato_(city)"
+    "articleUrl": "https://en.wikipedia.org/wiki/Guanajuato_(city)",
+    "file": "Vista aérea de Guanajuato.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Vista_a%C3%A9rea_de_Guanajuato.jpg",
+    "author": "Carlos ZGZ",
+    "license": "CC0",
+    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en"
   },
   "guatape": {
     "article": "El Peñón de Guatapé",
-    "articleUrl": "https://en.wikipedia.org/wiki/El_Pe%C3%B1%C3%B3n_de_Guatap%C3%A9"
+    "articleUrl": "https://en.wikipedia.org/wiki/El_Pe%C3%B1%C3%B3n_de_Guatap%C3%A9",
+    "file": "El Peñol de Guatapé (The Rock of Guatape) 2017-04-10.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:El_Pe%C3%B1ol_de_Guatap%C3%A9_(The_Rock_of_Guatape)_2017-04-10.jpg",
+    "author": "Sebastian Reategui",
+    "license": "CC0",
+    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en"
   },
   "halong": {
     "article": "Ha Long Bay",
-    "articleUrl": "https://en.wikipedia.org/wiki/Ha_Long_Bay"
+    "articleUrl": "https://en.wikipedia.org/wiki/Ha_Long_Bay",
+    "file": "Ha Long Bay in 2019.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Ha_Long_Bay_in_2019.jpg",
+    "author": "Taewangkorea",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "hercilioluz": {
     "article": "Hercílio Luz Bridge",
-    "articleUrl": "https://en.wikipedia.org/wiki/Herc%C3%ADlio_Luz_Bridge"
+    "articleUrl": "https://en.wikipedia.org/wiki/Herc%C3%ADlio_Luz_Bridge",
+    "file": "Ponte Hercilio Luz - Florianopolis - Santa Catarina.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Ponte_Hercilio_Luz_-_Florianopolis_-_Santa_Catarina.jpg",
+    "author": "Beto Quissak",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "hollywoodsign": {
     "article": "Hollywood Sign",
-    "articleUrl": "https://en.wikipedia.org/wiki/Hollywood_Sign"
+    "articleUrl": "https://en.wikipedia.org/wiki/Hollywood_Sign",
+    "file": "Hollywood sign (8485145044).jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Hollywood_sign_(8485145044).jpg",
+    "author": "Gnaphron",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0"
   },
   "hopewellrocks": {
     "article": "Hopewell Rocks",
-    "articleUrl": "https://en.wikipedia.org/wiki/Hopewell_Rocks"
+    "articleUrl": "https://en.wikipedia.org/wiki/Hopewell_Rocks",
+    "file": "Sandstone in Canada - IMG 0791 (11385934064).jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Sandstone_in_Canada_-_IMG_0791_(11385934064).jpg",
+    "author": "Maciej",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0"
   },
   "horseshoebend": {
     "article": "Horseshoe Bend (Arizona)",
-    "articleUrl": "https://en.wikipedia.org/wiki/Horseshoe_Bend_(Arizona)"
+    "articleUrl": "https://en.wikipedia.org/wiki/Horseshoe_Bend_(Arizona)",
+    "file": "Grand Canyon Horseshoe Bend.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Grand_Canyon_Horseshoe_Bend.jpg",
+    "author": "Thomas Wolf, www.foto-tw.de",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
   },
   "huacachina": {
     "article": "Huacachina",
-    "articleUrl": "https://en.wikipedia.org/wiki/Huacachina"
+    "articleUrl": "https://en.wikipedia.org/wiki/Huacachina",
+    "file": "Oasis de Huacachina, Ica, Perú, 2015-07-29, DD 18.JPG",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Oasis_de_Huacachina%2C_Ica%2C_Per%C3%BA%2C_2015-07-29%2C_DD_18.JPG",
+    "author": "Diego Delso",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "ibirapuera": {
     "article": "Ibirapuera Park",
-    "articleUrl": "https://en.wikipedia.org/wiki/Ibirapuera_Park"
+    "articleUrl": "https://en.wikipedia.org/wiki/Ibirapuera_Park",
+    "file": "Parque do ibirapuera visto do céu.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Parque_do_ibirapuera_visto_do_c%C3%A9u.jpg",
+    "author": "Fernando Stankuns",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "iguazufalls": {
     "article": "Iguazu Falls",
-    "articleUrl": "https://en.wikipedia.org/wiki/Iguazu_Falls"
+    "articleUrl": "https://en.wikipedia.org/wiki/Iguazu_Falls",
+    "file": "Aerial Foz de Iguaçu 26 Nov 2005.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Aerial_Foz_de_Igua%C3%A7u_26_Nov_2005.jpg",
+    "author": "Mariordo (Mario Roberto Durán Ortiz)",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "ilhagrande": {
     "article": "Ilha Grande",
-    "articleUrl": "https://en.wikipedia.org/wiki/Ilha_Grande"
+    "articleUrl": "https://en.wikipedia.org/wiki/Ilha_Grande",
+    "file": "View Ilha Grande.JPG",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:View_Ilha_Grande.JPG",
+    "author": "Claus Bunks aka Afrobrasil on flickr",
+    "license": "Public domain"
   },
   "inhotim": {
     "article": "Inhotim",
-    "articleUrl": "https://en.wikipedia.org/wiki/Inhotim"
+    "articleUrl": "https://en.wikipedia.org/wiki/Inhotim",
+    "file": "Instituto Inhotim (7).jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Instituto_Inhotim_(7).jpg",
+    "author": "Jmarciocruz",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
   },
   "ipanema": {
     "article": "Ipanema",
-    "articleUrl": "https://en.wikipedia.org/wiki/Ipanema"
+    "articleUrl": "https://en.wikipedia.org/wiki/Ipanema",
+    "file": "Forte de Copacabana panorama.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Forte_de_Copacabana_panorama.jpg",
+    "author": "Gabriel Heusi/Brasil2016.gov.br",
+    "license": "CC BY 3.0 br",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/br/deed.en"
   },
   "itaimbezinho": {
     "article": "Aparados da Serra National Park",
-    "articleUrl": "https://en.wikipedia.org/wiki/Aparados_da_Serra_National_Park"
+    "articleUrl": "https://en.wikipedia.org/wiki/Aparados_da_Serra_National_Park",
+    "file": "Itaimbézinho Canyon 2006.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Itaimb%C3%A9zinho_Canyon_2006.jpg",
+    "author": "Valdiney Pimenta from Campinas - SP, Brazil",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
   },
   "itaipu": {
     "article": "Itaipu Dam",
-    "articleUrl": "https://en.wikipedia.org/wiki/Itaipu_Dam"
+    "articleUrl": "https://en.wikipedia.org/wiki/Itaipu_Dam",
+    "file": "Itaipu geral.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Itaipu_geral.jpg",
+    "author": "Jonas de Carvalho",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0"
   },
   "jalapao": {
     "article": "Jalapão",
-    "articleUrl": "https://en.wikipedia.org/wiki/Jalap%C3%A3o"
+    "articleUrl": "https://en.wikipedia.org/wiki/Jalap%C3%A3o",
+    "file": "Dunas do deserto do Jalapão.JPG",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Dunas_do_deserto_do_Jalap%C3%A3o.JPG",
+    "author": "Bmleite1",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
   },
   "jeffersonmemorial": {
     "article": "Jefferson Memorial",
-    "articleUrl": "https://en.wikipedia.org/wiki/Jefferson_Memorial"
+    "articleUrl": "https://en.wikipedia.org/wiki/Jefferson_Memorial",
+    "file": "JeffersonMemorialNightFB.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:JeffersonMemorialNightFB.jpg",
+    "author": "Brian Hamfeldt",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "jericoacoara": {
     "article": "Jericoacoara",
-    "articleUrl": "https://en.wikipedia.org/wiki/Jericoacoara"
+    "articleUrl": "https://en.wikipedia.org/wiki/Jericoacoara",
+    "file": "Ceara Municip JijocadeJericoacoara.svg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Ceara_Municip_JijocadeJericoacoara.svg",
+    "author": "Raphael Lorenzeto de Abreu",
+    "license": "CC BY 2.5",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.5"
   },
   "kennedyspace": {
     "article": "Kennedy Space Center",
-    "articleUrl": "https://en.wikipedia.org/wiki/Kennedy_Space_Center"
+    "articleUrl": "https://en.wikipedia.org/wiki/Kennedy_Space_Center",
+    "file": "NASA logo (2023 colors).svg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:NASA_logo_(2023_colors).svg",
+    "author": "NASA",
+    "license": "Public domain"
   },
   "keywest": {
     "article": "Key West",
-    "articleUrl": "https://en.wikipedia.org/wiki/Key_West"
+    "articleUrl": "https://en.wikipedia.org/wiki/Key_West",
+    "file": "Southernmost point buoy, NE view.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Southernmost_point_buoy%2C_NE_view.jpg",
+    "author": "Radomianin",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "kinkakuji": {
     "article": "Kinkaku-ji",
-    "articleUrl": "https://en.wikipedia.org/wiki/Kinkaku-ji"
+    "articleUrl": "https://en.wikipedia.org/wiki/Kinkaku-ji",
+    "file": "Golden Pavilion Kinkaku-ji water mirror 2024.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Golden_Pavilion_Kinkaku-ji_water_mirror_2024.jpg",
+    "author": "Nacaru",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "lacerda": {
     "article": "Lacerda Elevator",
-    "articleUrl": "https://en.wikipedia.org/wiki/Lacerda_Elevator"
+    "articleUrl": "https://en.wikipedia.org/wiki/Lacerda_Elevator",
+    "file": "Elevador Lacerda 7610.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Elevador_Lacerda_7610.jpg",
+    "author": "Paul R. Burley",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "lakelouise": {
     "article": "Lake Louise (Alberta)",
-    "articleUrl": "https://en.wikipedia.org/wiki/Lake_Louise_(Alberta)"
+    "articleUrl": "https://en.wikipedia.org/wiki/Lake_Louise_(Alberta)",
+    "file": "1 lake louise pano 2019.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:1_lake_louise_pano_2019.jpg",
+    "author": "Chensiyuan",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "lamano": {
     "article": "La Mano de Punta del Este",
-    "articleUrl": "https://en.wikipedia.org/wiki/La_Mano_de_Punta_del_Este"
+    "articleUrl": "https://en.wikipedia.org/wiki/La_Mano_de_Punta_del_Este",
+    "file": "Thehandofpuntadeleste.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Thehandofpuntadeleste.jpg",
+    "author": "Coolcaesar",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
   },
   "lapa": {
     "article": "Carioca Aqueduct",
-    "articleUrl": "https://en.wikipedia.org/wiki/Carioca_Aqueduct"
+    "articleUrl": "https://en.wikipedia.org/wiki/Carioca_Aqueduct",
+    "file": "At Rio de Janeiro 2019 129.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:At_Rio_de_Janeiro_2019_129.jpg",
+    "author": "Photograph by Mike Peel (www.mikepeel.net).",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "lapaz": {
     "article": "La Paz",
-    "articleUrl": "https://en.wikipedia.org/wiki/La_Paz"
+    "articleUrl": "https://en.wikipedia.org/wiki/La_Paz",
+    "file": "Vista del centro de La Paz.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Vista_del_centro_de_La_Paz.jpg",
+    "author": "Parallelepiped09",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "lasvegasstrip": {
     "article": "Las Vegas Strip",
-    "articleUrl": "https://en.wikipedia.org/wiki/Las_Vegas_Strip"
+    "articleUrl": "https://en.wikipedia.org/wiki/Las_Vegas_Strip",
+    "file": "Las Vegas Strip 09 2017 4897.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Las_Vegas_Strip_09_2017_4897.jpg",
+    "author": "Mariordo (Mario Roberto Durán Ortiz)",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "lencois": {
     "article": "Lençóis Maranhenses National Park",
-    "articleUrl": "https://en.wikipedia.org/wiki/Len%C3%A7%C3%B3is_Maranhenses_National_Park"
+    "articleUrl": "https://en.wikipedia.org/wiki/Len%C3%A7%C3%B3is_Maranhenses_National_Park",
+    "file": "Lençóis Maranhenses 2018.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Len%C3%A7%C3%B3is_Maranhenses_2018.jpg",
+    "author": "Julius Dadalti",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "liberty": {
     "article": "Statue of Liberty",
-    "articleUrl": "https://en.wikipedia.org/wiki/Statue_of_Liberty"
+    "articleUrl": "https://en.wikipedia.org/wiki/Statue_of_Liberty",
+    "file": "Front view of Statue of Liberty (cropped).jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Front_view_of_Statue_of_Liberty_(cropped).jpg",
+    "author": "AskALotl",
+    "license": "CC0",
+    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en"
   },
   "libertybell": {
     "article": "Liberty Bell",
-    "articleUrl": "https://en.wikipedia.org/wiki/Liberty_Bell"
+    "articleUrl": "https://en.wikipedia.org/wiki/Liberty_Bell",
+    "file": "Liberty Bell 2017a.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Liberty_Bell_2017a.jpg",
+    "author": "William Zhang",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
   },
   "lincolnmemorial": {
     "article": "Lincoln Memorial",
-    "articleUrl": "https://en.wikipedia.org/wiki/Lincoln_Memorial"
+    "articleUrl": "https://en.wikipedia.org/wiki/Lincoln_Memorial",
+    "file": "Lincoln Memorial east side.JPG",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Lincoln_Memorial_east_side.JPG",
+    "author": "Martin Falbisoner",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
   },
   "lofoten": {
     "article": "Lofoten",
-    "articleUrl": "https://en.wikipedia.org/wiki/Lofoten"
+    "articleUrl": "https://en.wikipedia.org/wiki/Lofoten",
+    "file": "Moskenes Reinebringen lub 2025-07-21 img09 Aussicht.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Moskenes_Reinebringen_lub_2025-07-21_img09_Aussicht.jpg",
+    "author": "Lukas Beck",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0"
   },
   "lombardstreet": {
     "article": "Lombard Street (San Francisco)",
-    "articleUrl": "https://en.wikipedia.org/wiki/Lombard_Street_(San_Francisco)"
+    "articleUrl": "https://en.wikipedia.org/wiki/Lombard_Street_(San_Francisco)",
+    "file": "Lombard Street 2020.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Lombard_Street_2020.jpg",
+    "author": "Christopher Michel",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "machupicchu": {
     "article": "Machu Picchu",
-    "articleUrl": "https://en.wikipedia.org/wiki/Machu_Picchu"
+    "articleUrl": "https://en.wikipedia.org/wiki/Machu_Picchu",
+    "file": "Machu Picchu, 2023 (012).jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Machu_Picchu%2C_2023_(012).jpg",
+    "author": "Draceane",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "magickingdom": {
     "article": "Magic Kingdom",
-    "articleUrl": "https://en.wikipedia.org/wiki/Magic_Kingdom"
+    "articleUrl": "https://en.wikipedia.org/wiki/Magic_Kingdom",
+    "file": "Cinderella Castle, Magic Kingdom (2026).jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Cinderella_Castle%2C_Magic_Kingdom_(2026).jpg",
+    "author": "TheWanderingTraders",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "maracana": {
     "article": "Maracanã Stadium",
-    "articleUrl": "https://en.wikipedia.org/wiki/Maracan%C3%A3_Stadium"
+    "articleUrl": "https://en.wikipedia.org/wiki/Maracan%C3%A3_Stadium",
+    "file": "Maracana 2022.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Maracana_2022.jpg",
+    "author": "Arne Müseler",
+    "license": "CC BY-SA 3.0 de",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/de/deed.en"
   },
   "maragogi": {
     "article": "Maragogi",
-    "articleUrl": "https://en.wikipedia.org/wiki/Maragogi"
+    "articleUrl": "https://en.wikipedia.org/wiki/Maragogi",
+    "file": "Maragogi Alagoas Brasil.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Maragogi_Alagoas_Brasil.jpg",
+    "author": "Tiago Leite",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
   },
   "marrakesh": {
     "article": "Jemaa el-Fnaa",
-    "articleUrl": "https://en.wikipedia.org/wiki/Jemaa_el-Fnaa"
+    "articleUrl": "https://en.wikipedia.org/wiki/Jemaa_el-Fnaa",
+    "file": "Djemaa el Fna.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Djemaa_el_Fna.jpg",
+    "author": "Boris Macek",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
   },
   "masp": {
     "article": "São Paulo Museum of Art",
-    "articleUrl": "https://en.wikipedia.org/wiki/S%C3%A3o_Paulo_Museum_of_Art"
+    "articleUrl": "https://en.wikipedia.org/wiki/S%C3%A3o_Paulo_Museum_of_Art",
+    "file": "Vista aérea de la Avenida Paulista de São Paulo 05.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Vista_a%C3%A9rea_de_la_Avenida_Paulista_de_S%C3%A3o_Paulo_05.jpg",
+    "author": "ProtoplasmaKid",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "matterhorn": {
     "article": "Matterhorn",
-    "articleUrl": "https://en.wikipedia.org/wiki/Matterhorn"
+    "articleUrl": "https://en.wikipedia.org/wiki/Matterhorn",
+    "file": "Matterhorn from Domhütte - 2.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Matterhorn_from_Domh%C3%BCtte_-_2.jpg",
+    "author": "Photo: chil, on Camptocamp.org Derivative work:Zacharie Grossen",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
   },
   "meetingofwaters": {
     "article": "Meeting of Waters",
-    "articleUrl": "https://en.wikipedia.org/wiki/Meeting_of_Waters"
+    "articleUrl": "https://en.wikipedia.org/wiki/Meeting_of_Waters",
+    "file": "Encontro das Águas - Manaus.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Encontro_das_%C3%81guas_-_Manaus.jpg",
+    "author": "Portal da Copa",
+    "license": "CC BY 3.0 br",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/br/deed.en"
   },
   "mesaverde": {
     "article": "Mesa Verde National Park",
-    "articleUrl": "https://en.wikipedia.org/wiki/Mesa_Verde_National_Park"
+    "articleUrl": "https://en.wikipedia.org/wiki/Mesa_Verde_National_Park",
+    "file": "Cliff Palace-Colorado-Mesa Verde NP.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Cliff_Palace-Colorado-Mesa_Verde_NP.jpg",
+    "author": "Tobi 87",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "monserrate": {
     "article": "Monserrate",
-    "articleUrl": "https://en.wikipedia.org/wiki/Monserrate"
+    "articleUrl": "https://en.wikipedia.org/wiki/Monserrate",
+    "file": "2017 Bogotá Basílica del Señor Caído de Monserrate.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:2017_Bogot%C3%A1_Bas%C3%ADlica_del_Se%C3%B1or_Ca%C3%ADdo_de_Monserrate.jpg",
+    "author": "Felipe Restrepo Acosta",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "montevideo": {
     "article": "Palacio Salvo",
-    "articleUrl": "https://en.wikipedia.org/wiki/Palacio_Salvo"
+    "articleUrl": "https://en.wikipedia.org/wiki/Palacio_Salvo",
+    "file": "Palacio Salvo Logo.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Palacio_Salvo_Logo.jpg",
+    "author": "Coquimbo58",
+    "license": "CC0",
+    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en"
   },
   "monumentvalley": {
     "article": "Monument Valley",
-    "articleUrl": "https://en.wikipedia.org/wiki/Monument_Valley"
+    "articleUrl": "https://en.wikipedia.org/wiki/Monument_Valley",
+    "file": "Monument Valley, Utah, USA (23611451292).jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Monument_Valley%2C_Utah%2C_USA_(23611451292).jpg",
+    "author": "Domenico Convertini",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0"
   },
   "moraine": {
     "article": "Moraine Lake",
-    "articleUrl": "https://en.wikipedia.org/wiki/Moraine_Lake"
+    "articleUrl": "https://en.wikipedia.org/wiki/Moraine_Lake",
+    "file": "Moraine Lake 17092005.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Moraine_Lake_17092005.jpg",
+    "author": "Gorgo",
+    "license": "Public domain"
   },
   "mountrushmore": {
     "article": "Mount Rushmore",
-    "articleUrl": "https://en.wikipedia.org/wiki/Mount_Rushmore"
+    "articleUrl": "https://en.wikipedia.org/wiki/Mount_Rushmore",
+    "file": "Mount Rushmore detail view (100MP).jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Mount_Rushmore_detail_view_(100MP).jpg",
+    "author": "Thomas Wolf, www.foto-tw.de",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
   },
   "multnomah": {
     "article": "Multnomah Falls",
-    "articleUrl": "https://en.wikipedia.org/wiki/Multnomah_Falls"
+    "articleUrl": "https://en.wikipedia.org/wiki/Multnomah_Falls",
+    "file": "Multnomah Falls on 2 August 2012.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Multnomah_Falls_on_2_August_2012.jpg",
+    "author": "John Fowler from Placitas, NM, USA",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
   },
   "nashvillebroadway": {
     "article": "Broadway (Nashville, Tennessee)",
-    "articleUrl": "https://en.wikipedia.org/wiki/Broadway_(Nashville,_Tennessee)"
+    "articleUrl": "https://en.wikipedia.org/wiki/Broadway_(Nashville,_Tennessee)",
+    "file": "Broadway (Nashville) lights.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Broadway_(Nashville)_lights.jpg",
+    "author": "dconvertini",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0"
   },
   "navypier": {
     "article": "Navy Pier",
-    "articleUrl": "https://en.wikipedia.org/wiki/Navy_Pier"
+    "articleUrl": "https://en.wikipedia.org/wiki/Navy_Pier",
+    "file": "Navy Pier 1190x1585 (cropped).jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Navy_Pier_1190x1585_(cropped).jpg",
+    "author": "Hbodine",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "nazca": {
     "article": "Nazca lines",
-    "articleUrl": "https://en.wikipedia.org/wiki/Nazca_lines"
+    "articleUrl": "https://en.wikipedia.org/wiki/Nazca_lines",
+    "file": "Líneas de Nazca, Nazca, Perú, 2015-07-29, DD 49.JPG",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:L%C3%ADneas_de_Nazca%2C_Nazca%2C_Per%C3%BA%2C_2015-07-29%2C_DD_49.JPG",
+    "author": "Diego Delso",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "neuschwanstein": {
     "article": "Neuschwanstein Castle",
-    "articleUrl": "https://en.wikipedia.org/wiki/Neuschwanstein_Castle"
+    "articleUrl": "https://en.wikipedia.org/wiki/Neuschwanstein_Castle",
+    "file": "Schloss Neuschwanstein 2013.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Schloss_Neuschwanstein_2013.jpg",
+    "author": "Thomas Wolf, www.foto-tw.de",
+    "license": "CC BY-SA 3.0 de",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/de/deed.en"
   },
   "niagara": {
     "article": "Niagara Falls",
-    "articleUrl": "https://en.wikipedia.org/wiki/Niagara_Falls"
+    "articleUrl": "https://en.wikipedia.org/wiki/Niagara_Falls",
+    "file": "3Falls Niagara.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:3Falls_Niagara.jpg",
+    "author": "Saffron Blaze",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
   },
   "niteroi": {
     "article": "Niterói Contemporary Art Museum",
-    "articleUrl": "https://en.wikipedia.org/wiki/Niter%C3%B3i_Contemporary_Art_Museum"
+    "articleUrl": "https://en.wikipedia.org/wiki/Niter%C3%B3i_Contemporary_Art_Museum",
+    "file": "Contemporary Art Museum in Niteroi City 4.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Contemporary_Art_Museum_in_Niteroi_City_4.jpg",
+    "author": "Donatas Dabravolskas",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "notredamemtl": {
     "article": "Notre-Dame Basilica (Montreal)",
-    "articleUrl": "https://en.wikipedia.org/wiki/Notre-Dame_Basilica_(Montreal)"
+    "articleUrl": "https://en.wikipedia.org/wiki/Notre-Dame_Basilica_(Montreal)",
+    "file": "Basílica de Notre-Dame, Montreal, Canadá, 2017-08-11, DD 26-28 HDR.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Bas%C3%ADlica_de_Notre-Dame%2C_Montreal%2C_Canad%C3%A1%2C_2017-08-11%2C_DD_26-28_HDR.jpg",
+    "author": "Diego Delso",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "obelisco": {
     "article": "Obelisco de Buenos Aires",
-    "articleUrl": "https://en.wikipedia.org/wiki/Obelisco_de_Buenos_Aires"
+    "articleUrl": "https://en.wikipedia.org/wiki/Obelisco_de_Buenos_Aires",
+    "file": "Buenos Aires (20234294752).jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Buenos_Aires_(20234294752).jpg",
+    "author": "Rodrigo Paredes from Ciudad Autónoma de Buenos Aires, Argentina",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
   },
   "oia": {
     "article": "Oia,_Greece",
-    "articleUrl": "https://en.wikipedia.org/wiki/Oia,_Greece"
+    "articleUrl": "https://en.wikipedia.org/wiki/Oia,_Greece",
+    "file": "Oia sunset - panoramio (2).jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Oia_sunset_-_panoramio_(2).jpg",
+    "author": "TomasEE",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0"
   },
   "oldfaithful": {
     "article": "Old Faithful",
-    "articleUrl": "https://en.wikipedia.org/wiki/Old_Faithful"
+    "articleUrl": "https://en.wikipedia.org/wiki/Old_Faithful",
+    "file": "Yellowstone National Park (WY, USA), Old Faithful Geyser -- 2022 -- 2599.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Yellowstone_National_Park_(WY%2C_USA)%2C_Old_Faithful_Geyser_--_2022_--_2599.jpg",
+    "author": "Dietmar Rabich",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "oldhavana": {
     "article": "Old Havana",
-    "articleUrl": "https://en.wikipedia.org/wiki/Old_Havana"
+    "articleUrl": "https://en.wikipedia.org/wiki/Old_Havana",
+    "file": "Havana Map - Habana Vieja.png",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Havana_Map_-_Habana_Vieja.png",
+    "author": "Dэя-Бøяg",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/"
   },
   "oldsanjuan": {
     "article": "Old San Juan",
-    "articleUrl": "https://en.wikipedia.org/wiki/Old_San_Juan"
+    "articleUrl": "https://en.wikipedia.org/wiki/Old_San_Juan",
+    "file": "Castillo San Felipe del Morro aerial, May 2024 - 01.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Castillo_San_Felipe_del_Morro_aerial%2C_May_2024_-_01.jpg",
+    "author": "Nils Huenerfuerst",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0"
   },
   "olinda": {
     "article": "Olinda",
-    "articleUrl": "https://en.wikipedia.org/wiki/Olinda"
+    "articleUrl": "https://en.wikipedia.org/wiki/Olinda",
+    "file": "Convento de São Francisco - Olinda - Pernambuco - Brasil.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Convento_de_S%C3%A3o_Francisco_-_Olinda_-_Pernambuco_-_Brasil.jpg",
+    "author": "Valdiney Pimenta",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
   },
   "ollantaytambo": {
     "article": "Ollantaytambo",
-    "articleUrl": "https://en.wikipedia.org/wiki/Ollantaytambo"
+    "articleUrl": "https://en.wikipedia.org/wiki/Ollantaytambo",
+    "file": "Ollantaytambo - Heiliges Tal.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Ollantaytambo_-_Heiliges_Tal.jpg",
+    "author": "FLASHPACKER TRAVELGUIDE",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0"
   },
   "ouropreto": {
     "article": "Ouro Preto",
-    "articleUrl": "https://en.wikipedia.org/wiki/Ouro_Preto"
+    "articleUrl": "https://en.wikipedia.org/wiki/Ouro_Preto",
+    "file": "Conjunto arquitetônico e urbanístico de Ouro Preto.JPG",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Conjunto_arquitet%C3%B4nico_e_urban%C3%ADstico_de_Ouro_Preto.JPG",
+    "author": "Raquel Mendes Silva",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "palenque": {
     "article": "Palenque",
-    "articleUrl": "https://en.wikipedia.org/wiki/Palenque"
+    "articleUrl": "https://en.wikipedia.org/wiki/Palenque",
+    "file": "Palenque Collage.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Palenque_Collage.jpg",
+    "author": "Ricraider",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
   },
   "pampulha": {
     "article": "Pampulha Modern Ensemble",
-    "articleUrl": "https://en.wikipedia.org/wiki/Pampulha_Modern_Ensemble"
+    "articleUrl": "https://en.wikipedia.org/wiki/Pampulha_Modern_Ensemble",
+    "file": "Igreja São Francisco de Assis - Belo Horizonte - 20250409133904.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Igreja_S%C3%A3o_Francisco_de_Assis_-_Belo_Horizonte_-_20250409133904.jpg",
+    "author": "Donatas Dabravolskas",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "panamacanal": {
     "article": "Panama Canal",
-    "articleUrl": "https://en.wikipedia.org/wiki/Panama_Canal"
+    "articleUrl": "https://en.wikipedia.org/wiki/Panama_Canal",
+    "file": "Panama Canal Map EN.svg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Panama_Canal_Map_EN.svg",
+    "author": "Thoroe",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0"
   },
   "pantanal": {
     "article": "Pantanal",
-    "articleUrl": "https://en.wikipedia.org/wiki/Pantanal"
+    "articleUrl": "https://en.wikipedia.org/wiki/Pantanal",
+    "file": "Pantanal, south-central South America 5170.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Pantanal%2C_south-central_South_America_5170.jpg",
+    "author": "Alicia Yo",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/"
   },
   "paraty": {
     "article": "Paraty",
-    "articleUrl": "https://en.wikipedia.org/wiki/Paraty"
+    "articleUrl": "https://en.wikipedia.org/wiki/Paraty",
+    "file": "Paraty 05.JPG",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Paraty_05.JPG",
+    "author": "Vani Ribeiro",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
   },
   "parliamenthill": {
     "article": "Parliament Hill, Ottawa",
-    "articleUrl": "https://en.wikipedia.org/wiki/Parliament_Hill,_Ottawa"
+    "articleUrl": "https://en.wikipedia.org/wiki/Parliament_Hill,_Ottawa",
+    "file": "Ottawa - ON - Stadtansicht.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Ottawa_-_ON_-_Stadtansicht.jpg",
+    "author": "Wladyslaw",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/"
   },
   "peggyscove": {
     "article": "Peggys Cove",
-    "articleUrl": "https://en.wikipedia.org/wiki/Peggys_Cove"
+    "articleUrl": "https://en.wikipedia.org/wiki/Peggys_Cove",
+    "file": "Peggys Cove Harbour 01.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Peggys_Cove_Harbour_01.jpg",
+    "author": "Aconcagua",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
   },
   "pelourinho": {
     "article": "Pelourinho",
-    "articleUrl": "https://en.wikipedia.org/wiki/Pelourinho"
+    "articleUrl": "https://en.wikipedia.org/wiki/Pelourinho",
+    "file": "Centro Histórico Salvador Vista Aérea 2021-0933.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Centro_Hist%C3%B3rico_Salvador_Vista_A%C3%A9rea_2021-0933.jpg",
+    "author": "Paul R. Burley",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "percerock": {
     "article": "Percé Rock",
-    "articleUrl": "https://en.wikipedia.org/wiki/Perc%C3%A9_Rock"
+    "articleUrl": "https://en.wikipedia.org/wiki/Perc%C3%A9_Rock",
+    "file": "Percé, Quebec, Canada 2.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Perc%C3%A9%2C_Quebec%2C_Canada_2.jpg",
+    "author": "Hayden Soloviev",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0"
   },
   "peritomoreno": {
     "article": "Perito Moreno Glacier",
-    "articleUrl": "https://en.wikipedia.org/wiki/Perito_Moreno_Glacier"
+    "articleUrl": "https://en.wikipedia.org/wiki/Perito_Moreno_Glacier",
+    "file": "Perito Moreno Glacier 2023.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Perito_Moreno_Glacier_2023.jpg",
+    "author": "Fernando",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "petra": {
     "article": "Petra",
-    "articleUrl": "https://en.wikipedia.org/wiki/Petra"
+    "articleUrl": "https://en.wikipedia.org/wiki/Petra",
+    "file": "Al Deir Petra.JPG",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Al_Deir_Petra.JPG",
+    "author": "Azurfrog",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
   },
   "petropolis": {
     "article": "Imperial Museum of Brazil",
-    "articleUrl": "https://en.wikipedia.org/wiki/Imperial_Museum_of_Brazil"
+    "articleUrl": "https://en.wikipedia.org/wiki/Imperial_Museum_of_Brazil",
+    "file": "Museu Imperial 03 (cropped).JPG",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Museu_Imperial_03_(cropped).JPG",
+    "author": "Filipo Tardim",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "pikeplace": {
     "article": "Pike Place Market",
-    "articleUrl": "https://en.wikipedia.org/wiki/Pike_Place_Market"
+    "articleUrl": "https://en.wikipedia.org/wiki/Pike_Place_Market",
+    "file": "Pike Place Market Seattle.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Pike_Place_Market_Seattle.jpg",
+    "author": "Daniel Schwen",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "pipa": {
     "article": "Praia da Pipa",
-    "articleUrl": "https://en.wikipedia.org/wiki/Praia_da_Pipa"
+    "articleUrl": "https://en.wikipedia.org/wiki/Praia_da_Pipa",
+    "file": "Praia da Pipa - Portugal (29842085988).jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Praia_da_Pipa_-_Portugal_(29842085988).jpg",
+    "author": "Vitor Oliveira from Torres Vedras, PORTUGAL",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0"
   },
   "plitvice": {
     "article": "Plitvice Lakes National Park",
-    "articleUrl": "https://en.wikipedia.org/wiki/Plitvice_Lakes_National_Park"
+    "articleUrl": "https://en.wikipedia.org/wiki/Plitvice_Lakes_National_Park",
+    "file": "View in Plitvice Lakes National Park.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:View_in_Plitvice_Lakes_National_Park.jpg",
+    "author": "Zysko serhii",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "portodegalinhas": {
     "article": "Porto de Galinhas",
-    "articleUrl": "https://en.wikipedia.org/wiki/Porto_de_Galinhas"
+    "articleUrl": "https://en.wikipedia.org/wiki/Porto_de_Galinhas",
+    "file": "Porto de Galinhas piscinas naturais.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Porto_de_Galinhas_piscinas_naturais.jpg",
+    "author": "Jobosco",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "positano": {
     "article": "Positano",
-    "articleUrl": "https://en.wikipedia.org/wiki/Positano"
+    "articleUrl": "https://en.wikipedia.org/wiki/Positano",
+    "file": "Positano Sunset.JPG",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Positano_Sunset.JPG",
+    "author": "JeCCo",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0"
   },
   "quilotoa": {
     "article": "Quilotoa",
-    "articleUrl": "https://en.wikipedia.org/wiki/Quilotoa"
+    "articleUrl": "https://en.wikipedia.org/wiki/Quilotoa",
+    "file": "Panorama quilotoa crater lake ecuador.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Panorama_quilotoa_crater_lake_ecuador.jpg",
+    "author": "Annom",
+    "license": "Public domain"
   },
   "quito": {
     "article": "Quito",
-    "articleUrl": "https://en.wikipedia.org/wiki/Quito"
+    "articleUrl": "https://en.wikipedia.org/wiki/Quito",
+    "file": "FACHADA ASAMBLEA NACIONAL. QUITO, 20 DE FEBRERO 2020. 01.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:FACHADA_ASAMBLEA_NACIONAL._QUITO%2C_20_DE_FEBRERO_2020._01.jpg",
+    "author": "Asamblea Nacional del Ecuador",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0"
   },
   "rainbowmountain": {
     "article": "Vinicunca",
-    "articleUrl": "https://en.wikipedia.org/wiki/Vinicunca"
+    "articleUrl": "https://en.wikipedia.org/wiki/Vinicunca",
+    "file": "Montañaarcoirisperuabanto.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Monta%C3%B1aarcoirisperuabanto.jpg",
+    "author": "Diego Aldrin Abanto Ricce",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "redsquare": {
     "article": "Red Square",
-    "articleUrl": "https://en.wikipedia.org/wiki/Red_Square"
+    "articleUrl": "https://en.wikipedia.org/wiki/Red_Square",
+    "file": "Kremlin and Red Square.1.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Kremlin_and_Red_Square.1.jpg",
+    "author": "mos.ru",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0"
   },
   "reykjavik": {
     "article": "Hallgrímskirkja",
-    "articleUrl": "https://en.wikipedia.org/wiki/Hallgr%C3%ADmskirkja"
+    "articleUrl": "https://en.wikipedia.org/wiki/Hallgr%C3%ADmskirkja",
+    "file": "Hallgrimskirkja mai 2026.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Hallgrimskirkja_mai_2026.jpg",
+    "author": "Steinninn",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0"
   },
   "rio": {
     "article": "Christ the Redeemer (statue)",
-    "articleUrl": "https://en.wikipedia.org/wiki/Christ_the_Redeemer_(statue)"
+    "articleUrl": "https://en.wikipedia.org/wiki/Christ_the_Redeemer_(statue)",
+    "file": "Christ the Redeemer - Cristo Redentor.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Christ_the_Redeemer_-_Cristo_Redentor.jpg",
+    "author": "Arne Müseler",
+    "license": "CC BY-SA 3.0 de",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/de/deed.en"
   },
   "riverwalk": {
     "article": "San Antonio River Walk",
-    "articleUrl": "https://en.wikipedia.org/wiki/San_Antonio_River_Walk"
+    "articleUrl": "https://en.wikipedia.org/wiki/San_Antonio_River_Walk",
+    "file": "Riverwalk20.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Riverwalk20.jpg",
+    "author": "Kkmd (talk · contribs)",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/"
   },
   "rockefeller": {
     "article": "Rockefeller Center",
-    "articleUrl": "https://en.wikipedia.org/wiki/Rockefeller_Center"
+    "articleUrl": "https://en.wikipedia.org/wiki/Rockefeller_Center",
+    "file": "Rockefeller Center logo.svg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Rockefeller_Center_logo.svg",
+    "author": "Rockefeller Group/Mitsubishi Estate",
+    "license": "Public domain"
   },
   "roraima": {
     "article": "Mount Roraima",
-    "articleUrl": "https://en.wikipedia.org/wiki/Mount_Roraima"
+    "articleUrl": "https://en.wikipedia.org/wiki/Mount_Roraima",
+    "file": "Roraima3 (79).JPG",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Roraima3_(79).JPG",
+    "author": "Paolo Costa Baldi",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
   },
   "sacsayhuaman": {
     "article": "Sacsayhuamán",
-    "articleUrl": "https://en.wikipedia.org/wiki/Sacsayhuam%C3%A1n"
+    "articleUrl": "https://en.wikipedia.org/wiki/Sacsayhuam%C3%A1n",
+    "file": "Sacsayhuamán, Cusco, Perú, 2015-07-31, DD 27.JPG",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Sacsayhuam%C3%A1n%2C_Cusco%2C_Per%C3%BA%2C_2015-07-31%2C_DD_27.JPG",
+    "author": "Diego Delso",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "sagrada": {
     "article": "Sagrada Família",
-    "articleUrl": "https://en.wikipedia.org/wiki/Sagrada_Fam%C3%ADlia"
+    "articleUrl": "https://en.wikipedia.org/wiki/Sagrada_Fam%C3%ADlia",
+    "file": "SF maig 2 cropped.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:SF_maig_2_cropped.jpg",
+    "author": "Canaan",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "santamonicapier": {
     "article": "Santa Monica Pier",
-    "articleUrl": "https://en.wikipedia.org/wiki/Santa_Monica_Pier"
+    "articleUrl": "https://en.wikipedia.org/wiki/Santa_Monica_Pier",
+    "file": "Santa monica pier entrance evening.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Santa_monica_pier_entrance_evening.jpg",
+    "author": "web4camguy",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0"
   },
   "saoluis": {
     "article": "São Luís, Maranhão",
-    "articleUrl": "https://en.wikipedia.org/wiki/S%C3%A3o_Lu%C3%ADs,_Maranh%C3%A3o"
+    "articleUrl": "https://en.wikipedia.org/wiki/S%C3%A3o_Lu%C3%ADs,_Maranh%C3%A3o",
+    "file": "São Luís Aérea.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:S%C3%A3o_Lu%C3%ADs_A%C3%A9rea.jpg",
+    "author": "Lechenet.com",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
   },
   "secathedral": {
     "article": "São Paulo Cathedral",
-    "articleUrl": "https://en.wikipedia.org/wiki/S%C3%A3o_Paulo_Cathedral"
+    "articleUrl": "https://en.wikipedia.org/wiki/S%C3%A3o_Paulo_Cathedral",
+    "file": "Catedral da Sé em São Paulo.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Catedral_da_S%C3%A9_em_S%C3%A3o_Paulo.jpg",
+    "author": "Wilfredor",
+    "license": "CC0",
+    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en"
   },
   "serraorgaos": {
     "article": "Serra dos Órgãos",
-    "articleUrl": "https://en.wikipedia.org/wiki/Serra_dos_%C3%93rg%C3%A3os"
+    "articleUrl": "https://en.wikipedia.org/wiki/Serra_dos_%C3%93rg%C3%A3os",
+    "file": "Dedo De Deus - Vista Teresopolis.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Dedo_De_Deus_-_Vista_Teresopolis.jpg",
+    "author": "Jorge Antonio de Oliveira Vicente",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
   },
   "shibuya": {
     "article": "Shibuya Crossing",
-    "articleUrl": "https://en.wikipedia.org/wiki/Shibuya_Crossing"
+    "articleUrl": "https://en.wikipedia.org/wiki/Shibuya_Crossing",
+    "file": "Shibuya Crossing, Aerial.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Shibuya_Crossing%2C_Aerial.jpg",
+    "author": "David Kernan",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0"
   },
   "signalhill": {
     "article": "Signal Hill, St. John's",
-    "articleUrl": "https://en.wikipedia.org/wiki/Signal_Hill,_St._John's"
+    "articleUrl": "https://en.wikipedia.org/wiki/Signal_Hill,_St._John's",
+    "file": "Cabot Tower, St. John's, Newfoundland, South facing side.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Cabot_Tower%2C_St._John's%2C_Newfoundland%2C_South_facing_side.jpg",
+    "author": "Shhewitt",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "southbeach": {
     "article": "South Beach",
-    "articleUrl": "https://en.wikipedia.org/wiki/South_Beach"
+    "articleUrl": "https://en.wikipedia.org/wiki/South_Beach",
+    "file": "Ocean drive day 2009j.JPG",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Ocean_drive_day_2009j.JPG",
+    "author": "chensiyuan",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "spaceneedle": {
     "article": "Space Needle",
-    "articleUrl": "https://en.wikipedia.org/wiki/Space_Needle"
+    "articleUrl": "https://en.wikipedia.org/wiki/Space_Needle",
+    "file": "Space Needle 2011-07-04.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Space_Needle_2011-07-04.jpg",
+    "author": "Jordon Kalilich",
+    "license": "Public domain"
   },
   "stonehenge": {
     "article": "Stonehenge",
-    "articleUrl": "https://en.wikipedia.org/wiki/Stonehenge"
+    "articleUrl": "https://en.wikipedia.org/wiki/Stonehenge",
+    "file": "Stonehenge2007 07 30.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Stonehenge2007_07_30.jpg",
+    "author": "garethwiscombe",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
   },
   "sugarloaf": {
     "article": "Sugarloaf Mountain",
-    "articleUrl": "https://en.wikipedia.org/wiki/Sugarloaf_Mountain"
+    "articleUrl": "https://en.wikipedia.org/wiki/Sugarloaf_Mountain",
+    "file": "Pão de Açucar - Sugarloaf Mountain - Zuckerhut - 2022.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:P%C3%A3o_de_A%C3%A7ucar_-_Sugarloaf_Mountain_-_Zuckerhut_-_2022.jpg",
+    "author": "Arne Müseler",
+    "license": "CC BY-SA 3.0 de",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/de/deed.en"
   },
   "sydneyopera": {
     "article": "Sydney Opera House",
-    "articleUrl": "https://en.wikipedia.org/wiki/Sydney_Opera_House"
+    "articleUrl": "https://en.wikipedia.org/wiki/Sydney_Opera_House",
+    "file": "Sydney Australia. (21339175489).jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Sydney_Australia._(21339175489).jpg",
+    "author": "Bernard Spragg. NZ from Christchurch, New Zealand",
+    "license": "CC0",
+    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en"
   },
   "tablemountain": {
     "article": "Table Mountain",
-    "articleUrl": "https://en.wikipedia.org/wiki/Table_Mountain"
+    "articleUrl": "https://en.wikipedia.org/wiki/Table_Mountain",
+    "file": "Table Mountain DanieVDM.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Table_Mountain_DanieVDM.jpg",
+    "author": "Danie van der Merwe from Cape Town, South Africa",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
   },
   "tajmahal": {
     "article": "Taj Mahal",
-    "articleUrl": "https://en.wikipedia.org/wiki/Taj_Mahal"
+    "articleUrl": "https://en.wikipedia.org/wiki/Taj_Mahal",
+    "file": "Taj Mahal (Edited).jpeg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Taj_Mahal_(Edited).jpeg",
+    "author": "Yann; edited by Jim Carter",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "tayrona": {
     "article": "Tayrona National Natural Park",
-    "articleUrl": "https://en.wikipedia.org/wiki/Tayrona_National_Natural_Park"
+    "articleUrl": "https://en.wikipedia.org/wiki/Tayrona_National_Natural_Park",
+    "file": "Arrecifes.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Arrecifes.jpg",
+    "author": "Ben Bowes",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
   },
   "teotihuacan": {
     "article": "Teotihuacan",
-    "articleUrl": "https://en.wikipedia.org/wiki/Teotihuacan"
+    "articleUrl": "https://en.wikipedia.org/wiki/Teotihuacan",
+    "file": "ZA77 Teotihuacán edo de mex Herberto de la rosa.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:ZA77_Teotihuac%C3%A1n_edo_de_mex_Herberto_de_la_rosa.jpg",
+    "author": "Hdlrosa",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "thealamo": {
     "article": "Alamo Mission",
-    "articleUrl": "https://en.wikipedia.org/wiki/Alamo_Mission"
+    "articleUrl": "https://en.wikipedia.org/wiki/Alamo_Mission",
+    "file": "Alamo pano.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Alamo_pano.jpg",
+    "author": "Daniel Schwen",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "tikal": {
     "article": "Tikal",
-    "articleUrl": "https://en.wikipedia.org/wiki/Tikal"
+    "articleUrl": "https://en.wikipedia.org/wiki/Tikal",
+    "file": "Tikal 3.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Tikal_3.jpg",
+    "author": "Mundo Maya",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "timessquare": {
     "article": "Times Square",
-    "articleUrl": "https://en.wikipedia.org/wiki/Times_Square"
+    "articleUrl": "https://en.wikipedia.org/wiki/Times_Square",
+    "file": "New york times square-terabass.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:New_york_times_square-terabass.jpg",
+    "author": "Terabass",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
   },
   "titicaca": {
     "article": "Lake Titicaca",
-    "articleUrl": "https://en.wikipedia.org/wiki/Lake_Titicaca"
+    "articleUrl": "https://en.wikipedia.org/wiki/Lake_Titicaca",
+    "file": "Lake Titicaca ESA22522896.jpeg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Lake_Titicaca_ESA22522896.jpeg",
+    "author": "European Space Agency",
+    "license": "Attribution"
   },
   "torresdelpaine": {
     "article": "Torres del Paine National Park",
-    "articleUrl": "https://en.wikipedia.org/wiki/Torres_del_Paine_National_Park"
+    "articleUrl": "https://en.wikipedia.org/wiki/Torres_del_Paine_National_Park",
+    "file": "Torres del Paine y cuernos del Paine, montaje.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Torres_del_Paine_y_cuernos_del_Paine%2C_montaje.jpg",
+    "author": "Karen Chan 16 y Miguel.v ( local | logs | global ) (originales), y Jorge Morales Piderit (montaje).",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0"
   },
   "trancoso": {
     "article": "Trancoso, Bahia",
-    "articleUrl": "https://en.wikipedia.org/wiki/Trancoso,_Bahia"
+    "articleUrl": "https://en.wikipedia.org/wiki/Trancoso,_Bahia",
+    "file": "Trancoso, Porto Seguro, Bahia Brazil.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Trancoso%2C_Porto_Seguro%2C_Bahia_Brazil.jpg",
+    "author": "Michel Y.G. Meunier",
+    "license": "Public domain"
   },
   "tulum": {
     "article": "Tulum",
-    "articleUrl": "https://en.wikipedia.org/wiki/Tulum"
+    "articleUrl": "https://en.wikipedia.org/wiki/Tulum",
+    "file": "Tulum 2.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Tulum_2.jpg",
+    "author": "Popo le Chien",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
   },
   "uluru": {
     "article": "Uluru",
-    "articleUrl": "https://en.wikipedia.org/wiki/Uluru"
+    "articleUrl": "https://en.wikipedia.org/wiki/Uluru",
+    "file": "ULURU.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:ULURU.jpg",
+    "author": "Ek2030372672",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "uscapitol": {
     "article": "United States Capitol",
-    "articleUrl": "https://en.wikipedia.org/wiki/United_States_Capitol"
+    "articleUrl": "https://en.wikipedia.org/wiki/United_States_Capitol",
+    "file": "US Capitol east side.JPG",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:US_Capitol_east_side.JPG",
+    "author": "Martin Falbisoner",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
   },
   "ushuaia": {
     "article": "Ushuaia",
-    "articleUrl": "https://en.wikipedia.org/wiki/Ushuaia"
+    "articleUrl": "https://en.wikipedia.org/wiki/Ushuaia",
+    "file": "Ushuaia aerial panorama.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Ushuaia_aerial_panorama.jpg",
+    "author": "Deensel",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
   },
   "uyuni": {
     "article": "Salar de Uyuni",
-    "articleUrl": "https://en.wikipedia.org/wiki/Salar_de_Uyuni"
+    "articleUrl": "https://en.wikipedia.org/wiki/Salar_de_Uyuni",
+    "file": "Salar Uyuni au01.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Salar_Uyuni_au01.jpg",
+    "author": "Anouchka Unel",
+    "license": "FAL",
+    "licenseUrl": "http://artlibre.org/licence/lal/en"
   },
   "valparaiso": {
     "article": "Valparaíso",
-    "articleUrl": "https://en.wikipedia.org/wiki/Valpara%C3%ADso"
+    "articleUrl": "https://en.wikipedia.org/wiki/Valpara%C3%ADso",
+    "file": "Historic Quarter of the Seaport City of Valparaíso 04.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Historic_Quarter_of_the_Seaport_City_of_Valpara%C3%ADso_04.jpg",
+    "author": "Julia Sumangil",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "veadeiros": {
     "article": "Chapada dos Veadeiros National Park",
-    "articleUrl": "https://en.wikipedia.org/wiki/Chapada_dos_Veadeiros_National_Park"
+    "articleUrl": "https://en.wikipedia.org/wiki/Chapada_dos_Veadeiros_National_Park",
+    "file": "ChapadaVeadeiros, Alto Paraiso GO.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:ChapadaVeadeiros%2C_Alto_Paraiso_GO.jpg",
+    "author": "MTur Destinos",
+    "license": "Public domain"
   },
   "victoriafalls": {
     "article": "Victoria Falls",
-    "articleUrl": "https://en.wikipedia.org/wiki/Victoria_Falls"
+    "articleUrl": "https://en.wikipedia.org/wiki/Victoria_Falls",
+    "file": "Cataratas Victoria, Zambia-Zimbabue, 2018-07-27, DD 04.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Cataratas_Victoria%2C_Zambia-Zimbabue%2C_2018-07-27%2C_DD_04.jpg",
+    "author": "Diego Delso",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "victoriapeak": {
     "article": "Victoria Peak",
-    "articleUrl": "https://en.wikipedia.org/wiki/Victoria_Peak"
+    "articleUrl": "https://en.wikipedia.org/wiki/Victoria_Peak",
+    "file": "High West and Victoria Peak from Victoria Gap (crop1).jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:High_West_and_Victoria_Peak_from_Victoria_Gap_(crop1).jpg",
+    "author": "Daniel Case",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
   },
   "waikiki": {
     "article": "Waikiki",
-    "articleUrl": "https://en.wikipedia.org/wiki/Waikiki"
+    "articleUrl": "https://en.wikipedia.org/wiki/Waikiki",
+    "file": "City of Waikiki view.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:City_of_Waikiki_view.jpg",
+    "author": "Pickle the cool",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "watarun": {
     "article": "Wat Arun",
-    "articleUrl": "https://en.wikipedia.org/wiki/Wat_Arun"
+    "articleUrl": "https://en.wikipedia.org/wiki/Wat_Arun",
+    "file": "เจดีย์ประธานทรงปรางค์วัดอรุณ2.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:%E0%B9%80%E0%B8%88%E0%B8%94%E0%B8%B5%E0%B8%A2%E0%B9%8C%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%98%E0%B8%B2%E0%B8%99%E0%B8%97%E0%B8%A3%E0%B8%87%E0%B8%9B%E0%B8%A3%E0%B8%B2%E0%B8%87%E0%B8%84%E0%B9%8C%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%AD%E0%B8%A3%E0%B8%B8%E0%B8%932.jpg",
+    "author": "Mastertongapollo",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "whitehouse": {
     "article": "White House",
-    "articleUrl": "https://en.wikipedia.org/wiki/White_House"
+    "articleUrl": "https://en.wikipedia.org/wiki/White_House",
+    "file": "White House north and south sides.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:White_House_north_and_south_sides.jpg",
+    "author": "(top)Cezary p(bottom)MattWade",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "willistower": {
     "article": "Willis Tower",
-    "articleUrl": "https://en.wikipedia.org/wiki/Willis_Tower"
+    "articleUrl": "https://en.wikipedia.org/wiki/Willis_Tower",
+    "file": "Sears Tower, Wacker Drive and Jackson Boulevard, Chicago, IL - 54189600901.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Sears_Tower%2C_Wacker_Drive_and_Jackson_Boulevard%2C_Chicago%2C_IL_-_54189600901.jpg",
+    "author": "w_lemay",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0"
   },
   "zion": {
     "article": "Zion National Park",
-    "articleUrl": "https://en.wikipedia.org/wiki/Zion_National_Park"
+    "articleUrl": "https://en.wikipedia.org/wiki/Zion_National_Park",
+    "file": "Zion angels landing view.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Zion_angels_landing_view.jpg",
+    "author": "Diliff",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/"
   },
   "zocalo": {
     "article": "Zócalo",
-    "articleUrl": "https://en.wikipedia.org/wiki/Z%C3%B3calo"
+    "articleUrl": "https://en.wikipedia.org/wiki/Z%C3%B3calo",
+    "file": "Zócalo, Ciudad de México (32846556446) (cropped).jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Z%C3%B3calo%2C_Ciudad_de_M%C3%A9xico_(32846556446)_(cropped).jpg",
+    "author": "Comisión Mexicana de Filmaciones from México D. F., México",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0"
   }
 }
