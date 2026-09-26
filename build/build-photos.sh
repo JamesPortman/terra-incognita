@@ -237,21 +237,24 @@ OVERRIDES=build/photo-overrides.json
 [[ -s $OVERRIDES ]] || echo '{}' > $OVERRIDES
 
 # Prints "<file name>\t<thumbnail url>" for a Commons search, or for a pinned File:.
+# curl does the HTTP (Python's urllib can lack CA certificates on macOS);
+# Python only parses the JSON and picks.
 commons_pick() {
-  python3 - "$1" <<'PY'
-import json, re, sys, urllib.parse, urllib.request
+  local q=$1 api="https://commons.wikimedia.org/w/api.php" json
+  local common=(--data-urlencode action=query --data-urlencode format=json
+    --data-urlencode prop=imageinfo --data-urlencode iiprop=url\|size --data-urlencode iiurlwidth=1100)
+  if [[ $q == File:* ]]; then
+    json=$(curl -sSfG -A "GeoGame-build/1.0 (james@portman.ca)" "$api" $common --data-urlencode "titles=$q") || return 1
+  else
+    json=$(curl -sSfG -A "GeoGame-build/1.0 (james@portman.ca)" "$api" $common \
+      --data-urlencode generator=search --data-urlencode gsrnamespace=6 \
+      --data-urlencode "gsrsearch=$q filetype:bitmap" --data-urlencode gsrlimit=30) || return 1
+  fi
+  print -r -- "$json" | python3 -c '
+import json, re, sys
 q = sys.argv[1]
-UA = {"User-Agent": "GeoGame-build/1.0 (james@portman.ca)"}
-def get(params):
-    url = "https://commons.wikimedia.org/w/api.php?" + urllib.parse.urlencode({**params, "format": "json"})
-    return json.load(urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=30))
-info = {"prop": "imageinfo", "iiprop": "url|size", "iiurlwidth": "1100"}
-if q.startswith("File:"):
-    pages = get({"action": "query", "titles": q, **info})["query"]["pages"].values()
-else:
-    d = get({"action": "query", "generator": "search", "gsrnamespace": "6",
-             "gsrsearch": q + " filetype:bitmap", "gsrlimit": "30", **info})
-    pages = sorted(d.get("query", {}).get("pages", {}).values(), key=lambda p: p.get("index", 0))
+d = json.load(sys.stdin)
+pages = sorted(d.get("query", {}).get("pages", {}).values(), key=lambda p: p.get("index", 0))
 bad = re.compile(r"logo|map|sign|flag|seal|coat of arms|emblem|locator|diagram|plan\b|plano|mapa|carte|karte|\.(svg|png|gif|tiff?)$", re.I)
 for p in pages:
     ii = (p.get("imageinfo") or [{}])[0]
@@ -262,7 +265,7 @@ for p in pages:
         continue
     print(name + "\t" + ii["thumburl"])
     break
-PY
+' "$q"
 }
 
 for key in ${(k)titles}; do
@@ -271,7 +274,7 @@ for key in ${(k)titles}; do
       echo "KEEP  $key (override)"
       continue
     fi
-    pick=$(commons_pick "${photoquery[$key]}" 2>/dev/null)
+    pick=$(commons_pick "${photoquery[$key]}")
     if [[ -z "$pick" ]]; then
       echo "MISS  $key (no Commons photo for: ${photoquery[$key]})"
       continue
