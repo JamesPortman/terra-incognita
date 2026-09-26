@@ -65,7 +65,7 @@ const credits = `<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Photo credits &#8212; Terra Incognita</title>
-<meta name="description" content="Credits and licences for the location photos in Terra Incognita.">
+<meta name="description" content="Credits and licences for the location photos and map data in Terra Incognita.">
 <style>
   :root { --ink: #0c1220; --raised: #182338; --line: #263352; --brass: #d9a441; --parchment: #ece5d3; --muted: #8f99ad; }
   @media (prefers-color-scheme: light) {
@@ -74,7 +74,8 @@ const credits = `<!doctype html>
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--ink); color: var(--parchment); font: 15px/1.5 -apple-system, "Segoe UI", system-ui, sans-serif; }
   main { max-width: 1100px; margin: 0 auto; padding: 32px 16px 64px; }
-  h1 { font-family: "Iowan Old Style", Palatino, Georgia, serif; font-weight: 600; margin: 0 0 12px; }
+  h1, h2 { font-family: "Iowan Old Style", Palatino, Georgia, serif; font-weight: 600; margin: 0 0 12px; }
+  h2 { margin-top: 40px; }
   p { max-width: 70ch; }
   a { color: var(--brass); overflow-wrap: anywhere; }
   .muted { color: var(--muted); font-size: 0.9em; }
@@ -104,6 +105,19 @@ Wikimedia Commons gives the full author, licence and source details.</p>
 ${rows}
 </tbody>
 </table></div>
+<h2 id="data">Map and search data</h2>
+<p>The world map and the place search are built from open data, also not covered by this
+project's MIT licence:</p>
+<ul>
+<li>Country outlines: <a href="https://github.com/johan/world.geo.json" rel="noopener">world.geo.json</a>
+by Johan Sundstr&ouml;m, released into the public domain (Unlicense).</li>
+<li>Cities and regions in the search: <a href="https://www.geonames.org/" rel="noopener">GeoNames</a>,
+licensed under <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener">Creative Commons Attribution 4.0</a>.</li>
+<li>Persian place names in the search: Data by Countries States Cities Database,
+<a href="https://github.com/dr5hn/countries-states-cities-database" rel="noopener">https://github.com/dr5hn/countries-states-cities-database</a> |
+<a href="https://opendatacommons.org/licenses/odbl/1-0/" rel="noopener">ODbL v1.0</a>. The derived
+<code>search-fa.json</code> is available under the same licence.</li>
+</ul>
 </main>
 </body>
 </html>

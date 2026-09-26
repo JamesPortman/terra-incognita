@@ -43,6 +43,14 @@ describe('photo credits', () => {
     }
   });
 
+  it('credits.html credits the map and search data (GeoNames CC BY, CSC ODbL)', () => {
+    expect(creditsHtml).toContain('href="https://www.geonames.org/"');
+    expect(creditsHtml).toContain('Creative Commons Attribution 4.0');
+    // ODbL: the attribution string the Countries States Cities Database asks for.
+    expect(creditsHtml).toMatch(/Data by Countries States Cities Database,\s*<a href="https:\/\/github\.com\/dr5hn\/countries-states-cities-database"/);
+    expect(creditsHtml).toContain('ODbL v1.0');
+  });
+
   it('credits.html uses relative URLs so it works under the /terra-incognita proxy too', () => {
     expect(creditsHtml).not.toMatch(/(?:src|href)="\/(?!\/)/);
   });

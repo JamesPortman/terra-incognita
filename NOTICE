@@ -29,5 +29,8 @@ Third-party data built into the game:
     search-fa.json, as a derived database, is made available under the Open
     Database License v1.0 (https://opendatacommons.org/licenses/odbl/1-0/).
 
+The credits page (/credits) also credits these three data sources in the
+game itself.
+
 Services used at runtime, not redistributed here: Google Maps and Street View
 imagery are loaded live from Google and are subject to Google's terms.
