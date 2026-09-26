@@ -55,7 +55,8 @@ test.describe('solo game', () => {
     expect(new URL(credits.url()).pathname).toBe('/credits');
     // the round's own photo has a row with its source article and a thumbnail that loads
     const row = credits.locator(`tr#${key}`);
-    await expect(row.locator('a[href^="https://en.wikipedia.org/wiki/"]')).toBeVisible();
+    // both the source column and the note link to the same article
+    await expect(row.locator('a[href^="https://en.wikipedia.org/wiki/"]').first()).toBeVisible();
     await expect.poll(() => row.locator('img').evaluate((i) => i.naturalWidth)).toBeGreaterThan(0);
     await expect(credits.locator('tbody tr')).toHaveCount(202);
     // leaving for the credits page must not end the game

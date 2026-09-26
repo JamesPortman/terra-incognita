@@ -84,7 +84,8 @@ test('behind the proxy, the photo credits page and its thumbnails load from unde
   await page.goto(url.href);
   const img = page.locator('tbody img').first();
   await img.scrollIntoViewIfNeeded();
-  expect(new URL(await img.evaluate((i) => i.currentSrc)).pathname).toMatch(new RegExp(`^${PREFIX}/photos/\\w+\\.jpg$`));
+  // resolve the attribute ourselves: currentSrc stays empty until a lazy image starts loading
+  expect(new URL(await img.getAttribute('src'), page.url()).pathname).toMatch(new RegExp(`^${PREFIX}/photos/\\w+\\.jpg$`));
   await expect.poll(() => img.evaluate((i) => i.naturalWidth)).toBeGreaterThan(0);
   expect(new URL(await page.locator('a', { hasText: 'Back to the game' }).evaluate((a) => a.href)).pathname).toBe(`${PREFIX}/`);
 });
