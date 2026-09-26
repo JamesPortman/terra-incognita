@@ -360,10 +360,11 @@
   "cntower": {
     "article": "CN Tower",
     "articleUrl": "https://en.wikipedia.org/wiki/CN_Tower",
-    "file": "CN Tower logo.png",
-    "fileUrl": "https://commons.wikimedia.org/wiki/File:CN_Tower_logo.png",
-    "author": "Unknown authorUnknown author",
-    "license": "Public domain"
+    "file": "Toronto - ON - CN Tower bei Nacht2.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Toronto_-_ON_-_CN_Tower_bei_Nacht2.jpg",
+    "author": "Wladyslaw, Correction of perspective distortion: Niabot",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0"
   },
   "cocora": {
     "article": "Cocora Valley",
@@ -534,11 +535,11 @@
   "fishermanswharf": {
     "article": "Fisherman's Wharf, San Francisco",
     "articleUrl": "https://en.wikipedia.org/wiki/Fisherman's_Wharf,_San_Francisco",
-    "file": "Fishermans Wharf Sign, SF, CA, jjron 25.03.2012.jpg",
-    "fileUrl": "https://commons.wikimedia.org/wiki/File:Fishermans_Wharf_Sign%2C_SF%2C_CA%2C_jjron_25.03.2012.jpg",
-    "author": "jjron",
-    "license": "GFDL 1.2",
-    "licenseUrl": "http://www.gnu.org/licenses/old-licenses/fdl-1.2.html"
+    "file": "Fisherman's Wharf San Francisco January 2013 001.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Fisherman's_Wharf_San_Francisco_January_2013_001.jpg",
+    "author": "King of Hearts",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "fitzroy": {
     "article": "Fitz Roy",
@@ -821,18 +822,18 @@
   "jericoacoara": {
     "article": "Jericoacoara",
     "articleUrl": "https://en.wikipedia.org/wiki/Jericoacoara",
-    "file": "Ceara Municip JijocadeJericoacoara.svg",
-    "fileUrl": "https://commons.wikimedia.org/wiki/File:Ceara_Municip_JijocadeJericoacoara.svg",
-    "author": "Raphael Lorenzeto de Abreu",
-    "license": "CC BY 2.5",
-    "licenseUrl": "https://creativecommons.org/licenses/by/2.5"
+    "file": "Jericoacoara (2007) 04.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Jericoacoara_(2007)_04.jpg",
+    "author": "LBM1948",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "kennedyspace": {
     "article": "Kennedy Space Center",
     "articleUrl": "https://en.wikipedia.org/wiki/Kennedy_Space_Center",
-    "file": "NASA logo (2023 colors).svg",
-    "fileUrl": "https://commons.wikimedia.org/wiki/File:NASA_logo_(2023_colors).svg",
-    "author": "NASA",
+    "file": "Brightly lit STS-135 on launch pad 39a.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Brightly_lit_STS-135_on_launch_pad_39a.jpg",
+    "author": "Bill Ingalls",
     "license": "Public domain"
   },
   "keywest": {
@@ -1054,11 +1055,11 @@
   "montevideo": {
     "article": "Palacio Salvo",
     "articleUrl": "https://en.wikipedia.org/wiki/Palacio_Salvo",
-    "file": "Palacio Salvo Logo.jpg",
-    "fileUrl": "https://commons.wikimedia.org/wiki/File:Palacio_Salvo_Logo.jpg",
-    "author": "Coquimbo58",
-    "license": "CC0",
-    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+    "file": "Montevideo Palacio Salvo-20110506-RM-114438.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Montevideo_Palacio_Salvo-20110506-RM-114438.jpg",
+    "author": "Ermell",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   },
   "monumentvalley": {
     "article": "Monument Valley",
@@ -1188,11 +1189,10 @@
   "oldhavana": {
     "article": "Old Havana",
     "articleUrl": "https://en.wikipedia.org/wiki/Old_Havana",
-    "file": "Havana Map - Habana Vieja.png",
-    "fileUrl": "https://commons.wikimedia.org/wiki/File:Havana_Map_-_Habana_Vieja.png",
-    "author": "Dэя-Бøяg",
-    "license": "CC BY-SA 3.0",
-    "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/"
+    "file": "A bit of old Havana (1909).jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:A_bit_of_old_Havana_(1909).jpg",
+    "author": "Harris Brothers, Havana (publisher)",
+    "license": "Public domain"
   },
   "oldsanjuan": {
     "article": "Old San Juan",
@@ -1251,9 +1251,9 @@
   "panamacanal": {
     "article": "Panama Canal",
     "articleUrl": "https://en.wikipedia.org/wiki/Panama_Canal",
-    "file": "Panama Canal Map EN.svg",
-    "fileUrl": "https://commons.wikimedia.org/wiki/File:Panama_Canal_Map_EN.svg",
-    "author": "Thoroe",
+    "file": "Locomotives Tow Container Ship through Miraflores Locks - Panama Canal.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Locomotives_Tow_Container_Ship_through_Miraflores_Locks_-_Panama_Canal.jpg",
+    "author": "Adam Jones",
     "license": "CC BY-SA 2.0",
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0"
   },
@@ -1448,9 +1448,9 @@
   "rockefeller": {
     "article": "Rockefeller Center",
     "articleUrl": "https://en.wikipedia.org/wiki/Rockefeller_Center",
-    "file": "Rockefeller Center logo.svg",
-    "fileUrl": "https://commons.wikimedia.org/wiki/File:Rockefeller_Center_logo.svg",
-    "author": "Rockefeller Group/Mitsubishi Estate",
+    "file": "Rockefeller Center, December 1933.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Rockefeller_Center%2C_December_1933.jpg",
+    "author": "Samuel Herman Gottscho; restored by Michel Vuijlsteke",
     "license": "Public domain"
   },
   "roraima": {
@@ -1483,11 +1483,11 @@
   "santamonicapier": {
     "article": "Santa Monica Pier",
     "articleUrl": "https://en.wikipedia.org/wiki/Santa_Monica_Pier",
-    "file": "Santa monica pier entrance evening.jpg",
-    "fileUrl": "https://commons.wikimedia.org/wiki/File:Santa_monica_pier_entrance_evening.jpg",
-    "author": "web4camguy",
-    "license": "CC BY-SA 2.0",
-    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0"
+    "file": "Ferris wheel at Santa Monica Pier.jpg",
+    "fileUrl": "https://commons.wikimedia.org/wiki/File:Ferris_wheel_at_Santa_Monica_Pier.jpg",
+    "author": "Luis Ochea",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0"
   },
   "saoluis": {
     "article": "São Luís, Maranhão",

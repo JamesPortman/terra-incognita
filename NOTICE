@@ -3,10 +3,11 @@ The code in this repository is released under the MIT License (see LICENSE).
 Not covered by that license:
 
   - The location photos in photos/ (and the Niagara Falls photo inside the
-    og.jpg social card). They are not James Portman's work. Each is the lead
-    image of an English Wikipedia article, hosted on Wikimedia Commons, and
-    stays under its own licence (mostly Creative Commons Attribution-ShareAlike)
-    with its own author. They are credited photo by photo on the credits page
+    og.jpg social card). They are not James Portman's work. Each comes from
+    Wikimedia Commons (most are the lead image of an English Wikipedia
+    article; a few, listed in build/photo-overrides.json, were chosen from
+    Commons directly) and stays under its own licence (mostly Creative Commons
+    Attribution-ShareAlike or Attribution) with its own author. They are credited photo by photo on the credits page
     (credits.html, served at /credits), generated from build/photo-credits.json.
     Any reuse must follow each image's own licence, not the MIT License.
 

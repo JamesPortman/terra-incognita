@@ -26,6 +26,15 @@ describe('photo credits', () => {
     if (c.file) expect(c.fileUrl).toMatch(/^https:\/\/commons\.wikimedia\.org\/wiki\/File:\S+$/);
   });
 
+  it('a photo replaced via build/photo-overrides.json is credited to that file', () => {
+    const f = path.join(root, 'build/photo-overrides.json');
+    const pinned = fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, 'utf8')) : {};
+    for (const [k, file] of Object.entries(pinned)) {
+      expect(CREDITS[k], `unknown override key "${k}"`).toBeTruthy();
+      expect(CREDITS[k].file, `${k}: run node build/build-credits.js --fetch`).toBe(file);
+    }
+  });
+
   it('credits.html is rebuilt from the current credit data', () => {
     for (const l of LOCATIONS) {
       expect(creditsHtml, `credits.html is missing "${l.k}" — run node build/assemble.js`).toContain(`<tr id="${l.k}">`);

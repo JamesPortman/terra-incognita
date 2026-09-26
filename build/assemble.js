@@ -93,9 +93,10 @@ const credits = `<!doctype html>
 They come from <a href="https://commons.wikimedia.org/" rel="noopener">Wikimedia Commons</a> via
 English Wikipedia, and each remains under its own licence (mostly Creative Commons
 Attribution-ShareAlike) and belongs to its author. The copies here are downscaled.</p>
-<p>Each photo below links to the Wikipedia article whose lead image it is${Object.values(CREDITS).some((c) => c.file) ? ', and where recorded to its Commons file page, author and licence' : ''}.
-The image's file page on Wikimedia Commons, reached from that article, gives the full author,
-licence and source details.</p>
+<p>Each photo below links to the Wikipedia article about its place${Object.values(CREDITS).some((c) => c.file) ? ', and where recorded to its Commons file page, author and licence' : ''}.
+Most are that article's lead image; a few were chosen from Wikimedia Commons instead, where the
+lead image was a logo, map or sign that would give the round away. The image's file page on
+Wikimedia Commons gives the full author, licence and source details.</p>
 <p><a href="./">&larr; Back to the game</a></p>
 <div class="wrap"><table>
 <thead><tr><th></th><th>Location</th><th>Source article</th><th>Image</th></tr></thead>

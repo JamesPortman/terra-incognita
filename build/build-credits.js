@@ -20,8 +20,11 @@ const UA = 'terra-incognita-credits/1.0 (https://github.com/JamesPortman/terra-i
 
 // The article titles live in build-photos.sh (the script that fetched the photos).
 function articleTitles() {
+  // Only the titles=( … ) block: photoquery=( … ) uses the same "key "value"" shape.
   const src = fs.readFileSync(path.join(dir, 'build-photos.sh'), 'utf8');
-  return Object.fromEntries([...src.matchAll(/^ {2}([a-z]+) "([^"]+)"$/gm)].map((m) => [m[1], m[2]]));
+  const block = src.match(/^titles=\($([\s\S]*?)^\)$/m);
+  if (!block) throw new Error('build-photos.sh: titles=( … ) block not found');
+  return Object.fromEntries([...block[1].matchAll(/^ {2}([a-z]+) "([^"]+)"$/gm)].map((m) => [m[1], m[2]]));
 }
 
 const wikiUrl = (title) => 'https://en.wikipedia.org/wiki/' + encodeURIComponent(title.replace(/ /g, '_')).replace(/%2C/g, ',');
@@ -34,11 +37,14 @@ async function getJson(url) {
   return r.json();
 }
 
-async function lookup(title) {
-  const q = new URLSearchParams({ action: 'query', titles: title, prop: 'pageimages', piprop: 'name', redirects: '1', format: 'json' });
-  const page = Object.values((await getJson('https://en.wikipedia.org/w/api.php?' + q)).query.pages)[0];
-  if (!page.pageimage) return {};
-  const file = page.pageimage.replace(/_/g, ' ');
+// Photos build-photos.sh took from a Commons search instead of the article's
+// lead image (the lead image was a logo/map/sign that gave the round away).
+function overrides() {
+  const f = path.join(dir, 'photo-overrides.json');
+  return fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, 'utf8')) : {};
+}
+
+async function fileMeta(file) {
   const m = new URLSearchParams({ action: 'query', titles: 'File:' + file, prop: 'imageinfo', iiprop: 'extmetadata', format: 'json' });
   const info = Object.values((await getJson('https://commons.wikimedia.org/w/api.php?' + m)).query.pages)[0];
   const meta = info.imageinfo?.[0]?.extmetadata || {};
@@ -49,18 +55,30 @@ async function lookup(title) {
   return out;
 }
 
+async function lookup(title) {
+  const q = new URLSearchParams({ action: 'query', titles: title, prop: 'pageimages', piprop: 'name', redirects: '1', format: 'json' });
+  const page = Object.values((await getJson('https://en.wikipedia.org/w/api.php?' + q)).query.pages)[0];
+  if (!page.pageimage) return {};
+  return fileMeta(page.pageimage.replace(/_/g, ' '));
+}
+
 async function main() {
   const titles = articleTitles();
   const existing = fs.existsSync(OUT) ? JSON.parse(fs.readFileSync(OUT, 'utf8')) : {};
+  const pinned = overrides();
   const out = {};
   for (const [k, article] of Object.entries(titles).sort(([a], [b]) => a.localeCompare(b))) {
     out[k] = { ...existing[k], article, articleUrl: wikiUrl(article) };
+    // A photo replaced via an override: drop the old file's credit so it's refetched.
+    if (pinned[k] && out[k].file !== pinned[k]) {
+      for (const f of ['file', 'fileUrl', 'author', 'license', 'licenseUrl']) delete out[k][f];
+    }
   }
   if (process.argv.includes('--fetch')) {
     for (const [k, e] of Object.entries(out)) {
       if (e.file) continue;
       try {
-        Object.assign(e, await lookup(e.article));
+        Object.assign(e, pinned[k] ? await fileMeta(pinned[k]) : await lookup(e.article));
         console.log(e.file ? 'OK  ' : 'NONE', k, e.file || '');
       } catch (err) {
         console.log('FAIL', k, err.message);
