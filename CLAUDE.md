@@ -6,12 +6,14 @@ See `/architecture` (architecture.html) for the full system reference.
 ## Build & test
 
 ```bash
-node build/assemble.js && cp build/terra-incognita.html index.html
+node build/assemble.js   # writes index.html + credits.html, stamps version.txt
 npm test          # Vitest + coverage floor (fails below thresholds)
 npm run test:e2e  # Playwright vs `vercel dev` on :3300
 ```
 
-Edit `build/game-template.html`, never `index.html` directly. Deploys go
+Edit `build/game-template.html`, never `index.html` or `credits.html` directly
+(both are generated and committed; they are what Vercel serves). `photos/` is
+the only copy of the photos — there is no `build/photos/`. Deploys go
 through GitHub Actions only (both suites gate `vercel deploy`); Vercel git
 auto-deploy is off.
 
@@ -40,6 +42,12 @@ auto-deploy is off.
   and server-side scoring — APPEND-ONLY; deck membership lives in
   `shared/decks.js` (world/na/sa key lists) and can change freely. Rebuild
   index.html after any change.
+- The photos are third-party (Wikimedia Commons, mostly CC BY-SA), not ours:
+  every one needs a credit. A new location needs its article title in
+  `build/build-photos.sh` and an entry in `build/photo-credits.json`
+  (`node build/build-credits.js --fetch`); assemble.js refuses to build without
+  it and `__tests__/credits.test.js` checks the page. Never invent authors or
+  licences. Code is MIT (`LICENSE`); `NOTICE` lists what isn't.
 - Local dev uses the real production Neon + Upstash (env from `.env.local`);
   clean up any non-`E2E-` test data you create.
 - The game is served both at a domain root and under `/terra-incognita` (proxied

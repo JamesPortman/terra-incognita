@@ -3,7 +3,8 @@
     "deploymentEnabled": false
   },
   "rewrites": [
-    { "source": "/architecture", "destination": "/architecture.html" }
+    { "source": "/architecture", "destination": "/architecture.html" },
+    { "source": "/credits", "destination": "/credits.html" }
   ],
   "headers": [
     {

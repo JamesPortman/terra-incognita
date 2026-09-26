@@ -1,6 +1,7 @@
 {
   "name": "terra-incognita",
   "private": true,
+  "license": "MIT",
   "dependencies": {
     "@neondatabase/serverless": "^1.0.1",
     "@upstash/redis": "^1.35.0"

@@ -1,8 +1,11 @@
 #!/bin/zsh
-# Fetch lead images for location articles from Wikipedia into photos/<key>.jpg.
+# Fetch lead images for location articles from Wikipedia into photos/<key>.jpg
+# at the repo root — the directory the site serves; there is no second copy.
 # Idempotent: existing photos are kept — delete a file to re-fetch it.
+# The titles below are also the source of build/photo-credits.json: after adding
+# a location, run `node build/build-credits.js --fetch` so its photo is credited.
 set -u
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/.."
 mkdir -p photos
 
 typeset -A titles

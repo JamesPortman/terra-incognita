@@ -1,0 +1,810 @@
+{
+  "acropolis": {
+    "article": "Acropolis of Athens",
+    "articleUrl": "https://en.wikipedia.org/wiki/Acropolis_of_Athens"
+  },
+  "alcatraz": {
+    "article": "Alcatraz Island",
+    "articleUrl": "https://en.wikipedia.org/wiki/Alcatraz_Island"
+  },
+  "alterdochao": {
+    "article": "Alter do Chão, Pará",
+    "articleUrl": "https://en.wikipedia.org/wiki/Alter_do_Ch%C3%A3o,_Par%C3%A1"
+  },
+  "amazontheatre": {
+    "article": "Amazon Theatre",
+    "articleUrl": "https://en.wikipedia.org/wiki/Amazon_Theatre"
+  },
+  "angelfalls": {
+    "article": "Angel Falls",
+    "articleUrl": "https://en.wikipedia.org/wiki/Angel_Falls"
+  },
+  "angkor": {
+    "article": "Angkor Wat",
+    "articleUrl": "https://en.wikipedia.org/wiki/Angkor_Wat"
+  },
+  "antelopecanyon": {
+    "article": "Antelope Canyon",
+    "articleUrl": "https://en.wikipedia.org/wiki/Antelope_Canyon"
+  },
+  "arenal": {
+    "article": "Arenal Volcano",
+    "articleUrl": "https://en.wikipedia.org/wiki/Arenal_Volcano"
+  },
+  "arequipa": {
+    "article": "Arequipa",
+    "articleUrl": "https://en.wikipedia.org/wiki/Arequipa"
+  },
+  "atacama": {
+    "article": "Valle de la Luna (Chile)",
+    "articleUrl": "https://en.wikipedia.org/wiki/Valle_de_la_Luna_(Chile)"
+  },
+  "athabascafalls": {
+    "article": "Athabasca Falls",
+    "articleUrl": "https://en.wikipedia.org/wiki/Athabasca_Falls"
+  },
+  "banos": {
+    "article": "Baños de Agua Santa",
+    "articleUrl": "https://en.wikipedia.org/wiki/Ba%C3%B1os_de_Agua_Santa"
+  },
+  "bariloche": {
+    "article": "San Carlos de Bariloche",
+    "articleUrl": "https://en.wikipedia.org/wiki/San_Carlos_de_Bariloche"
+  },
+  "bealestreet": {
+    "article": "Beale Street",
+    "articleUrl": "https://en.wikipedia.org/wiki/Beale_Street"
+  },
+  "bigben": {
+    "article": "Big Ben",
+    "articleUrl": "https://en.wikipedia.org/wiki/Big_Ben"
+  },
+  "bluemosque": {
+    "article": "Sultan Ahmed Mosque",
+    "articleUrl": "https://en.wikipedia.org/wiki/Sultan_Ahmed_Mosque"
+  },
+  "bonito": {
+    "article": "Bonito, Mato Grosso do Sul",
+    "articleUrl": "https://en.wikipedia.org/wiki/Bonito,_Mato_Grosso_do_Sul"
+  },
+  "borabora": {
+    "article": "Bora Bora",
+    "articleUrl": "https://en.wikipedia.org/wiki/Bora_Bora"
+  },
+  "brandenburg": {
+    "article": "Brandenburg Gate",
+    "articleUrl": "https://en.wikipedia.org/wiki/Brandenburg_Gate"
+  },
+  "brasilia": {
+    "article": "Cathedral of Brasília",
+    "articleUrl": "https://en.wikipedia.org/wiki/Cathedral_of_Bras%C3%ADlia"
+  },
+  "brooklynbridge": {
+    "article": "Brooklyn Bridge",
+    "articleUrl": "https://en.wikipedia.org/wiki/Brooklyn_Bridge"
+  },
+  "brycecanyon": {
+    "article": "Bryce Canyon National Park",
+    "articleUrl": "https://en.wikipedia.org/wiki/Bryce_Canyon_National_Park"
+  },
+  "buzios": {
+    "article": "Armação dos Búzios",
+    "articleUrl": "https://en.wikipedia.org/wiki/Arma%C3%A7%C3%A3o_dos_B%C3%BAzios"
+  },
+  "cabosanlucas": {
+    "article": "Arch of Cabo San Lucas",
+    "articleUrl": "https://en.wikipedia.org/wiki/Arch_of_Cabo_San_Lucas"
+  },
+  "caminito": {
+    "article": "Caminito",
+    "articleUrl": "https://en.wikipedia.org/wiki/Caminito"
+  },
+  "canaima": {
+    "article": "Canaima National Park",
+    "articleUrl": "https://en.wikipedia.org/wiki/Canaima_National_Park"
+  },
+  "canoaquebrada": {
+    "article": "Canoa Quebrada",
+    "articleUrl": "https://en.wikipedia.org/wiki/Canoa_Quebrada"
+  },
+  "capilano": {
+    "article": "Capilano Suspension Bridge",
+    "articleUrl": "https://en.wikipedia.org/wiki/Capilano_Suspension_Bridge"
+  },
+  "cappadocia": {
+    "article": "Cappadocia",
+    "articleUrl": "https://en.wikipedia.org/wiki/Cappadocia"
+  },
+  "caracol": {
+    "article": "Caracol Falls",
+    "articleUrl": "https://en.wikipedia.org/wiki/Caracol_Falls"
+  },
+  "cartagena": {
+    "article": "Cartagena, Colombia",
+    "articleUrl": "https://en.wikipedia.org/wiki/Cartagena,_Colombia"
+  },
+  "centralpark": {
+    "article": "Central Park",
+    "articleUrl": "https://en.wikipedia.org/wiki/Central_Park"
+  },
+  "chapada": {
+    "article": "Chapada Diamantina National Park",
+    "articleUrl": "https://en.wikipedia.org/wiki/Chapada_Diamantina_National_Park"
+  },
+  "chapadaguimaraes": {
+    "article": "Chapada dos Guimarães National Park",
+    "articleUrl": "https://en.wikipedia.org/wiki/Chapada_dos_Guimar%C3%A3es_National_Park"
+  },
+  "charlesbridge": {
+    "article": "Charles Bridge",
+    "articleUrl": "https://en.wikipedia.org/wiki/Charles_Bridge"
+  },
+  "chateaufrontenac": {
+    "article": "Château Frontenac",
+    "articleUrl": "https://en.wikipedia.org/wiki/Ch%C3%A2teau_Frontenac"
+  },
+  "chichenitza": {
+    "article": "Chichen Itza",
+    "articleUrl": "https://en.wikipedia.org/wiki/Chichen_Itza"
+  },
+  "chiloe": {
+    "article": "Churches of Chiloé",
+    "articleUrl": "https://en.wikipedia.org/wiki/Churches_of_Chilo%C3%A9"
+  },
+  "cliffsofmoher": {
+    "article": "Cliffs of Moher",
+    "articleUrl": "https://en.wikipedia.org/wiki/Cliffs_of_Moher"
+  },
+  "cloudgate": {
+    "article": "Millennium Park",
+    "articleUrl": "https://en.wikipedia.org/wiki/Millennium_Park"
+  },
+  "cntower": {
+    "article": "CN Tower",
+    "articleUrl": "https://en.wikipedia.org/wiki/CN_Tower"
+  },
+  "cocora": {
+    "article": "Cocora Valley",
+    "articleUrl": "https://en.wikipedia.org/wiki/Cocora_Valley"
+  },
+  "colcacanyon": {
+    "article": "Colca Canyon",
+    "articleUrl": "https://en.wikipedia.org/wiki/Colca_Canyon"
+  },
+  "colosseum": {
+    "article": "Colosseum",
+    "articleUrl": "https://en.wikipedia.org/wiki/Colosseum"
+  },
+  "congonhas": {
+    "article": "Sanctuary of Bom Jesus do Congonhas",
+    "articleUrl": "https://en.wikipedia.org/wiki/Sanctuary_of_Bom_Jesus_do_Congonhas"
+  },
+  "copacabana": {
+    "article": "Copacabana, Rio de Janeiro",
+    "articleUrl": "https://en.wikipedia.org/wiki/Copacabana,_Rio_de_Janeiro"
+  },
+  "coppercanyon": {
+    "article": "Copper Canyon",
+    "articleUrl": "https://en.wikipedia.org/wiki/Copper_Canyon"
+  },
+  "cotopaxi": {
+    "article": "Cotopaxi",
+    "articleUrl": "https://en.wikipedia.org/wiki/Cotopaxi"
+  },
+  "curitibabotanic": {
+    "article": "Botanical Garden of Curitiba",
+    "articleUrl": "https://en.wikipedia.org/wiki/Botanical_Garden_of_Curitiba"
+  },
+  "cusco": {
+    "article": "Cusco",
+    "articleUrl": "https://en.wikipedia.org/wiki/Cusco"
+  },
+  "delicatearch": {
+    "article": "Delicate Arch",
+    "articleUrl": "https://en.wikipedia.org/wiki/Delicate_Arch"
+  },
+  "denali": {
+    "article": "Denali",
+    "articleUrl": "https://en.wikipedia.org/wiki/Denali"
+  },
+  "dubai": {
+    "article": "Burj Khalifa",
+    "articleUrl": "https://en.wikipedia.org/wiki/Burj_Khalifa"
+  },
+  "easterisland": {
+    "article": "Moai",
+    "articleUrl": "https://en.wikipedia.org/wiki/Moai"
+  },
+  "eiffel": {
+    "article": "Eiffel Tower",
+    "articleUrl": "https://en.wikipedia.org/wiki/Eiffel_Tower"
+  },
+  "elcapitan": {
+    "article": "El Capitan",
+    "articleUrl": "https://en.wikipedia.org/wiki/El_Capitan"
+  },
+  "empirestate": {
+    "article": "Empire State Building",
+    "articleUrl": "https://en.wikipedia.org/wiki/Empire_State_Building"
+  },
+  "escadaria": {
+    "article": "Escadaria Selarón",
+    "articleUrl": "https://en.wikipedia.org/wiki/Escadaria_Selar%C3%B3n"
+  },
+  "fenway": {
+    "article": "Fenway Park",
+    "articleUrl": "https://en.wikipedia.org/wiki/Fenway_Park"
+  },
+  "fernandodenoronha": {
+    "article": "Fernando de Noronha",
+    "articleUrl": "https://en.wikipedia.org/wiki/Fernando_de_Noronha"
+  },
+  "fishermanswharf": {
+    "article": "Fisherman's Wharf, San Francisco",
+    "articleUrl": "https://en.wikipedia.org/wiki/Fisherman's_Wharf,_San_Francisco"
+  },
+  "fitzroy": {
+    "article": "Fitz Roy",
+    "articleUrl": "https://en.wikipedia.org/wiki/Fitz_Roy"
+  },
+  "frenchquarter": {
+    "article": "French Quarter",
+    "articleUrl": "https://en.wikipedia.org/wiki/French_Quarter"
+  },
+  "fuji": {
+    "article": "Mount Fuji",
+    "articleUrl": "https://en.wikipedia.org/wiki/Mount_Fuji"
+  },
+  "galapagos": {
+    "article": "Galápagos Islands",
+    "articleUrl": "https://en.wikipedia.org/wiki/Gal%C3%A1pagos_Islands"
+  },
+  "gardensbay": {
+    "article": "Gardens by the Bay",
+    "articleUrl": "https://en.wikipedia.org/wiki/Gardens_by_the_Bay"
+  },
+  "gatewayarch": {
+    "article": "Gateway Arch",
+    "articleUrl": "https://en.wikipedia.org/wiki/Gateway_Arch"
+  },
+  "genipabu": {
+    "article": "Genipabu",
+    "articleUrl": "https://en.wikipedia.org/wiki/Genipabu"
+  },
+  "giza": {
+    "article": "Great Pyramid of Giza",
+    "articleUrl": "https://en.wikipedia.org/wiki/Great_Pyramid_of_Giza"
+  },
+  "goldengate": {
+    "article": "Golden Gate Bridge",
+    "articleUrl": "https://en.wikipedia.org/wiki/Golden_Gate_Bridge"
+  },
+  "goldentemple": {
+    "article": "Golden Temple",
+    "articleUrl": "https://en.wikipedia.org/wiki/Golden_Temple"
+  },
+  "gramado": {
+    "article": "Gramado",
+    "articleUrl": "https://en.wikipedia.org/wiki/Gramado"
+  },
+  "grandcanyon": {
+    "article": "Grand Canyon",
+    "articleUrl": "https://en.wikipedia.org/wiki/Grand_Canyon"
+  },
+  "greatwall": {
+    "article": "Mutianyu",
+    "articleUrl": "https://en.wikipedia.org/wiki/Mutianyu"
+  },
+  "griffith": {
+    "article": "Griffith Observatory",
+    "articleUrl": "https://en.wikipedia.org/wiki/Griffith_Observatory"
+  },
+  "guanajuato": {
+    "article": "Guanajuato (city)",
+    "articleUrl": "https://en.wikipedia.org/wiki/Guanajuato_(city)"
+  },
+  "guatape": {
+    "article": "El Peñón de Guatapé",
+    "articleUrl": "https://en.wikipedia.org/wiki/El_Pe%C3%B1%C3%B3n_de_Guatap%C3%A9"
+  },
+  "halong": {
+    "article": "Ha Long Bay",
+    "articleUrl": "https://en.wikipedia.org/wiki/Ha_Long_Bay"
+  },
+  "hercilioluz": {
+    "article": "Hercílio Luz Bridge",
+    "articleUrl": "https://en.wikipedia.org/wiki/Herc%C3%ADlio_Luz_Bridge"
+  },
+  "hollywoodsign": {
+    "article": "Hollywood Sign",
+    "articleUrl": "https://en.wikipedia.org/wiki/Hollywood_Sign"
+  },
+  "hopewellrocks": {
+    "article": "Hopewell Rocks",
+    "articleUrl": "https://en.wikipedia.org/wiki/Hopewell_Rocks"
+  },
+  "horseshoebend": {
+    "article": "Horseshoe Bend (Arizona)",
+    "articleUrl": "https://en.wikipedia.org/wiki/Horseshoe_Bend_(Arizona)"
+  },
+  "huacachina": {
+    "article": "Huacachina",
+    "articleUrl": "https://en.wikipedia.org/wiki/Huacachina"
+  },
+  "ibirapuera": {
+    "article": "Ibirapuera Park",
+    "articleUrl": "https://en.wikipedia.org/wiki/Ibirapuera_Park"
+  },
+  "iguazufalls": {
+    "article": "Iguazu Falls",
+    "articleUrl": "https://en.wikipedia.org/wiki/Iguazu_Falls"
+  },
+  "ilhagrande": {
+    "article": "Ilha Grande",
+    "articleUrl": "https://en.wikipedia.org/wiki/Ilha_Grande"
+  },
+  "inhotim": {
+    "article": "Inhotim",
+    "articleUrl": "https://en.wikipedia.org/wiki/Inhotim"
+  },
+  "ipanema": {
+    "article": "Ipanema",
+    "articleUrl": "https://en.wikipedia.org/wiki/Ipanema"
+  },
+  "itaimbezinho": {
+    "article": "Aparados da Serra National Park",
+    "articleUrl": "https://en.wikipedia.org/wiki/Aparados_da_Serra_National_Park"
+  },
+  "itaipu": {
+    "article": "Itaipu Dam",
+    "articleUrl": "https://en.wikipedia.org/wiki/Itaipu_Dam"
+  },
+  "jalapao": {
+    "article": "Jalapão",
+    "articleUrl": "https://en.wikipedia.org/wiki/Jalap%C3%A3o"
+  },
+  "jeffersonmemorial": {
+    "article": "Jefferson Memorial",
+    "articleUrl": "https://en.wikipedia.org/wiki/Jefferson_Memorial"
+  },
+  "jericoacoara": {
+    "article": "Jericoacoara",
+    "articleUrl": "https://en.wikipedia.org/wiki/Jericoacoara"
+  },
+  "kennedyspace": {
+    "article": "Kennedy Space Center",
+    "articleUrl": "https://en.wikipedia.org/wiki/Kennedy_Space_Center"
+  },
+  "keywest": {
+    "article": "Key West",
+    "articleUrl": "https://en.wikipedia.org/wiki/Key_West"
+  },
+  "kinkakuji": {
+    "article": "Kinkaku-ji",
+    "articleUrl": "https://en.wikipedia.org/wiki/Kinkaku-ji"
+  },
+  "lacerda": {
+    "article": "Lacerda Elevator",
+    "articleUrl": "https://en.wikipedia.org/wiki/Lacerda_Elevator"
+  },
+  "lakelouise": {
+    "article": "Lake Louise (Alberta)",
+    "articleUrl": "https://en.wikipedia.org/wiki/Lake_Louise_(Alberta)"
+  },
+  "lamano": {
+    "article": "La Mano de Punta del Este",
+    "articleUrl": "https://en.wikipedia.org/wiki/La_Mano_de_Punta_del_Este"
+  },
+  "lapa": {
+    "article": "Carioca Aqueduct",
+    "articleUrl": "https://en.wikipedia.org/wiki/Carioca_Aqueduct"
+  },
+  "lapaz": {
+    "article": "La Paz",
+    "articleUrl": "https://en.wikipedia.org/wiki/La_Paz"
+  },
+  "lasvegasstrip": {
+    "article": "Las Vegas Strip",
+    "articleUrl": "https://en.wikipedia.org/wiki/Las_Vegas_Strip"
+  },
+  "lencois": {
+    "article": "Lençóis Maranhenses National Park",
+    "articleUrl": "https://en.wikipedia.org/wiki/Len%C3%A7%C3%B3is_Maranhenses_National_Park"
+  },
+  "liberty": {
+    "article": "Statue of Liberty",
+    "articleUrl": "https://en.wikipedia.org/wiki/Statue_of_Liberty"
+  },
+  "libertybell": {
+    "article": "Liberty Bell",
+    "articleUrl": "https://en.wikipedia.org/wiki/Liberty_Bell"
+  },
+  "lincolnmemorial": {
+    "article": "Lincoln Memorial",
+    "articleUrl": "https://en.wikipedia.org/wiki/Lincoln_Memorial"
+  },
+  "lofoten": {
+    "article": "Lofoten",
+    "articleUrl": "https://en.wikipedia.org/wiki/Lofoten"
+  },
+  "lombardstreet": {
+    "article": "Lombard Street (San Francisco)",
+    "articleUrl": "https://en.wikipedia.org/wiki/Lombard_Street_(San_Francisco)"
+  },
+  "machupicchu": {
+    "article": "Machu Picchu",
+    "articleUrl": "https://en.wikipedia.org/wiki/Machu_Picchu"
+  },
+  "magickingdom": {
+    "article": "Magic Kingdom",
+    "articleUrl": "https://en.wikipedia.org/wiki/Magic_Kingdom"
+  },
+  "maracana": {
+    "article": "Maracanã Stadium",
+    "articleUrl": "https://en.wikipedia.org/wiki/Maracan%C3%A3_Stadium"
+  },
+  "maragogi": {
+    "article": "Maragogi",
+    "articleUrl": "https://en.wikipedia.org/wiki/Maragogi"
+  },
+  "marrakesh": {
+    "article": "Jemaa el-Fnaa",
+    "articleUrl": "https://en.wikipedia.org/wiki/Jemaa_el-Fnaa"
+  },
+  "masp": {
+    "article": "São Paulo Museum of Art",
+    "articleUrl": "https://en.wikipedia.org/wiki/S%C3%A3o_Paulo_Museum_of_Art"
+  },
+  "matterhorn": {
+    "article": "Matterhorn",
+    "articleUrl": "https://en.wikipedia.org/wiki/Matterhorn"
+  },
+  "meetingofwaters": {
+    "article": "Meeting of Waters",
+    "articleUrl": "https://en.wikipedia.org/wiki/Meeting_of_Waters"
+  },
+  "mesaverde": {
+    "article": "Mesa Verde National Park",
+    "articleUrl": "https://en.wikipedia.org/wiki/Mesa_Verde_National_Park"
+  },
+  "monserrate": {
+    "article": "Monserrate",
+    "articleUrl": "https://en.wikipedia.org/wiki/Monserrate"
+  },
+  "montevideo": {
+    "article": "Palacio Salvo",
+    "articleUrl": "https://en.wikipedia.org/wiki/Palacio_Salvo"
+  },
+  "monumentvalley": {
+    "article": "Monument Valley",
+    "articleUrl": "https://en.wikipedia.org/wiki/Monument_Valley"
+  },
+  "moraine": {
+    "article": "Moraine Lake",
+    "articleUrl": "https://en.wikipedia.org/wiki/Moraine_Lake"
+  },
+  "mountrushmore": {
+    "article": "Mount Rushmore",
+    "articleUrl": "https://en.wikipedia.org/wiki/Mount_Rushmore"
+  },
+  "multnomah": {
+    "article": "Multnomah Falls",
+    "articleUrl": "https://en.wikipedia.org/wiki/Multnomah_Falls"
+  },
+  "nashvillebroadway": {
+    "article": "Broadway (Nashville, Tennessee)",
+    "articleUrl": "https://en.wikipedia.org/wiki/Broadway_(Nashville,_Tennessee)"
+  },
+  "navypier": {
+    "article": "Navy Pier",
+    "articleUrl": "https://en.wikipedia.org/wiki/Navy_Pier"
+  },
+  "nazca": {
+    "article": "Nazca lines",
+    "articleUrl": "https://en.wikipedia.org/wiki/Nazca_lines"
+  },
+  "neuschwanstein": {
+    "article": "Neuschwanstein Castle",
+    "articleUrl": "https://en.wikipedia.org/wiki/Neuschwanstein_Castle"
+  },
+  "niagara": {
+    "article": "Niagara Falls",
+    "articleUrl": "https://en.wikipedia.org/wiki/Niagara_Falls"
+  },
+  "niteroi": {
+    "article": "Niterói Contemporary Art Museum",
+    "articleUrl": "https://en.wikipedia.org/wiki/Niter%C3%B3i_Contemporary_Art_Museum"
+  },
+  "notredamemtl": {
+    "article": "Notre-Dame Basilica (Montreal)",
+    "articleUrl": "https://en.wikipedia.org/wiki/Notre-Dame_Basilica_(Montreal)"
+  },
+  "obelisco": {
+    "article": "Obelisco de Buenos Aires",
+    "articleUrl": "https://en.wikipedia.org/wiki/Obelisco_de_Buenos_Aires"
+  },
+  "oia": {
+    "article": "Oia,_Greece",
+    "articleUrl": "https://en.wikipedia.org/wiki/Oia,_Greece"
+  },
+  "oldfaithful": {
+    "article": "Old Faithful",
+    "articleUrl": "https://en.wikipedia.org/wiki/Old_Faithful"
+  },
+  "oldhavana": {
+    "article": "Old Havana",
+    "articleUrl": "https://en.wikipedia.org/wiki/Old_Havana"
+  },
+  "oldsanjuan": {
+    "article": "Old San Juan",
+    "articleUrl": "https://en.wikipedia.org/wiki/Old_San_Juan"
+  },
+  "olinda": {
+    "article": "Olinda",
+    "articleUrl": "https://en.wikipedia.org/wiki/Olinda"
+  },
+  "ollantaytambo": {
+    "article": "Ollantaytambo",
+    "articleUrl": "https://en.wikipedia.org/wiki/Ollantaytambo"
+  },
+  "ouropreto": {
+    "article": "Ouro Preto",
+    "articleUrl": "https://en.wikipedia.org/wiki/Ouro_Preto"
+  },
+  "palenque": {
+    "article": "Palenque",
+    "articleUrl": "https://en.wikipedia.org/wiki/Palenque"
+  },
+  "pampulha": {
+    "article": "Pampulha Modern Ensemble",
+    "articleUrl": "https://en.wikipedia.org/wiki/Pampulha_Modern_Ensemble"
+  },
+  "panamacanal": {
+    "article": "Panama Canal",
+    "articleUrl": "https://en.wikipedia.org/wiki/Panama_Canal"
+  },
+  "pantanal": {
+    "article": "Pantanal",
+    "articleUrl": "https://en.wikipedia.org/wiki/Pantanal"
+  },
+  "paraty": {
+    "article": "Paraty",
+    "articleUrl": "https://en.wikipedia.org/wiki/Paraty"
+  },
+  "parliamenthill": {
+    "article": "Parliament Hill, Ottawa",
+    "articleUrl": "https://en.wikipedia.org/wiki/Parliament_Hill,_Ottawa"
+  },
+  "peggyscove": {
+    "article": "Peggys Cove",
+    "articleUrl": "https://en.wikipedia.org/wiki/Peggys_Cove"
+  },
+  "pelourinho": {
+    "article": "Pelourinho",
+    "articleUrl": "https://en.wikipedia.org/wiki/Pelourinho"
+  },
+  "percerock": {
+    "article": "Percé Rock",
+    "articleUrl": "https://en.wikipedia.org/wiki/Perc%C3%A9_Rock"
+  },
+  "peritomoreno": {
+    "article": "Perito Moreno Glacier",
+    "articleUrl": "https://en.wikipedia.org/wiki/Perito_Moreno_Glacier"
+  },
+  "petra": {
+    "article": "Petra",
+    "articleUrl": "https://en.wikipedia.org/wiki/Petra"
+  },
+  "petropolis": {
+    "article": "Imperial Museum of Brazil",
+    "articleUrl": "https://en.wikipedia.org/wiki/Imperial_Museum_of_Brazil"
+  },
+  "pikeplace": {
+    "article": "Pike Place Market",
+    "articleUrl": "https://en.wikipedia.org/wiki/Pike_Place_Market"
+  },
+  "pipa": {
+    "article": "Praia da Pipa",
+    "articleUrl": "https://en.wikipedia.org/wiki/Praia_da_Pipa"
+  },
+  "plitvice": {
+    "article": "Plitvice Lakes National Park",
+    "articleUrl": "https://en.wikipedia.org/wiki/Plitvice_Lakes_National_Park"
+  },
+  "portodegalinhas": {
+    "article": "Porto de Galinhas",
+    "articleUrl": "https://en.wikipedia.org/wiki/Porto_de_Galinhas"
+  },
+  "positano": {
+    "article": "Positano",
+    "articleUrl": "https://en.wikipedia.org/wiki/Positano"
+  },
+  "quilotoa": {
+    "article": "Quilotoa",
+    "articleUrl": "https://en.wikipedia.org/wiki/Quilotoa"
+  },
+  "quito": {
+    "article": "Quito",
+    "articleUrl": "https://en.wikipedia.org/wiki/Quito"
+  },
+  "rainbowmountain": {
+    "article": "Vinicunca",
+    "articleUrl": "https://en.wikipedia.org/wiki/Vinicunca"
+  },
+  "redsquare": {
+    "article": "Red Square",
+    "articleUrl": "https://en.wikipedia.org/wiki/Red_Square"
+  },
+  "reykjavik": {
+    "article": "Hallgrímskirkja",
+    "articleUrl": "https://en.wikipedia.org/wiki/Hallgr%C3%ADmskirkja"
+  },
+  "rio": {
+    "article": "Christ the Redeemer (statue)",
+    "articleUrl": "https://en.wikipedia.org/wiki/Christ_the_Redeemer_(statue)"
+  },
+  "riverwalk": {
+    "article": "San Antonio River Walk",
+    "articleUrl": "https://en.wikipedia.org/wiki/San_Antonio_River_Walk"
+  },
+  "rockefeller": {
+    "article": "Rockefeller Center",
+    "articleUrl": "https://en.wikipedia.org/wiki/Rockefeller_Center"
+  },
+  "roraima": {
+    "article": "Mount Roraima",
+    "articleUrl": "https://en.wikipedia.org/wiki/Mount_Roraima"
+  },
+  "sacsayhuaman": {
+    "article": "Sacsayhuamán",
+    "articleUrl": "https://en.wikipedia.org/wiki/Sacsayhuam%C3%A1n"
+  },
+  "sagrada": {
+    "article": "Sagrada Família",
+    "articleUrl": "https://en.wikipedia.org/wiki/Sagrada_Fam%C3%ADlia"
+  },
+  "santamonicapier": {
+    "article": "Santa Monica Pier",
+    "articleUrl": "https://en.wikipedia.org/wiki/Santa_Monica_Pier"
+  },
+  "saoluis": {
+    "article": "São Luís, Maranhão",
+    "articleUrl": "https://en.wikipedia.org/wiki/S%C3%A3o_Lu%C3%ADs,_Maranh%C3%A3o"
+  },
+  "secathedral": {
+    "article": "São Paulo Cathedral",
+    "articleUrl": "https://en.wikipedia.org/wiki/S%C3%A3o_Paulo_Cathedral"
+  },
+  "serraorgaos": {
+    "article": "Serra dos Órgãos",
+    "articleUrl": "https://en.wikipedia.org/wiki/Serra_dos_%C3%93rg%C3%A3os"
+  },
+  "shibuya": {
+    "article": "Shibuya Crossing",
+    "articleUrl": "https://en.wikipedia.org/wiki/Shibuya_Crossing"
+  },
+  "signalhill": {
+    "article": "Signal Hill, St. John's",
+    "articleUrl": "https://en.wikipedia.org/wiki/Signal_Hill,_St._John's"
+  },
+  "southbeach": {
+    "article": "South Beach",
+    "articleUrl": "https://en.wikipedia.org/wiki/South_Beach"
+  },
+  "spaceneedle": {
+    "article": "Space Needle",
+    "articleUrl": "https://en.wikipedia.org/wiki/Space_Needle"
+  },
+  "stonehenge": {
+    "article": "Stonehenge",
+    "articleUrl": "https://en.wikipedia.org/wiki/Stonehenge"
+  },
+  "sugarloaf": {
+    "article": "Sugarloaf Mountain",
+    "articleUrl": "https://en.wikipedia.org/wiki/Sugarloaf_Mountain"
+  },
+  "sydneyopera": {
+    "article": "Sydney Opera House",
+    "articleUrl": "https://en.wikipedia.org/wiki/Sydney_Opera_House"
+  },
+  "tablemountain": {
+    "article": "Table Mountain",
+    "articleUrl": "https://en.wikipedia.org/wiki/Table_Mountain"
+  },
+  "tajmahal": {
+    "article": "Taj Mahal",
+    "articleUrl": "https://en.wikipedia.org/wiki/Taj_Mahal"
+  },
+  "tayrona": {
+    "article": "Tayrona National Natural Park",
+    "articleUrl": "https://en.wikipedia.org/wiki/Tayrona_National_Natural_Park"
+  },
+  "teotihuacan": {
+    "article": "Teotihuacan",
+    "articleUrl": "https://en.wikipedia.org/wiki/Teotihuacan"
+  },
+  "thealamo": {
+    "article": "Alamo Mission",
+    "articleUrl": "https://en.wikipedia.org/wiki/Alamo_Mission"
+  },
+  "tikal": {
+    "article": "Tikal",
+    "articleUrl": "https://en.wikipedia.org/wiki/Tikal"
+  },
+  "timessquare": {
+    "article": "Times Square",
+    "articleUrl": "https://en.wikipedia.org/wiki/Times_Square"
+  },
+  "titicaca": {
+    "article": "Lake Titicaca",
+    "articleUrl": "https://en.wikipedia.org/wiki/Lake_Titicaca"
+  },
+  "torresdelpaine": {
+    "article": "Torres del Paine National Park",
+    "articleUrl": "https://en.wikipedia.org/wiki/Torres_del_Paine_National_Park"
+  },
+  "trancoso": {
+    "article": "Trancoso, Bahia",
+    "articleUrl": "https://en.wikipedia.org/wiki/Trancoso,_Bahia"
+  },
+  "tulum": {
+    "article": "Tulum",
+    "articleUrl": "https://en.wikipedia.org/wiki/Tulum"
+  },
+  "uluru": {
+    "article": "Uluru",
+    "articleUrl": "https://en.wikipedia.org/wiki/Uluru"
+  },
+  "uscapitol": {
+    "article": "United States Capitol",
+    "articleUrl": "https://en.wikipedia.org/wiki/United_States_Capitol"
+  },
+  "ushuaia": {
+    "article": "Ushuaia",
+    "articleUrl": "https://en.wikipedia.org/wiki/Ushuaia"
+  },
+  "uyuni": {
+    "article": "Salar de Uyuni",
+    "articleUrl": "https://en.wikipedia.org/wiki/Salar_de_Uyuni"
+  },
+  "valparaiso": {
+    "article": "Valparaíso",
+    "articleUrl": "https://en.wikipedia.org/wiki/Valpara%C3%ADso"
+  },
+  "veadeiros": {
+    "article": "Chapada dos Veadeiros National Park",
+    "articleUrl": "https://en.wikipedia.org/wiki/Chapada_dos_Veadeiros_National_Park"
+  },
+  "victoriafalls": {
+    "article": "Victoria Falls",
+    "articleUrl": "https://en.wikipedia.org/wiki/Victoria_Falls"
+  },
+  "victoriapeak": {
+    "article": "Victoria Peak",
+    "articleUrl": "https://en.wikipedia.org/wiki/Victoria_Peak"
+  },
+  "waikiki": {
+    "article": "Waikiki",
+    "articleUrl": "https://en.wikipedia.org/wiki/Waikiki"
+  },
+  "watarun": {
+    "article": "Wat Arun",
+    "articleUrl": "https://en.wikipedia.org/wiki/Wat_Arun"
+  },
+  "whitehouse": {
+    "article": "White House",
+    "articleUrl": "https://en.wikipedia.org/wiki/White_House"
+  },
+  "willistower": {
+    "article": "Willis Tower",
+    "articleUrl": "https://en.wikipedia.org/wiki/Willis_Tower"
+  },
+  "zion": {
+    "article": "Zion National Park",
+    "articleUrl": "https://en.wikipedia.org/wiki/Zion_National_Park"
+  },
+  "zocalo": {
+    "article": "Zócalo",
+    "articleUrl": "https://en.wikipedia.org/wiki/Z%C3%B3calo"
+  }
+}

@@ -1,0 +1,32 @@
+The code in this repository is released under the MIT License (see LICENSE).
+
+Not covered by that license:
+
+  - The location photos in photos/ (and the Niagara Falls photo inside the
+    og.jpg social card). They are not James Portman's work. Each is the lead
+    image of an English Wikipedia article, hosted on Wikimedia Commons, and
+    stays under its own licence (mostly Creative Commons Attribution-ShareAlike)
+    with its own author. They are credited photo by photo on the credits page
+    (credits.html, served at /credits), generated from build/photo-credits.json.
+    Any reuse must follow each image's own licence, not the MIT License.
+
+Third-party data built into the game:
+
+  - World map outlines (build/countries.geo.json -> build/map-data.js, and the
+    country entries of the search gazetteer): from world.geo.json by Johan
+    Sundström, https://github.com/johan/world.geo.json, released into the
+    public domain under the Unlicense.
+
+  - Search gazetteer cities and regions (build/search-data.js, embedded in
+    index.html): derived from GeoNames (cities15000, countryInfo,
+    admin1CodesASCII), https://www.geonames.org/, licensed under
+    Creative Commons Attribution 4.0 (CC BY 4.0).
+
+  - Persian place names for the map search (search-fa.json): "Data by
+    Countries States Cities Database,
+    https://github.com/dr5hn/countries-states-cities-database | ODbL v1.0".
+    search-fa.json, as a derived database, is made available under the Open
+    Database License v1.0 (https://opendatacommons.org/licenses/odbl/1-0/).
+
+Services used at runtime, not redistributed here: Google Maps and Street View
+imagery are loaded live from Google and are subject to Google's terms.

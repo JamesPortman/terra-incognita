@@ -258,6 +258,7 @@
     border-radius: 3px;
     letter-spacing: 0.04em;
   }
+  .stage .credit a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
   .stage .reveal {
     position: absolute;
     top: 16px;
@@ -683,7 +684,7 @@
       <img id="photo" alt="Mystery location — study the scene and guess where it is" />
     </div>
     <div id="panobox" class="panobox" aria-label="Street View — look around and guess where you are"></div>
-    <div class="credit" id="creditLine" data-i18n="credit.photo">Photo: Wikimedia Commons &middot; scroll to zoom</div>
+    <div class="credit" id="creditLine"><a href="credits" target="_blank" rel="noopener" data-i18n="credit.photo">Photo: Wikimedia Commons &mdash; credits</a> &middot; <span data-i18n="credit.zoom">scroll to zoom</span></div>
     <div class="reveal"><div class="card" id="revealCard">
       <div class="name" id="revealName"></div>
       <div class="place" id="revealPlace"></div>
@@ -913,7 +914,8 @@ const LOCATIONS = __LOCATIONS__;
       "btn.endearly": "End round early", "btn.locked": "Locked in", "btn.waithost": "Waiting for host",
       "btn.finalstand": "Final standings", "btn.charting": "Charting a course…",
       "hint.map": "Click the map to drop your pin · scroll to zoom",
-      "credit.photo": "Photo: Wikimedia Commons · scroll to zoom",
+      "credit.photo": "Photo: Wikimedia Commons — credits",
+      "credit.zoom": "scroll to zoom",
       "dist.landed": "your pin landed {0} away", "dist.timesup": "time's up — no pin placed",
       "dist.nopin": "no pin placed this round", "dist.nopinscored": "no pin scored this round",
       "dist.offtab": " · 👀 {0}s off-tab", "dist.noguess": "no guess",
@@ -1020,7 +1022,8 @@ const LOCATIONS = __LOCATIONS__;
       "btn.endearly": "Terminar la ronda ya", "btn.locked": "Respuesta fijada", "btn.waithost": "Esperando al anfitrión",
       "btn.finalstand": "Clasificación final", "btn.charting": "Trazando el rumbo…",
       "hint.map": "Haz clic en el mapa para colocar tu pin · rueda para hacer zoom",
-      "credit.photo": "Foto: Wikimedia Commons · rueda para hacer zoom",
+      "credit.photo": "Foto: Wikimedia Commons — créditos",
+      "credit.zoom": "rueda para hacer zoom",
       "dist.landed": "tu pin cayó a {0}", "dist.timesup": "se acabó el tiempo — sin pin",
       "dist.nopin": "sin pin en esta ronda", "dist.nopinscored": "sin pin puntuado en esta ronda",
       "dist.offtab": " · 👀 {0}s fuera de la pestaña", "dist.noguess": "sin respuesta",
@@ -1127,7 +1130,8 @@ const LOCATIONS = __LOCATIONS__;
       "btn.endearly": "Encerrar a rodada", "btn.locked": "Palpite travado", "btn.waithost": "Aguardando o anfitrião",
       "btn.finalstand": "Classificação final", "btn.charting": "Traçando a rota…",
       "hint.map": "Clique no mapa para colocar seu pino · role para dar zoom",
-      "credit.photo": "Foto: Wikimedia Commons · role para dar zoom",
+      "credit.photo": "Foto: Wikimedia Commons — créditos",
+      "credit.zoom": "role para dar zoom",
       "dist.landed": "seu pino caiu a {0}", "dist.timesup": "tempo esgotado — sem pino",
       "dist.nopin": "sem pino nesta rodada", "dist.nopinscored": "sem pino pontuado nesta rodada",
       "dist.offtab": " · 👀 {0}s fora da aba", "dist.noguess": "sem palpite",
@@ -1234,7 +1238,8 @@ const LOCATIONS = __LOCATIONS__;
       "btn.endearly": "پایان زودهنگام دور", "btn.locked": "حدس ثبت شد", "btn.waithost": "در انتظار میزبان",
       "btn.finalstand": "رده‌بندی نهایی", "btn.charting": "در حال ترسیم مسیر…",
       "hint.map": "برای گذاشتن سنجاق روی نقشه کلیک کن · با چرخ ماوس بزرگ‌نمایی کن",
-      "credit.photo": "عکس: ویکی‌مدیا کامانز · با چرخ ماوس بزرگ‌نمایی کن",
+      "credit.photo": "عکس: ویکی‌مدیا کامانز — منابع",
+      "credit.zoom": "با چرخ ماوس بزرگ‌نمایی کن",
       "dist.landed": "سنجاقت با فاصلهٔ {0} فرود آمد", "dist.timesup": "وقت تمام شد — سنجاقی گذاشته نشد",
       "dist.nopin": "در این دور سنجاقی گذاشته نشد", "dist.nopinscored": "در این دور هیچ سنجاقی امتیاز نگرفت",
       "dist.offtab": " · 👀 {0} ثانیه بیرون از زبانه", "dist.noguess": "بدون حدس",
