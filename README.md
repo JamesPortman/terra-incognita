@@ -7,7 +7,7 @@ on the world map and score up to 5,000 points per round based on distance (5 rou
 
 `index.html` has the world map (SVG paths from GeoJSON), the search gazetteer and all
 202 curated locations inlined; their photos (Wikimedia Commons) are served statically
-from `photos/`.
+from `photos/`, and credited one by one on the [credits page](credits.html) (`/credits`).
 
 Links can pick the language: `?lang=en`, `?lang=es`, `?lang=pt` or `?lang=fa`
 (e.g. `https://www.portman.ca/terra-incognita/?lang=fa`). The choice is remembered
@@ -18,16 +18,18 @@ like a menu pick, and it combines with invite links (`?lang=fa&join=ABCD`).
 Game logic and styling live in `build/game-template.html`. To rebuild `index.html`:
 
 ```bash
-node build/assemble.js                     # writes build/terra-incognita.html
-cp build/terra-incognita.html index.html
+node build/assemble.js   # writes index.html and credits.html, stamps version.txt
 ```
 
 - `build/map-data.js` — generated SVG world map (regenerate with `build/build-map.js`,
   which needs `countries.geo.json` from https://github.com/johan/world.geo.json)
-- `build/photos/` — location photos; `build/build-photos.sh` re-fetches them from
-  Wikipedia (copy them to `photos/`). Add a location by appending it to `shared/locations.js`
-  (append-only), adding its es/pt/fa text to `shared/locations.i18n.js` and its photo;
+- `photos/` — location photos (the only copy); `build/build-photos.sh` fetches missing ones
+  from Wikipedia straight into it. Add a location by appending it to `shared/locations.js`
+  (append-only), adding its es/pt/fa text to `shared/locations.i18n.js`, its article title to
+  `build/build-photos.sh` and its photo, then crediting it with `node build/build-credits.js --fetch`;
   deck membership lives in `shared/decks.js`.
+- `build/photo-credits.json` — where each photo came from (source article; Commons file,
+  author and licence once fetched). `assemble.js` renders it as `credits.html`.
 - `search-fa.json` — Persian names for the map search, fetched only when a player
   picks Farsi. It lines up entry for entry with `build/search-data.js`, so re-run
   `build/build-search-fa.js` (download steps at the top of that file) whenever the
@@ -85,3 +87,12 @@ When adding a page link or a fetch, keep it relative or run it through `BASE`;
 `e2e/subpath.spec.js` fails if a root-absolute URL creeps back in.
 Integrations: Neon (`DATABASE_URL`) and Upstash Redis (`KV_REST_API_*` /
 `UPSTASH_REDIS_REST_*`) via the Vercel Marketplace.
+
+## License
+
+The code is released under the [MIT License](LICENSE). The location photos are not
+covered by it: they come from Wikimedia Commons under their own licences (mostly
+CC BY-SA) and are credited per photo on the [credits page](credits.html). Map outlines
+(world.geo.json, Unlicense), the gazetteer (GeoNames, CC BY 4.0) and the Persian search
+names (Countries States Cities Database, ODbL v1.0) are third-party data too — see
+[NOTICE](NOTICE).

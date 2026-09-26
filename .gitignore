@@ -7,3 +7,6 @@ build/cities15000.*
 build/countryInfo.txt
 build/admin1CodesASCII.txt
 build/csc/
+# old build outputs: photos live only in photos/, assemble.js writes index.html
+build/photos/
+build/terra-incognita.html

@@ -75,3 +75,16 @@ test('behind the proxy, ?lang=fa opens the game in Farsi', async ({ page }) => {
   await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
   await expect(page.locator('#menuSolo')).toHaveText('بازی تک‌نفره');
 });
+
+test('behind the proxy, the photo credits page and its thumbnails load from under the prefix', async ({ page }) => {
+  await page.goto(`http://localhost:${PROXY_PORT}${PREFIX}/?plainmap=1`);
+  const href = await page.getAttribute('#creditLine a', 'href');
+  const url = new URL(href, page.url());
+  expect(url.pathname).toBe(`${PREFIX}/credits`);
+  await page.goto(url.href);
+  const img = page.locator('tbody img').first();
+  await img.scrollIntoViewIfNeeded();
+  expect(new URL(await img.evaluate((i) => i.currentSrc)).pathname).toMatch(new RegExp(`^${PREFIX}/photos/\\w+\\.jpg$`));
+  await expect.poll(() => img.evaluate((i) => i.naturalWidth)).toBeGreaterThan(0);
+  expect(new URL(await page.locator('a', { hasText: 'Back to the game' }).evaluate((a) => a.href)).pathname).toBe(`${PREFIX}/`);
+});

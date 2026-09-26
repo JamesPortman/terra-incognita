@@ -43,6 +43,25 @@ test.describe('solo game', () => {
     await expect(page.locator('#scoreLabel')).toHaveText('0');
   });
 
+  test('photo credit opens the per-photo credits page', async ({ page, context }) => {
+    await startSolo(page);
+    await expect(page.locator('#photo')).toHaveAttribute('src', /\/photos\/\w+\.jpg$/);
+    const src = await page.locator('#photo').getAttribute('src');
+    const key = src.match(/photos\/(\w+)\.jpg$/)[1];
+    const link = page.locator('#creditLine a');
+    await expect(link).toHaveText(/Wikimedia Commons/);
+    const [credits] = await Promise.all([context.waitForEvent('page'), link.click()]);
+    await credits.waitForLoadState();
+    expect(new URL(credits.url()).pathname).toBe('/credits');
+    // the round's own photo has a row with its source article and a thumbnail that loads
+    const row = credits.locator(`tr#${key}`);
+    await expect(row.locator('a[href^="https://en.wikipedia.org/wiki/"]')).toBeVisible();
+    await expect.poll(() => row.locator('img').evaluate((i) => i.naturalWidth)).toBeGreaterThan(0);
+    await expect(credits.locator('tbody tr')).toHaveCount(202);
+    // leaving for the credits page must not end the game
+    await expect(page.locator('#roundLabel')).toHaveText('1 / 5');
+  });
+
   test('times out a round with no pin as +0 pts', async ({ page }) => {
     await startSolo(page, { roundSec: 10 });
     await expect(page.locator('#roundLabel')).toHaveText('1 / 5');
