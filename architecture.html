@@ -218,7 +218,7 @@
 
   <section style="margin-top:40px">
     <h2>Operations</h2>
-    <div class="cards cols3">
+    <div class="cards cols2">
       <div class="card">
         <div class="title">Tests gate every deploy</div>
         <p>Vercel's git auto-deploy is off. GitHub Actions runs the Vitest suite
@@ -238,6 +238,14 @@
         domain and localhost, limited to the Maps JavaScript API, and served at
         runtime from <code>GOOGLE_MAPS_KEY</code> via <code>/api/config</code> —
         rotatable without a rebuild, never committed.</p>
+      </div>
+      <div class="card">
+        <div class="title">Pinned, least-privilege CI</div>
+        <p>Workflows run with a read-only <code>GITHUB_TOKEN</code>, and every
+        action is pinned to a commit SHA rather than a movable tag, so a
+        compromised or retagged action can't change what runs here. Dependabot
+        checks the pins monthly and opens one grouped PR, which merges only
+        when the suites pass, like any other change.</p>
       </div>
     </div>
   </section>
