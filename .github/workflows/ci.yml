@@ -22,6 +22,13 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      # The end-to-end suite runs against the real development services, pulled
+      # with VERCEL_TOKEN. Dependabot's runs get no repository secrets, so every
+      # one of its PRs failed here whatever it changed. Without the token the
+      # suite is skipped, with a notice; the unit tests still run. main never
+      # skips: a token missing there fails the run rather than deploy untested.
+      E2E: ${{ secrets.VERCEL_TOKEN != '' || github.ref == 'refs/heads/main' }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
@@ -33,18 +40,26 @@ jobs:
       - name: Unit tests
         run: npm test
 
+      - name: Note that the end-to-end suite was skipped
+        if: env.E2E != 'true'
+        run: echo "::notice title=E2E skipped::No VERCEL_TOKEN on this run — Dependabot gets no repository secrets. Unit tests ran; main runs the full suite before any deploy."
+
       - name: Install Playwright browser
+        if: env.E2E == 'true'
         run: npx playwright install --with-deps chromium
 
       - name: Pull development env (Redis, Neon, Maps key)
+        if: env.E2E == 'true'
         run: npx vercel pull --yes --environment=development --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Start vercel dev
+        if: env.E2E == 'true'
         run: |
           npx vercel dev --listen 3300 --yes --token=${{ secrets.VERCEL_TOKEN }} &
           npx wait-on http://localhost:3300 --timeout 120000
 
       - name: E2E tests
+        if: env.E2E == 'true'
         run: npm run test:e2e
 
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
